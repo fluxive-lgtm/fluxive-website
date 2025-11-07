@@ -16,26 +16,14 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email Us",
-    content: "contact@fluxive.com",
-    link: "mailto:contact@fluxive.com",
+    content: "info@fluxive.be",
+    link: "mailto:info@fluxive.be",
   },
   {
     icon: Phone,
     title: "Call Us",
-    content: "+1 (555) 123-4567",
-    link: "tel:+15551234567",
-  },
-  {
-    icon: MapPin,
-    title: "Visit Us",
-    content: "123 Tech Street, Silicon Valley, CA 94025",
-    link: "#",
-  },
-  {
-    icon: MessageSquare,
-    title: "Live Chat",
-    content: "Available 24/7",
-    link: "#",
+    content: "+32 472 92 57 41",
+    link: "tel:+32472925741",
   },
 ];
 
@@ -52,17 +40,37 @@ export default function Contact() {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      console.log("Form data:", data);
-      
-      toast({
-        title: "Message Sent! 🎉",
-        description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+          name: data.name,
+          email: data.email,
+          phone: data.phone || "Not provided",
+          company: data.company || "Not provided",
+          service: data.service,
+          budget: data.budget || "Not specified",
+          timeline: data.timeline || "Not specified",
+          message: data.message,
+          subject: `New Contact Form Submission from ${data.name}`,
+        }),
       });
-      
-      reset();
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Message Sent! 🎉",
+          description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+        });
+        reset();
+      } else {
+        throw new Error("Submission failed");
+      }
     } catch (error) {
       toast({
         variant: "destructive",
@@ -111,6 +119,7 @@ export default function Contact() {
                     <Input
                       id="name"
                       {...register("name")}
+                      autoComplete="name"
                       className="glass-card border-primary-500/20 mt-2"
                       placeholder="John Doe"
                     />
@@ -125,6 +134,7 @@ export default function Contact() {
                       id="email"
                       type="email"
                       {...register("email")}
+                      autoComplete="email"
                       className="glass-card border-primary-500/20 mt-2"
                       placeholder="john@example.com"
                     />
@@ -139,8 +149,9 @@ export default function Contact() {
                       <Input
                         id="phone"
                         {...register("phone")}
+                        autoComplete="tel"
                         className="glass-card border-primary-500/20 mt-2"
-                        placeholder="+1 (555) 123-4567"
+                        placeholder="+32 472 92 57 41"
                       />
                     </div>
                     <div>
@@ -148,6 +159,7 @@ export default function Contact() {
                       <Input
                         id="company"
                         {...register("company")}
+                        autoComplete="organization"
                         className="glass-card border-primary-500/20 mt-2"
                         placeholder="Your Company"
                       />

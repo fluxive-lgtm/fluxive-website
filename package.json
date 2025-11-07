@@ -4,10 +4,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/post-build.js",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build"
+    "export": "next build && node scripts/post-build.js"
   },
   "keywords": [],
   "author": "",

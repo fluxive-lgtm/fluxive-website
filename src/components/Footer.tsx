@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
 import { Github, Linkedin, Twitter, Instagram, Facebook } from "lucide-react";
 import { useTheme } from "next-themes";
+import { LegalModal } from "@/components/LegalModal";
 
 const footerLinks = {
   services: [
@@ -22,9 +23,9 @@ const footerLinks = {
     { name: "Blog", href: "#" },
   ],
   legal: [
-    { name: "Privacy Policy", href: "#" },
-    { name: "Terms of Service", href: "#" },
-    { name: "Cookie Policy", href: "#" },
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms of Service", href: "/terms" },
+    { name: "Cookie Policy", href: "/cookies" },
   ],
 };
 
@@ -39,10 +40,17 @@ const socialLinks = [
 export default function Footer() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'privacy' | 'terms' | 'cookies'>('privacy');
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const openModal = (type: 'privacy' | 'terms' | 'cookies') => {
+    setModalType(type);
+    setModalOpen(true);
+  };
 
   const scrollToSection = (href: string) => {
     if (href === "#") return;
@@ -154,16 +162,30 @@ export default function Footer() {
           >
             <h4 className="text-xl font-display font-bold mb-4">Legal</h4>
             <ul className="space-y-2">
-              {footerLinks.legal.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <button
+                  onClick={() => openModal('privacy')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors text-left"
+                >
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => openModal('terms')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors text-left"
+                >
+                  Terms of Service
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => openModal('cookies')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors text-left"
+                >
+                  Cookie Policy
+                </button>
+              </li>
             </ul>
           </motion.div>
         </div>
@@ -178,9 +200,26 @@ export default function Footer() {
           viewport={{ once: true }}
           className="text-center text-gray-600 dark:text-gray-400"
         >
-          <p>© {new Date().getFullYear()} FLUXIVE. All rights reserved.</p>
+          <p className="mb-2">© {new Date().getFullYear()} FLUXIVE. All rights reserved.</p>
+          <p className="text-sm mb-2">BTW/VAT: BE1029968269 | Registered in Belgium</p>
+          <button
+            onClick={() => {
+              localStorage.removeItem('cookie-consent');
+              window.location.reload();
+            }}
+            className="text-xs text-gray-500 dark:text-gray-500 hover:text-primary-500 transition-colors"
+          >
+            Cookie Settings
+          </button>
         </motion.div>
       </div>
+
+      {/* Legal Modal */}
+      <LegalModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        type={modalType}
+      />
     </footer>
   );
 }
