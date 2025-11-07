@@ -82,6 +82,7 @@ log/
 
 # Build outputs
 /out
+/out.zip
 /target
 /.next
 /.nuxt
