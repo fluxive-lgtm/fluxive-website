@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { MouseTrail } from "@/components/MouseTrail";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { CookieBanner } from "@/components/CookieBanner";
+import ChatWidget from "@/components/ChatWidget";
 
 
 const inter = Inter({ 
@@ -106,6 +107,7 @@ export default function RootLayout({
           <MouseTrail />
           <CookieBanner />
           {children}
+          <ChatWidget />
           <Toaster />
         </ThemeProvider>
       </body>

@@ -89,7 +89,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="container relative z-10 mx-auto px-6">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
         <motion.div 
           className="max-w-4xl mx-auto text-center"
           variants={containerVariants}
@@ -97,15 +97,15 @@ export default function Hero() {
           animate="visible"
         >
           <motion.div variants={itemVariants}>
-            <Badge className="mb-6 text-base px-6 py-2 glass-card border-primary-500/30 animate-float">
-              <Sparkles className="w-4 h-4 mr-2" />
+            <Badge className="mb-4 sm:mb-6 text-sm sm:text-base px-4 py-1.5 sm:px-6 sm:py-2 glass-card border-primary-500/30 animate-float">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
               Next-Gen IT Solutions
             </Badge>
           </motion.div>
 
           <motion.h1
             variants={itemVariants}
-            className="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight"
+            className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight px-2"
           >
             Transform Your Business with{" "}
             <span className="gradient-text">FLUXIVE</span>
@@ -113,7 +113,7 @@ export default function Hero() {
 
           <motion.p
             variants={itemVariants}
-            className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-12 max-w-3xl mx-auto"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 mb-8 sm:mb-12 max-w-3xl mx-auto px-2 leading-relaxed"
           >
             Premium IT Services, Marketing Solutions, AI Automation, Web Development, 
             Penetration Testing & Cybersecurity - All Under One Roof
@@ -121,20 +121,20 @@ export default function Hero() {
 
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4"
           >
             <Button 
               size="lg" 
-              className="text-lg px-8 py-6 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 group"
+              className="w-full sm:w-auto text-base sm:text-lg px-6 py-5 sm:px-8 sm:py-6 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 group"
               onClick={scrollToContact}
             >
               Start Your Project
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button 
               size="lg" 
               variant="outline" 
-              className="text-lg px-8 py-6 glass-card border-primary-500/30 hover:bg-primary-500/10"
+              className="w-full sm:w-auto text-base sm:text-lg px-6 py-5 sm:px-8 sm:py-6 glass-card border-primary-500/30 hover:bg-primary-500/10"
               onClick={scrollToServices}
             >
               Explore Services
@@ -144,23 +144,23 @@ export default function Hero() {
           {/* Animated Stats */}
           <motion.div
             variants={statsContainerVariants}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mt-12 sm:mt-16 md:mt-20 px-2"
           >
             {stats.map((stat) => (
               <motion.div
                 key={stat.label}
                 variants={statsItemVariants}
-                className="glass-card p-6 rounded-xl hover:scale-105 transition-transform"
+                className="glass-card p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl hover:scale-105 transition-transform"
                 style={{
                   willChange: "transform, opacity",
                   backfaceVisibility: "hidden",
                   WebkitFontSmoothing: "antialiased"
                 }}
               >
-                <div className="text-3xl md:text-4xl font-display font-bold gradient-text mb-2">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-display font-bold gradient-text mb-1 sm:mb-2">
                   {stat.value}{stat.suffix}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>

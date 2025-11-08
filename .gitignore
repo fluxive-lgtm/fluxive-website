@@ -128,3 +128,5 @@ docker-compose.override.yml
 .grunt
 .lock-wscript
 
+
+.vercel

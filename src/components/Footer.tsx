@@ -38,13 +38,15 @@ const socialLinks = [
 ];
 
 export default function Footer() {
-  const { resolvedTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'privacy' | 'terms' | 'cookies'>('privacy');
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    setCurrentYear(new Date().getFullYear());
   }, []);
 
   const openModal = (type: 'privacy' | 'terms' | 'cookies') => {
@@ -200,7 +202,7 @@ export default function Footer() {
           viewport={{ once: true }}
           className="text-center text-gray-600 dark:text-gray-400"
         >
-          <p className="mb-2">© {new Date().getFullYear()} FLUXIVE. All rights reserved.</p>
+          <p className="mb-2">© {currentYear || 2024} FLUXIVE. All rights reserved.</p>
           <p className="text-sm mb-2">BTW/VAT: BE1029968269 | Registered in Belgium</p>
           <button
             onClick={() => {

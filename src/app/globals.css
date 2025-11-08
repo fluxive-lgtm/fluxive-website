@@ -222,3 +222,78 @@ html {
   left: 0;
   z-index: 0;
 }
+
+/* Mobile Safe Area & Keyboard Adjustments */
+@layer utilities {
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Ensure chat input stays visible above mobile keyboard */
+  @supports (-webkit-touch-callout: none) {
+    /* iOS Safari specific */
+    .fixed.bottom-0 {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+}
+
+/* Mobile viewport height fix for keyboard */
+@media screen and (max-width: 640px) {
+  /* When keyboard is open, use visual viewport height */
+  .fixed.top-0.bottom-0 {
+    height: 100dvh; /* Dynamic viewport height */
+    max-height: 100dvh;
+  }
+}
+
+/* Page shift effect when chat sidebar is open */
+body {
+  transition: margin-right 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: margin-right;
+}
+
+/* Shift fixed navbar when chat is open - only adjust right side */
+nav.fixed {
+  transition: right 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: right;
+}
+
+@media screen and (min-width: 640px) {
+  body.chat-open {
+    margin-right: 380px;
+  }
+  
+  body.chat-open nav.fixed {
+    right: 380px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  body.chat-open {
+    margin-right: 420px;
+  }
+  
+  body.chat-open nav.fixed {
+    right: 420px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  body.chat-open {
+    margin-right: 450px;
+  }
+  
+  body.chat-open nav.fixed {
+    right: 450px;
+  }
+}
+
+/* Prevent horizontal scrollbar during transition */
+body.chat-open {
+  overflow-x: hidden;
+}

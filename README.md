@@ -6,6 +6,17 @@
 
 ## ✨ Features Completed
 
+### 💬 AI Chat Widget (NEW!)
+- ✅ **Modern Chat UI**: Vercel AI SDK-inspired design with rounded sidebar
+- ✅ **Streaming Responses**: Real-time AI responses with typing indicators
+- ✅ **Generative UI**: 8+ dynamic components (pricing tables, feature grids, etc.)
+- ✅ **Session Management**: Persistent sessions via localStorage
+- ✅ **User Context**: Automatic timezone and local time detection
+- ✅ **Mobile Optimized**: Swipe-to-close gesture, responsive design
+- ✅ **Modern Animations**: Smooth slide-in/out, message bubbles with avatars
+- ✅ **Hybrid Architecture**: Static site + Vercel serverless API
+- ✅ **n8n Integration**: Backend automation and AI orchestration
+
 ### 🎨 Design & Styling
 - ✅ **Glassmorphism UI**: Premium glass-card effects with blur and transparency
 - ✅ **Gradient Text**: Beautiful cyan-to-emerald gradient text effects
@@ -115,12 +126,34 @@
 
 ## 🚀 Deployment Status
 
-- **Platform**: Ready for Cloudflare Pages
-- **Build Status**: ✅ Successfully built (static export)
+### Hybrid Architecture
+
+- **Static Site (EasyHost)**: `fluxive.be` - Main website with chat widget
+- **Serverless API (Vercel)**: `api.fluxive.be` - Chat API endpoint
+- **Backend (n8n)**: AI orchestration and automation workflows
+
+### Deployment Details
+
+- **Platform**: EasyHost (static) + Vercel (API routes)
+- **Build Status**: ✅ Production ready
 - **Output**: `/out` directory with static HTML/CSS/JS
-- **Tech Stack**: Next.js + React + TypeScript + Tailwind CSS
-- **Live Preview**: https://3000-iqyfuzmnmsbi92lfefilz-d0b9e1e2.sandbox.novita.ai
-- **Last Updated**: November 5, 2025
+- **API Endpoint**: `https://api.fluxive.be/api/chat`
+- **Tech Stack**: Next.js + React + TypeScript + Tailwind CSS + Framer Motion
+- **Last Updated**: November 8, 2025
+
+### Environment Variables
+
+**EasyHost (.env.production)**:
+
+- `NEXT_PUBLIC_SITE_URL=https://fluxive.be`
+- `NEXT_PUBLIC_API_URL=https://api.fluxive.be/api/chat`
+- `NEXT_PUBLIC_WEB3FORMS_KEY=...`
+
+**Vercel (Dashboard)**:
+
+- `N8N_WEBHOOK_URL=...` (server-side only)
+
+
 
 ## 📦 Installation & Development
 
@@ -176,7 +209,7 @@ npm start
 
 ## 📞 Contact Information
 
-- **Email**: contact@fluxive.com
+- **Email**: <contact@fluxive.com>
 - **Phone**: +1 (555) 123-4567
 - **Address**: 123 Tech Street, Silicon Valley, CA 94025
 - **Business Hours**: Mon-Fri 9:00 AM - 6:00 PM, Sat 10:00 AM - 4:00 PM
@@ -191,4 +224,5 @@ This is a production website. For any suggestions or issues, please contact the 
 
 ---
 
-**Built with ❤️ using Next.js, shadcn/ui, and Framer Motion**
+### Built with ❤️ using Next.js, shadcn/ui, and Framer Motion
+

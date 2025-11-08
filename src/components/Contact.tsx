@@ -53,8 +53,6 @@ export default function Contact() {
           phone: data.phone || "Not provided",
           company: data.company || "Not provided",
           service: data.service,
-          budget: data.budget || "Not specified",
-          timeline: data.timeline || "Not specified",
           message: data.message,
           subject: `New Contact Form Submission from ${data.name}`,
         }),
@@ -171,7 +169,7 @@ export default function Contact() {
                     <select
                       id="service"
                       {...register("service")}
-                      className="w-full h-10 rounded-md glass-card border border-primary-500/20 px-3 py-2 text-sm mt-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full h-10 rounded-md glass-card border border-primary-500/20 px-3 py-2 text-sm mt-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors [&>option]:bg-popover [&>option]:text-popover-foreground"
                     >
                       <option value="">Select a service</option>
                       <option value="IT Services">IT Services</option>
@@ -184,27 +182,6 @@ export default function Contact() {
                     {errors.service && (
                       <p className="text-red-500 text-sm mt-1">{errors.service.message}</p>
                     )}
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="budget">Budget</Label>
-                      <Input
-                        id="budget"
-                        {...register("budget")}
-                        className="glass-card border-primary-500/20 mt-2"
-                        placeholder="$10,000 - $50,000"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="timeline">Timeline</Label>
-                      <Input
-                        id="timeline"
-                        {...register("timeline")}
-                        className="glass-card border-primary-500/20 mt-2"
-                        placeholder="2-3 months"
-                      />
-                    </div>
                   </div>
 
                   <div>
