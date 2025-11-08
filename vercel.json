@@ -1,4 +1,6 @@
 {
+  "buildCommand": "echo 'Vercel handles API routes automatically'",
+  "outputDirectory": ".",
   "headers": [
     {
       "source": "/(.*)",
