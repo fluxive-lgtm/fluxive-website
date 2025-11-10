@@ -77,39 +77,41 @@
 @layer components {
   /* Light mode glass - stronger visibility with Nuxt green */
   .glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(30px) saturate(200%);
-    -webkit-backdrop-filter: blur(30px) saturate(200%);
-    border: 1px solid rgba(0, 220, 130, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08),
-                0 0 0 1px rgba(0, 220, 130, 0.1);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(0, 220, 130, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 220, 130, 0.15);
   }
 
   /* Dark mode glass - Nuxt green borders */
   .dark .glass-card {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(10, 10, 10, 0.6);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(0, 220, 130, 0.2);
-    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.6),
-                0 1px 0 0 rgba(0, 220, 130, 0.15) inset,
-                0 0 0 1px rgba(0, 220, 130, 0.1);
+    border: 1px solid rgba(0, 220, 130, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                0 1px 0 0 rgba(0, 220, 130, 0.2) inset,
+                0 0 0 1px rgba(0, 220, 130, 0.15);
   }
 
   .glass-strong {
-    background: rgba(0, 220, 130, 0.15);
-    backdrop-filter: blur(40px) saturate(200%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    border: 1px solid rgba(0, 220, 130, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(0, 220, 130, 0.15);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    border: 1px solid rgba(0, 220, 130, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(0, 220, 130, 0.2);
   }
 
   .dark .glass-strong {
-    background: rgba(0, 220, 130, 0.12);
-    border: 1px solid rgba(0, 220, 130, 0.3);
-    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.6),
-                0 1px 0 0 rgba(0, 220, 130, 0.2) inset,
-                0 0 0 1px rgba(0, 220, 130, 0.15);
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(0, 220, 130, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                0 1px 0 0 rgba(0, 220, 130, 0.3) inset,
+                0 0 0 1px rgba(0, 220, 130, 0.2);
   }
 
   .gradient-text {

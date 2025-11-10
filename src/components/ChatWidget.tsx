@@ -12,6 +12,7 @@ import remarkGfm from "remark-gfm"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism"
 import { parseAIResponse, renderGenerativeContent, type ContentDefinition } from "@/components/chat/ComponentRenderer"
+import { ComponentLoadingAnimation } from "@/components/chat/ComponentLoadingAnimation"
 
 interface Message {
   id: string
@@ -20,6 +21,7 @@ interface Message {
   timestamp: Date
   generativeContent?: ContentDefinition | null
   hasComponents?: boolean
+  isGenerating?: boolean
 }
 
 export default function ChatWidget() {
@@ -192,6 +194,8 @@ export default function ChatWidget() {
         let buffer = ""
         let isStreamingComplete = false
         let firstChunkReceived = false
+        let isCodeBlockDetected = false
+        let codeBlockStarted = false
 
         while (true) {
           const { done, value } = await reader.read()
@@ -231,25 +235,59 @@ export default function ChatWidget() {
                 for (let i = 0; i < newContent.length; i++) {
                   accumulatedText += newContent[i]
                   
-                  // Delay based on character type for natural typing
-                  const char = newContent[i]
-                  const delay = char === ' ' ? 20 : char.match(/[.,!?;:]/) ? 40 : 15
-                  
-                  await new Promise(resolve => setTimeout(resolve, delay))
-
-                  // Update message with smooth streaming (no components yet)
-                  setMessages((prev) =>
-                    prev.map((msg) =>
-                      msg.id === assistantMessageId
-                        ? { 
-                            ...msg, 
-                            content: accumulatedText,
-                            hasComponents: false,
-                            generativeContent: null
-                          }
-                        : msg
+                  // Check if we've detected a code block starting (```json, ```typescript, etc.)
+                  if (!isCodeBlockDetected && accumulatedText.includes('```')) {
+                    isCodeBlockDetected = true
+                    codeBlockStarted = true
+                    
+                    // Extract text before code block
+                    const textBeforeCode = accumulatedText.split('```')[0].trim()
+                    
+                    console.log('🎨 Code block detected! Showing loading animation...')
+                    console.log('📝 Text before code:', textBeforeCode)
+                    
+                    // Show loading animation immediately
+                    setMessages((prev) =>
+                      prev.map((msg) =>
+                        msg.id === assistantMessageId
+                          ? { 
+                              ...msg, 
+                              content: textBeforeCode,
+                              hasComponents: false,
+                              generativeContent: null,
+                              isGenerating: true
+                            }
+                          : msg
+                      )
                     )
-                  )
+                    
+                    // Stop character-by-character updates, just accumulate
+                    break
+                  }
+                  
+                  // If no code block detected yet, continue with smooth typing
+                  if (!isCodeBlockDetected) {
+                    // Delay based on character type for natural typing
+                    const char = newContent[i]
+                    const delay = char === ' ' ? 20 : char.match(/[.,!?;:]/) ? 40 : 15
+                    
+                    await new Promise(resolve => setTimeout(resolve, delay))
+
+                    // Update message with smooth streaming
+                    setMessages((prev) =>
+                      prev.map((msg) =>
+                        msg.id === assistantMessageId
+                          ? { 
+                              ...msg, 
+                              content: accumulatedText,
+                              hasComponents: false,
+                              generativeContent: null,
+                              isGenerating: false
+                            }
+                          : msg
+                      )
+                    )
+                  }
                 }
               }
             } catch (e) {
@@ -273,11 +311,22 @@ export default function ChatWidget() {
 
         // After streaming is complete, parse and render components
         if (isStreamingComplete && accumulatedText) {
+          console.log('✅ Streaming complete. Processing response...')
+          console.log('📄 Full accumulated text length:', accumulatedText.length)
+          
           const { hasComponents, content, plainText } = parseAIResponse(accumulatedText)
           
-          // Small delay before showing components for smooth transition
-          await new Promise(resolve => setTimeout(resolve, 300))
+          console.log('🔍 Parse results:', { hasComponents, plainTextLength: plainText.length })
           
+          // If code block was detected during streaming, keep showing loading for a moment
+          if (isCodeBlockDetected) {
+            console.log('⏳ Showing loading animation for 1.2s before rendering component...')
+            await new Promise(resolve => setTimeout(resolve, 1200))
+          }
+          
+          console.log('🎉 Rendering final component!')
+          
+          // Render final components
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMessageId
@@ -285,7 +334,8 @@ export default function ChatWidget() {
                     ...msg, 
                     content: hasComponents ? plainText : accumulatedText,
                     hasComponents,
-                    generativeContent: content
+                    generativeContent: content,
+                    isGenerating: false
                   }
                 : msg
             )
@@ -449,14 +499,14 @@ export default function ChatWidget() {
 
                       <div className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"} max-w-[85%]`}>
                         <div
-                          className={`rounded-2xl sm:rounded-3xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-md hover:shadow-lg transition-shadow ${
+                          className={`rounded-2xl sm:rounded-3xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-md hover:shadow-lg transition-shadow w-full overflow-hidden ${
                             message.role === "user"
                               ? "bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-primary-foreground"
                               : "bg-card border border-border/50 text-card-foreground backdrop-blur-sm"
                           }`}
                         >
-                        {/* Generative UI: Render Components or Markdown */}
-                        {message.hasComponents && message.generativeContent ? (
+                        {/* Show loading animation when generating components */}
+                        {message.isGenerating ? (
                           <div className="space-y-2 sm:space-y-3">
                             {message.content && (
                               <div className={`prose max-w-none text-sm sm:text-base ${
@@ -469,7 +519,22 @@ export default function ChatWidget() {
                                 </ReactMarkdown>
                               </div>
                             )}
-                            <div className="generative-ui-content">
+                            <ComponentLoadingAnimation />
+                          </div>
+                        ) : message.hasComponents && message.generativeContent ? (
+                          <div className="space-y-2 sm:space-y-3">
+                            {message.content && (
+                              <div className={`prose max-w-none text-sm sm:text-base ${
+                                message.role === "user" 
+                                  ? "prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-li:text-primary-foreground" 
+                                  : "dark:prose-invert"
+                              }`}>
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                  {message.content}
+                                </ReactMarkdown>
+                              </div>
+                            )}
+                            <div className="generative-ui-content w-full overflow-x-auto">
                               {renderGenerativeContent(message.generativeContent)}
                             </div>
                           </div>

@@ -15,19 +15,28 @@ export function ParticleBackground() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // ===== 🎛️ PARTICLE CONFIGURATION (ADJUST THESE!) =====
-    const CONFIG = {
-      particleCount: 100,           // Number of particles (50-200 recommended)
-      baseSpeed: 3,                 // Initial speed multiplier (1-5 recommended)
-      maxSpeed: 4,                  // Maximum speed limit (2-6 recommended)
-      minSpeed: 0.5,                // Minimum speed to keep moving (0.3-1 recommended)
-      friction: 0.992,              // Friction (0.99 = high, 0.995 = low, closer to 1 = faster)
-      mouseRepelStrength: 0.8,      // How strong mouse pushes particles (0.3-1.5)
-      mouseRepelRadius: 150,        // Mouse interaction radius in pixels (100-250)
-      connectionDistance: 120,      // Max distance to draw lines between particles (80-150)
-      randomNudgeChance: 0.98,      // How often to add random movement (0.95-0.99, higher = less random)
+    // Detect mobile for adaptive configuration
+    const isMobile = window.innerWidth < 768;
+    
+    // Performance monitoring
+    let fps = 60;
+    let frameCount = 0;
+    let fpsCheckTime = performance.now();
+    
+    // Adaptive configuration based on device
+    const BASE_CONFIG = {
+      particleCount: isMobile ? 50 : 100,    // Reduce particles on mobile
+      baseSpeed: isMobile ? 2 : 3,
+      maxSpeed: isMobile ? 3 : 4,
+      minSpeed: 0.5,
+      friction: 0.998,                       // Reduced friction for more continuous movement
+      mouseRepelStrength: isMobile ? 0 : 0.5,  // Reduced repel strength
+      mouseRepelRadius: isMobile ? 0 : 120,    // Smaller radius
+      connectionDistance: isMobile ? 100 : 120,  // Shorter connections on mobile
+      randomNudgeChance: 0.97,                 // More frequent random nudges
     };
-    // ======================================================
+    
+    let CONFIG = { ...BASE_CONFIG };
 
     const particles: Array<{
       x: number;
@@ -52,8 +61,9 @@ export function ParticleBackground() {
       });
     }
 
-    // Track mouse position
+    // Track mouse position (only on desktop)
     const handleMouseMove = (e: MouseEvent) => {
+      if (isMobile) return;
       mouseX = e.clientX;
       mouseY = e.clientY;
       isMouseMoving = true;
@@ -62,6 +72,7 @@ export function ParticleBackground() {
     // Reset mouse moving flag after a delay
     let mouseMoveTimeout: NodeJS.Timeout;
     const handleMouseMoveDebounced = (e: MouseEvent) => {
+      if (isMobile) return;
       handleMouseMove(e);
       clearTimeout(mouseMoveTimeout);
       mouseMoveTimeout = setTimeout(() => {
@@ -69,8 +80,38 @@ export function ParticleBackground() {
       }, 100);
     };
 
+    // FPS-based adaptive quality
+    const updatePerformance = () => {
+      frameCount++;
+      const currentTime = performance.now();
+      
+      // Check FPS every 60 frames
+      if (frameCount >= 60) {
+        const elapsed = currentTime - fpsCheckTime;
+        fps = Math.round((frameCount * 1000) / elapsed);
+        frameCount = 0;
+        fpsCheckTime = currentTime;
+        
+        // Adaptive quality: reduce particles if FPS drops
+        if (fps < 30 && CONFIG.particleCount > 30) {
+          // Performance is struggling, reduce particle count
+          const targetCount = Math.max(30, Math.floor(CONFIG.particleCount * 0.8));
+          while (particles.length > targetCount) {
+            particles.pop();
+          }
+          CONFIG.particleCount = targetCount;
+        } else if (fps > 50 && CONFIG.particleCount < BASE_CONFIG.particleCount) {
+          // Performance is good, restore particles gradually
+          CONFIG.particleCount = Math.min(BASE_CONFIG.particleCount, CONFIG.particleCount + 5);
+        }
+      }
+    };
+
     function animate() {
       if (!ctx || !canvas) return;
+      
+      updatePerformance();
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Check current theme

@@ -50,14 +50,15 @@ export function ServiceCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
+      className="w-full"
     >
-      <Card className="border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10">
+      <Card className="border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10 w-full">
         <CardHeader>
           <div className="flex items-start gap-3">
             <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center flex-shrink-0">
               <Icon className="h-5 w-5 text-white" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <CardTitle className="text-lg">{title}</CardTitle>
               <CardDescription className="mt-1">{description}</CardDescription>
             </div>
@@ -114,8 +115,9 @@ export function PricingCard({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
+      className="w-full"
     >
-      <Card className={`relative ${recommended ? 'border-primary shadow-lg shadow-primary/20' : 'border-primary/20'}`}>
+      <Card className={`relative w-full ${recommended ? 'border-primary shadow-lg shadow-primary/20' : 'border-primary/20'}`}>
         {recommended && (
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-primary text-primary-foreground">Recommended</Badge>
@@ -164,7 +166,7 @@ export function ServiceGrid({
   }> 
 }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+    <div className="grid grid-cols-1 gap-3 my-3 w-full">
       {services.map((service, idx) => (
         <ServiceCard key={idx} {...service} />
       ))}
@@ -246,12 +248,12 @@ export function StatsDisplay({
   }>
 }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
+    <div className="grid grid-cols-2 gap-3 my-3 w-full">
       {stats.map((stat, idx) => (
         <Card key={idx} className="border-primary/20">
-          <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-primary">{stat.value}</p>
-            <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+          <CardContent className="p-3 text-center">
+            <p className="text-xl font-bold text-primary">{stat.value}</p>
+            <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
             {stat.change && (
               <p className="text-xs text-green-500 mt-1">{stat.change}</p>
             )}
@@ -278,11 +280,12 @@ export function ContactCTA({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      className="w-full"
     >
-      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 my-4">
-        <CardContent className="p-6 text-center">
-          <h3 className="text-xl font-bold mb-2">{title}</h3>
-          <p className="text-muted-foreground mb-4">{description}</p>
+      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 my-3 w-full">
+        <CardContent className="p-4 sm:p-6 text-center">
+          <h3 className="text-lg sm:text-xl font-bold mb-2">{title}</h3>
+          <p className="text-sm text-muted-foreground mb-4">{description}</p>
           <div className="flex gap-2 justify-center flex-wrap">
             <Button className="bg-primary hover:bg-primary/90">
               {primaryButtonText}
@@ -344,12 +347,10 @@ export function ContactForm({
       if (result.success) {
         setIsSubmitting(false)
         setSubmitted(true)
+        setFormData({})
         
-        // Keep success message visible, don't reset
-        setTimeout(() => {
-          setSubmitted(false)
-          setFormData({})
-        }, 5000)
+        // Success message stays visible permanently
+        // User can continue chatting or close the chat
       } else {
         throw new Error("Submission failed")
       }
@@ -423,14 +424,15 @@ export function ContactForm({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      className="w-full"
     >
-      <Card className="border-primary/20 my-4">
+      <Card className="border-primary/20 my-3 w-full">
         <CardHeader>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle className="text-base sm:text-lg">{title}</CardTitle>
+          <CardDescription className="text-sm">{description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             {fields.includes("name") && (
               <div className="space-y-2">
                 <Label htmlFor="name">Name *</Label>
@@ -467,7 +469,7 @@ export function ContactForm({
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="+32 4XX XX XX XX"
                   value={formData.phone || ""}
                   onChange={(e) => handleChange("phone", e.target.value)}
                   className="border-primary/20 focus:border-primary"

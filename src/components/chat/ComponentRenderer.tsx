@@ -112,6 +112,7 @@ export function renderGenerativeContent(definition: ContentDefinition): React.Re
 /**
  * Parses AI response and extracts component definitions
  * Supports both pure JSON and JSON embedded in text
+ * Hides code blocks and returns only component definitions
  */
 export function parseAIResponse(text: string): {
   hasComponents: boolean
@@ -119,11 +120,23 @@ export function parseAIResponse(text: string): {
   plainText: string
 } {
   // Try to find JSON component definitions in the text
-  const jsonRegex = /```json\n([\s\S]*?)\n```|(\{[\s\S]*?"type":\s*"(?:component|mixed|text)"[\s\S]*?\})/g
+  const jsonRegex = /```json\n([\s\S]*?)\n```/g
   const matches = Array.from(text.matchAll(jsonRegex))
   
   if (matches.length === 0) {
-    // No components found, return as plain text
+    // Check for code blocks of any type (they should be hidden)
+    const anyCodeBlockRegex = /```[\s\S]*?```/g
+    if (anyCodeBlockRegex.test(text)) {
+      // Remove all code blocks and return plain text
+      const plainText = text.replace(anyCodeBlockRegex, '').trim()
+      return {
+        hasComponents: false,
+        content: null,
+        plainText: plainText || text
+      }
+    }
+    
+    // No components or code blocks found, return as plain text
     return {
       hasComponents: false,
       content: null,
@@ -133,26 +146,30 @@ export function parseAIResponse(text: string): {
 
   try {
     // Extract the JSON content
-    const jsonText = matches[0][1] || matches[0][2]
+    const jsonText = matches[0][1]
     const parsed = JSON.parse(jsonText)
     
     // Validate the structure
     if (parsed.type && ['component', 'mixed', 'text'].includes(parsed.type)) {
+      // Remove ALL code blocks from plain text (not just the JSON one)
+      let plainText = text.replace(/```[\s\S]*?```/g, '').trim()
+      
       return {
         hasComponents: true,
         content: parsed as ContentDefinition,
-        plainText: text.replace(matches[0][0], '').trim()
+        plainText: plainText
       }
     }
   } catch (error) {
     console.warn('Failed to parse component definition:', error)
   }
 
-  // If parsing failed, return as plain text
+  // If parsing failed, remove code blocks and return plain text
+  const plainText = text.replace(/```[\s\S]*?```/g, '').trim()
   return {
     hasComponents: false,
     content: null,
-    plainText: text
+    plainText: plainText || text
   }
 }
 

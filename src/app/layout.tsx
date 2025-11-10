@@ -3,20 +3,20 @@ import { Inter, Orbitron } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { MouseTrail } from "@/components/MouseTrail";
-import { ParticleBackground } from "@/components/ParticleBackground";
 import { CookieBanner } from "@/components/CookieBanner";
-import ChatWidget from "@/components/ChatWidget";
+import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
 
 
 const inter = Inter({ 
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap", // Add font display swap for faster initial render
 });
 
 const orbitron = Orbitron({ 
   subsets: ["latin"],
   variable: "--font-orbitron",
+  display: "swap", // Add font display swap for faster initial render
 });
 
 export const metadata: Metadata = {
@@ -103,11 +103,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ParticleBackground />
-          <MouseTrail />
           <CookieBanner />
           {children}
-          <ChatWidget />
+          <ChatWidgetWrapper />
           <Toaster />
         </ThemeProvider>
       </body>

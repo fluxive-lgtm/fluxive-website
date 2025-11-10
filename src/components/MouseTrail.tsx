@@ -15,6 +15,13 @@ export function MouseTrail() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    // Detect mobile and reduce complexity
+    const isMobile = window.innerWidth < 768;
+    
+    // Reduce particle generation on mobile
+    const particlesPerFrame = isMobile ? 1 : 3;
+    const maxParticles = isMobile ? 30 : 100;
+
     const particles: Array<{
       x: number;
       y: number;
@@ -32,20 +39,20 @@ export function MouseTrail() {
       mouseY = e.clientY;
 
       // Create trail particles
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < particlesPerFrame; i++) {
         particles.push({
           x: mouseX + (Math.random() - 0.5) * 10,
           y: mouseY + (Math.random() - 0.5) * 10,
           vx: (Math.random() - 0.5) * 2,
           vy: (Math.random() - 0.5) * 2,
           life: 1,
-          size: Math.random() * 3 + 1,
+          size: Math.random() * (isMobile ? 2 : 3) + 1,
         });
       }
 
       // Limit particles
-      if (particles.length > 100) {
-        particles.splice(0, particles.length - 100);
+      if (particles.length > maxParticles) {
+        particles.splice(0, particles.length - maxParticles);
       }
     };
 
