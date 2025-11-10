@@ -64,7 +64,7 @@ const statsItemVariants = {
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: [0.34, 1.56, 0.64, 1] as [number, number, number, number]  // Custom spring-like easing
+      ease: [0.34, 1.56, 0.64, 1] as [number, number, number, number]
     }
   }
 };
@@ -141,7 +141,8 @@ export default function Hero() {
             </Button>
           </motion.div>
 
-          {/* Animated Stats */}
+          {/* Animated Stats — Hidden */}
+          {/*
           <motion.div
             variants={statsContainerVariants}
             className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mt-12 sm:mt-16 md:mt-20 px-2"
@@ -164,6 +165,7 @@ export default function Hero() {
               </motion.div>
             ))}
           </motion.div>
+          */}
         </motion.div>
       </div>
 

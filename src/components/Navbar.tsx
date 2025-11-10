@@ -8,10 +8,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 
-const ThemeToggle = dynamic(() => import("@/components/ThemeToggle").then(mod => ({ default: mod.ThemeToggle })), {
-  ssr: false,
-  loading: () => <div className="w-10 h-10" />
-});
+const ThemeToggle = dynamic(
+  () => import("@/components/ThemeToggle").then(mod => ({ default: mod.ThemeToggle })),
+  {
+    ssr: false,
+    loading: () => <div className="w-10 h-10" />
+  }
+);
 
 const navLinks = [
   { name: "Home", href: "#" },
@@ -23,7 +26,7 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(false); // stays false now
   const { theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -39,19 +42,17 @@ export default function Navbar() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
-          
+
           // Update scrolled state for background effect
           setScrolled(currentScrollY > 50);
-          
-          // Hide navbar when scrolling down, show when scrolling up
-          if (currentScrollY > lastScrollY && currentScrollY > 100) {
-            // Scrolling down & past 100px
-            setHidden(true);
-          } else if (currentScrollY < lastScrollY) {
-            // Scrolling up
-            setHidden(false);
-          }
-          
+
+          // ❌ removed hide-on-scroll logic so navbar always stays visible
+          // if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          //   setHidden(true);
+          // } else if (currentScrollY < lastScrollY) {
+          //   setHidden(false);
+          // }
+
           lastScrollY = currentScrollY;
           ticking = false;
         });
@@ -76,10 +77,10 @@ export default function Navbar() {
   return (
     <motion.nav
       initial={{ y: -100 }}
-      animate={{ y: hidden ? -100 : 0 }}
-      transition={{ 
-        duration: hidden ? 0.2 : 0.3,  // Faster hiding (0.2s), slower showing (0.3s)
-        ease: hidden ? [0.4, 0, 1, 1] : [0, 0, 0.2, 1],  // Sharp hide, smooth show
+      animate={{ y: hidden ? -100 : 0 }}  // hidden is always false now → stays at 0
+      transition={{
+        duration: hidden ? 0.2 : 0.3,
+        ease: hidden ? [0.4, 0, 1, 1] : [0, 0, 0.2, 1],
         type: "tween"
       }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -100,9 +101,9 @@ export default function Navbar() {
               className="flex items-center gap-3 hover:scale-105 transition-transform"
             >
               {mounted && (
-                <img 
+                <img
                   src={resolvedTheme === "dark" ? "/fluxive-logo-dark.png" : "/fluxive-logo-light.png"}
-                  alt="Fluxive Logo" 
+                  alt="Fluxive Logo"
                   className="h-14 w-14 md:h-16 md:w-16 transition-opacity duration-300"
                 />
               )}
