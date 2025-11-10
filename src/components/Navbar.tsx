@@ -83,8 +83,8 @@ export default function Navbar() {
         ease: hidden ? [0.4, 0, 1, 1] : [0, 0, 0.2, 1],
         type: "tween"
       }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass-strong py-4" : "py-6"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white dark:bg-black shadow-md ${
+        scrolled ? "py-3" : "py-4"
       }`}
     >
       <div className="container mx-auto px-6 md:px-8 lg:px-12">
@@ -146,14 +146,15 @@ export default function Navbar() {
           </motion.div>
 
           {/* Mobile Menu */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="glass-card">
+                <Button variant="ghost" size="icon">
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="glass-strong w-[300px]">
+              <SheetContent side="right" className="bg-white dark:bg-black w-[300px]">
                 <div className="flex flex-col gap-6 mt-8">
                   {navLinks.map((link) => (
                     <button

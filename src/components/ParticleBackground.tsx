@@ -25,15 +25,15 @@ export function ParticleBackground() {
     
     // Adaptive configuration based on device
     const BASE_CONFIG = {
-      particleCount: isMobile ? 50 : 100,    // Reduce particles on mobile
-      baseSpeed: isMobile ? 2 : 3,
-      maxSpeed: isMobile ? 3 : 4,
-      minSpeed: 0.5,
-      friction: 0.998,                       // Reduced friction for more continuous movement
-      mouseRepelStrength: isMobile ? 0 : 0.5,  // Reduced repel strength
-      mouseRepelRadius: isMobile ? 0 : 120,    // Smaller radius
-      connectionDistance: isMobile ? 100 : 120,  // Shorter connections on mobile
-      randomNudgeChance: 0.97,                 // More frequent random nudges
+      particleCount: isMobile ? 40 : 80,     // Fewer particles for cleaner look
+      baseSpeed: isMobile ? 1.5 : 2,         // Slower, more elegant movement
+      maxSpeed: isMobile ? 2.5 : 3,
+      minSpeed: 0.3,
+      friction: 0.995,                       // Smoother deceleration
+      mouseRepelStrength: isMobile ? 0 : 0.3,  // Gentler repel
+      mouseRepelRadius: isMobile ? 0 : 100,
+      connectionDistance: isMobile ? 90 : 110,
+      randomNudgeChance: 0.98,               // Less frequent for smoother paths
     };
     
     let CONFIG = { ...BASE_CONFIG };
@@ -173,13 +173,15 @@ export function ParticleBackground() {
           particle.vy = (particle.vy / speed) * CONFIG.maxSpeed;
         }
 
-        // Draw particle with theme-aware color
+        // Draw particle with theme-aware color and softer glow
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fillStyle = particleColor;
-        ctx.shadowBlur = 5;
+        ctx.shadowBlur = 8;
         ctx.shadowColor = particleColor;
+        ctx.globalAlpha = 0.8; // Slightly transparent for softer look
         ctx.fill();
+        ctx.globalAlpha = 1.0;
 
         // Draw connections to nearby particles
         particles.slice(i + 1).forEach((otherParticle) => {
@@ -188,11 +190,12 @@ export function ParticleBackground() {
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < CONFIG.connectionDistance) {
+            const opacity = (1 - distance / CONFIG.connectionDistance) * 0.3; // More subtle connections
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(otherParticle.x, otherParticle.y);
-            ctx.strokeStyle = `rgba(${connectionColor}, ${1 - distance / CONFIG.connectionDistance})`;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = `rgba(${connectionColor}, ${opacity})`;
+            ctx.lineWidth = 0.8;
             ctx.stroke();
           }
         });

@@ -130,13 +130,20 @@ const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 },
+    transition: { 
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  show: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+  },
 };
 
 export default function Services() {
@@ -176,7 +183,7 @@ export default function Services() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {services.map((service) => {
             const Icon = service.icon;
@@ -186,34 +193,34 @@ export default function Services() {
               <motion.div
                 key={service.title}
                 variants={itemVariants}
-                className="cursor-pointer"
+                className="cursor-pointer flex"
                 onClick={() => setSelectedService(service)}
               >
                 <TiltCard>
                   <Card
-                    className={`glass-card group h-full border ${service.borderColor} ${service.bgColor} transition-all duration-300 hover:shadow-2xl hover:shadow-primary-500/20 ${
+                    className={`glass-card group w-full flex flex-col border border-white/20 dark:border-white/10 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 transition-all duration-300 hover:shadow-2xl hover:shadow-primary-500/20 ${
                       isActive ? "ring-2 ring-primary-500" : ""
                     }`}
                   >
-                    <CardHeader className="p-4 sm:p-5 md:p-6">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <div className={`bg-gradient-to-br ${service.color} p-3 rounded-lg`}>
-                          <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                    <CardHeader className="p-4 sm:p-5 flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className={`bg-gradient-to-br ${service.color} p-2.5 rounded-lg`}>
+                          <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
                       </div>
-                      <CardTitle className="text-lg sm:text-xl md:text-2xl font-display mb-2">
+                      <CardTitle className="text-base sm:text-lg font-display mb-2 text-center min-h-[3rem] flex items-center justify-center">
                         {service.title}
                       </CardTitle>
-                      <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+                      <CardDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-center line-clamp-3 min-h-[4rem]">
                         {service.description}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="p-4 sm:p-5 md:p-6 pt-0">
-                      <ul className="space-y-2 sm:space-y-2.5 md:space-y-3">
+                    <CardContent className="p-4 sm:p-5 pt-0 flex-grow">
+                      <ul className="space-y-1.5 sm:space-y-2">
                         {service.features.map((feature, i) => (
-                          <li key={i} className="flex items-center text-sm sm:text-base text-gray-700 dark:text-gray-300">
-                            <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary-500" />
-                            <span>{feature}</span>
+                          <li key={i} className="flex items-start text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                            <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 mt-0.5 text-primary-500 flex-shrink-0" />
+                            <span className="line-clamp-2">{feature}</span>
                           </li>
                         ))}
                       </ul>
