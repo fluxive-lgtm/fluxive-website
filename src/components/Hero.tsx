@@ -12,65 +12,50 @@ const stats = [
   { label: "Team Members", value: 50, suffix: "+" },
 ];
 
-// Advanced animation variants with GPU optimization
+// Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1
-    }
-  }
+    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+  },
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 20,
-    scale: 0.95
-  },
-  visible: { 
-    opacity: 1, 
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: {
       duration: 0.6,
-      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number]
-    }
-  }
+      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+    },
+  },
 };
 
 const statsContainerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.8
-    }
-  }
+    transition: { staggerChildren: 0.08, delayChildren: 0.8 },
+  },
 };
 
 const statsItemVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 30,
-    scale: 0.9
-  },
-  visible: { 
-    opacity: 1, 
+  hidden: { opacity: 0, y: 30, scale: 0.9 },
+  visible: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: [0.34, 1.56, 0.64, 1] as [number, number, number, number]
-    }
-  }
+      ease: [0.34, 1.56, 0.64, 1] as [number, number, number, number],
+    },
+  },
 };
 
 export default function Hero() {
-
   const scrollToContact = () => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -79,18 +64,30 @@ export default function Hero() {
     document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollToWifiSupport = () => {
+    document
+      .getElementById("wifi-support")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Mesh Gradients */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" />
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-secondary-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: "2s" }} />
-        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-accent-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: "4s" }} />
+        <div
+          className="absolute top-1/3 right-1/4 w-96 h-96 bg-secondary-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"
+          style={{ animationDelay: "2s" }}
+        />
+        <div
+          className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-accent-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"
+          style={{ animationDelay: "4s" }}
+        />
       </div>
 
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 sm:px-6">
-        <motion.div 
+        <motion.div
           className="max-w-4xl mx-auto text-center"
           variants={containerVariants}
           initial="hidden"
@@ -99,7 +96,7 @@ export default function Hero() {
           <motion.div variants={itemVariants}>
             <Badge className="mb-4 sm:mb-6 text-sm sm:text-base px-4 py-1.5 sm:px-6 sm:py-2 glass-card border-primary-500/30 animate-float">
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-              Next-Gen IT Solutions
+              24/7 Wi-Fi & IT Support • Next-Gen Solutions
             </Badge>
           </motion.div>
 
@@ -115,29 +112,41 @@ export default function Hero() {
             variants={itemVariants}
             className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 mb-8 sm:mb-12 max-w-3xl mx-auto px-2 leading-relaxed"
           >
-            Premium IT Services, Marketing Solutions, AI Automation, Web Development, 
-            Penetration Testing & Cybersecurity - All Under One Roof
+            Premium IT Services, Marketing Solutions, AI Automation, Web
+            Development, Penetration Testing, Cybersecurity &{" "}
+            <span className="font-semibold">24/7 Wi-Fi Troubleshooting</span> —
+            all under one roof.
           </motion.p>
 
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4"
+            className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center px-4"
           >
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="w-full sm:w-auto text-base sm:text-lg px-6 py-5 sm:px-8 sm:py-6 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 group"
               onClick={scrollToContact}
             >
               Start Your Project
               <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
+
+            <Button
+              size="lg"
+              variant="outline"
               className="w-full sm:w-auto text-base sm:text-lg px-6 py-5 sm:px-8 sm:py-6 glass-card border-primary-500/30 hover:bg-primary-500/10"
               onClick={scrollToServices}
             >
               Explore Services
+            </Button>
+
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto text-base sm:text-lg px-6 py-5 sm:px-8 sm:py-6 glass-card border-green-500/40 hover:bg-green-500/10"
+              onClick={scrollToWifiSupport}
+            >
+              24/7 Wi-Fi Support
             </Button>
           </motion.div>
 
@@ -155,13 +164,16 @@ export default function Hero() {
                 style={{
                   willChange: "transform, opacity",
                   backfaceVisibility: "hidden",
-                  WebkitFontSmoothing: "antialiased"
+                  WebkitFontSmoothing: "antialiased",
                 }}
               >
                 <div className="text-2xl sm:text-3xl md:text-4xl font-display font-bold gradient-text mb-1 sm:mb-2">
-                  {stat.value}{stat.suffix}
+                  {stat.value}
+                  {stat.suffix}
                 </div>
-                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  {stat.label}
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -169,7 +181,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll Indicator - Clickable */}
+      {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
