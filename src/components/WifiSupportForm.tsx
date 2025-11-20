@@ -63,7 +63,8 @@ const texts: Record<Lang, TextContent> = {
     urgWeek: "This week",
     submit: "Submit request",
     sending: "Sending...",
-    success: "Request saved. We will contact you soon. This window will close automatically.",
+    success:
+      "Request saved. We will contact you soon. This window will close automatically.",
     error: "Something went wrong. Please try again.",
     close: "Close",
   },
@@ -137,6 +138,7 @@ export function WifiSupportForm() {
     issueType: "Wi-Fi / Internet down",
     urgency: "now",
     message: "",
+    website: "", // 👈 honeypot field for anti-spam
   });
 
   const [loading, setLoading] = useState(false);
@@ -177,6 +179,7 @@ export function WifiSupportForm() {
       fd.append("urgency", form.urgency);
       fd.append("message", form.message);
       fd.append("lang", lang);
+      fd.append("website", form.website); // 👈 honeypot
 
       const res = await fetch("/wifi-support-handler.php", {
         method: "POST",
@@ -196,6 +199,7 @@ export function WifiSupportForm() {
         issueType: "Wi-Fi / Internet down",
         urgency: "now",
         message: "",
+        website: "",
       });
 
       // ✅ Auto-close after short delay (2.5s)
@@ -241,6 +245,16 @@ export function WifiSupportForm() {
 
         <CardContent>
           <form className="space-y-5" onSubmit={handleSubmit}>
+            {/* Honeypot field - hidden from real users */}
+            <input
+              type="text"
+              name="website"
+              autoComplete="off"
+              value={form.website}
+              onChange={handleChange("website")}
+              className="hidden"
+            />
+
             {/* Row 1: Name + Email */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
