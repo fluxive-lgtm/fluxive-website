@@ -9,6 +9,8 @@ import FloatingSocial from "@/components/FloatingSocial";
 import ScrollToTop from "@/components/ScrollToTop";
 import AnimatedBackground from "@/components/AnimatedBackground";
 
+import { FloatingWifiSupport } from "@/components/FloatingWifiSupport";  // ← NEW IMPORT
+
 export default function Home() {
   return (
     <main className="relative overflow-x-hidden" id="main-content">
@@ -21,7 +23,13 @@ export default function Home() {
       <FAQ />
       <Contact />
       <Footer />
+
+      {/* Existing floating social icons */}
       <FloatingSocial />
+
+      {/* NEW: Floating 24/7 Wi-Fi Support button */}
+      <FloatingWifiSupport />
+
     </main>
   );
 }
