@@ -2,6 +2,7 @@
 
 import { Wifi } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useRouter } from "next/navigation";
 
 type Lang = "nl" | "en" | "fr";
 
@@ -14,21 +15,30 @@ const labels: Record<Lang, string> = {
 export function FloatingWifiSupport() {
   const context = useLanguage();
   const language = context?.language ?? "nl";
+  const router = useRouter();
 
-  const lang: Lang = ["nl", "en", "fr"].includes(language as string)
-    ? (language as Lang)
-    : "nl"; // default NL, like your site
+  const lang: Lang =
+    (language as Lang) === "en" ||
+    (language as Lang) === "fr" ||
+    (language as Lang) === "nl"
+      ? (language as Lang)
+      : "nl";
 
   const label = labels[lang];
+
+  const handleClick = () => {
+    // ✅ Client-side navigation, does NOT reload the page
+    router.push("/wifi-support");
+  };
 
   return (
     <button
       type="button"
-      onClick={() => (window.location.href = "/wifi-support")}
+      onClick={handleClick}
       aria-label={label}
       className="
         fixed
-        bottom-6 left-6   /* bottom-left as you requested */
+        bottom-6 left-6
         z-50
         bg-gradient-to-r from-primary-500 to-secondary-500
         text-white

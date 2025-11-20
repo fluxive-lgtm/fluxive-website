@@ -1,3 +1,9 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import FloatingSocial from "@/components/FloatingSocial";
+import ScrollToTop from "@/components/ScrollToTop";
+import AnimatedBackground from "@/components/AnimatedBackground";
+import { FloatingWifiSupport } from "@/components/FloatingWifiSupport";
 import { WifiSupportForm } from "@/components/WifiSupportForm";
 
 export const metadata = {
@@ -8,10 +14,21 @@ export const metadata = {
 
 export default function WifiSupportPage() {
   return (
-    <main className="container mx-auto py-12 px-4">
-      <div className="max-w-5xl mx-auto">
-        <WifiSupportForm />
-      </div>
+    <main className="relative min-h-screen overflow-x-hidden" id="main-content">
+      <AnimatedBackground />
+      <ScrollToTop />
+      <Navbar />
+
+      {/* Centered form section */}
+      <section className="relative z-10 flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-5xl">
+          <WifiSupportForm />
+        </div>
+      </section>
+
+      <Footer />
+      <FloatingSocial />
+      <FloatingWifiSupport />
     </main>
   );
 }

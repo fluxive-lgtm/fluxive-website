@@ -2,14 +2,47 @@
 
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Wifi, Send } from "lucide-react";
+import { Wifi, Send, X } from "lucide-react";
 
-const texts = {
+type Lang = "nl" | "en" | "fr";
+
+type TextContent = {
+  pageTitle: string;
+  pageSubtitle: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  location: string;
+  issueType: string;
+  urgency: string;
+  message: string;
+  issueWifiDown: string;
+  issueSlow: string;
+  issueCoverage: string;
+  issueOther: string;
+  urgNow: string;
+  urg24h: string;
+  urgWeek: string;
+  submit: string;
+  sending: string;
+  success: string;
+  error: string;
+  close: string;
+};
+
+const texts: Record<Lang, TextContent> = {
   en: {
     pageTitle: "Wi-Fi Support",
     pageSubtitle: "Describe your Wi-Fi problem and we will contact you.",
@@ -18,7 +51,6 @@ const texts = {
     phone: "Phone",
     company: "Company (optional)",
     location: "Location (room / office)",
-    device: "Device (laptop / phone / TV...)",
     issueType: "Issue type",
     urgency: "Urgency",
     message: "Describe the problem",
@@ -33,6 +65,7 @@ const texts = {
     sending: "Sending...",
     success: "Request saved. We will contact you soon.",
     error: "Something went wrong. Please try again.",
+    close: "Close",
   },
   nl: {
     pageTitle: "Wi-Fi Support",
@@ -42,7 +75,6 @@ const texts = {
     phone: "Telefoon",
     company: "Bedrijf (optioneel)",
     location: "Locatie (kamer / kantoor)",
-    device: "Toestel (laptop / gsm / TV...)",
     issueType: "Probleemtype",
     urgency: "Urgentie",
     message: "Beschrijf het probleem",
@@ -57,6 +89,7 @@ const texts = {
     sending: "Verzenden...",
     success: "Aanvraag opgeslagen. We nemen snel contact op.",
     error: "Er ging iets mis. Probeer opnieuw.",
+    close: "Sluiten",
   },
   fr: {
     pageTitle: "Assistance Wi-Fi",
@@ -66,7 +99,6 @@ const texts = {
     phone: "Téléphone",
     company: "Société (optionnel)",
     location: "Lieu (chambre / bureau)",
-    device: "Appareil (laptop / téléphone / TV...)",
     issueType: "Type de problème",
     urgency: "Urgence",
     message: "Décrivez le problème",
@@ -81,13 +113,18 @@ const texts = {
     sending: "Envoi...",
     success: "Demande enregistrée. Nous vous contacterons bientôt.",
     error: "Une erreur est survenue. Veuillez réessayer.",
+    close: "Fermer",
   },
-} as const;
+};
 
 export function WifiSupportForm() {
-  const context = useLanguage();
-  const language = context?.language || "en";
-  const t = texts[language];
+  const langContext = useLanguage();
+  const router = useRouter();
+
+  const current = langContext?.language as Lang | undefined;
+  const lang: Lang =
+    current === "en" || current === "fr" || current === "nl" ? current : "nl";
+  const t = texts[lang];
 
   const [form, setForm] = useState({
     name: "",
@@ -95,7 +132,6 @@ export function WifiSupportForm() {
     phone: "",
     company: "",
     location: "",
-    device: "",
     issueType: "Wi-Fi / Internet down",
     urgency: "now",
     message: "",
@@ -126,11 +162,10 @@ export function WifiSupportForm() {
       fd.append("phone", form.phone);
       fd.append("company", form.company);
       fd.append("location", form.location);
-      fd.append("device", form.device);
       fd.append("issueType", form.issueType);
       fd.append("urgency", form.urgency);
       fd.append("message", form.message);
-      fd.append("lang", language);
+      fd.append("lang", lang);
 
       const res = await fetch("/wifi-support-handler.php", {
         method: "POST",
@@ -147,7 +182,6 @@ export function WifiSupportForm() {
         phone: "",
         company: "",
         location: "",
-        device: "",
         issueType: "Wi-Fi / Internet down",
         urgency: "now",
         message: "",
@@ -160,22 +194,47 @@ export function WifiSupportForm() {
     }
   };
 
+  const handleClose = () => {
+    // client-side navigation so language context is preserved
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-2">
+    <section className="relative">
+      {/* Heading */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center justify-center gap-2">
           <Wifi className="w-7 h-7" />
           {t.pageTitle}
         </h1>
-        <p className="text-muted-foreground mt-2">{t.pageSubtitle}</p>
+        <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
+          {t.pageSubtitle}
+        </p>
       </div>
 
-      <Card className="glass-card border-primary-500/30 max-w-3xl">
-        <CardHeader>
-          <CardTitle>{t.pageTitle}</CardTitle>
+      {/* Form card */}
+      <Card className="glass-card border-primary-500/30 max-w-3xl mx-auto">
+        <CardHeader className="flex flex-row items-start justify-between gap-4">
+          <div>
+            <CardTitle>{t.pageTitle}</CardTitle>
+          </div>
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label={t.close}
+            className="rounded-full p-1.5 border border-border hover:bg-muted transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </CardHeader>
+
         <CardContent>
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            {/* Row 1: Name + Email */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <Label>{t.name}</Label>
@@ -194,6 +253,10 @@ export function WifiSupportForm() {
                   required
                 />
               </div>
+            </div>
+
+            {/* Row 2: Phone + Company */}
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <Label>{t.phone}</Label>
                 <Input
@@ -208,6 +271,10 @@ export function WifiSupportForm() {
                   onChange={handleChange("company")}
                 />
               </div>
+            </div>
+
+            {/* Row 3: Location + Issue type */}
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <Label>{t.location}</Label>
                 <Input
@@ -215,16 +282,6 @@ export function WifiSupportForm() {
                   onChange={handleChange("location")}
                 />
               </div>
-              <div>
-                <Label>{t.device}</Label>
-                <Input
-                  value={form.device}
-                  onChange={handleChange("device")}
-                />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <Label>{t.issueType}</Label>
                 <select
@@ -242,6 +299,10 @@ export function WifiSupportForm() {
                   <option value="Other">{t.issueOther}</option>
                 </select>
               </div>
+            </div>
+
+            {/* Row 4: Urgency */}
+            <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <Label>{t.urgency}</Label>
                 <select
@@ -256,6 +317,7 @@ export function WifiSupportForm() {
               </div>
             </div>
 
+            {/* Message */}
             <div>
               <Label>{t.message}</Label>
               <Textarea
@@ -266,20 +328,22 @@ export function WifiSupportForm() {
               />
             </div>
 
-            <Button type="submit" disabled={loading} className="min-w-40">
-              <Send className="w-4 h-4 mr-2" />
-              {loading ? t.sending : t.submit}
-            </Button>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button type="submit" disabled={loading} className="min-w-40">
+                <Send className="w-4 h-4 mr-2" />
+                {loading ? t.sending : t.submit}
+              </Button>
 
-            {status === "ok" && (
-              <p className="text-sm text-green-600 mt-2">{t.success}</p>
-            )}
-            {status === "error" && (
-              <p className="text-sm text-red-600 mt-2">{t.error}</p>
-            )}
+              {status === "ok" && (
+                <p className="text-sm text-green-600">{t.success}</p>
+              )}
+              {status === "error" && (
+                <p className="text-sm text-red-600">{t.error}</p>
+              )}
+            </div>
           </form>
         </CardContent>
       </Card>
-    </div>
+    </section>
   );
 }
