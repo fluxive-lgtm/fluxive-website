@@ -63,7 +63,7 @@ const texts: Record<Lang, TextContent> = {
     urgWeek: "This week",
     submit: "Submit request",
     sending: "Sending...",
-    success: "Request saved. We will contact you soon.",
+    success: "Request saved. We will contact you soon. This window will close automatically.",
     error: "Something went wrong. Please try again.",
     close: "Close",
   },
@@ -87,7 +87,8 @@ const texts: Record<Lang, TextContent> = {
     urgWeek: "Deze week",
     submit: "Verzoek versturen",
     sending: "Verzenden...",
-    success: "Aanvraag opgeslagen. We nemen snel contact op.",
+    success:
+      "Aanvraag opgeslagen. We nemen snel contact op. Dit venster wordt automatisch gesloten.",
     error: "Er ging iets mis. Probeer opnieuw.",
     close: "Sluiten",
   },
@@ -111,7 +112,8 @@ const texts: Record<Lang, TextContent> = {
     urgWeek: "Cette semaine",
     submit: "Envoyer la demande",
     sending: "Envoi...",
-    success: "Demande enregistrée. Nous vous contacterons bientôt.",
+    success:
+      "Demande enregistrée. Nous vous contacterons bientôt. Cette fenêtre se fermera automatiquement.",
     error: "Une erreur est survenue. Veuillez réessayer.",
     close: "Fermer",
   },
@@ -150,6 +152,15 @@ export function WifiSupportForm() {
       setForm((f) => ({ ...f, [field]: e.target.value }));
     };
 
+  const handleClose = () => {
+    // client-side navigation so language context is preserved
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -186,20 +197,16 @@ export function WifiSupportForm() {
         urgency: "now",
         message: "",
       });
+
+      // ✅ Auto-close after short delay (2.5s)
+      setTimeout(() => {
+        handleClose();
+      }, 2500);
     } catch (err) {
       console.error(err);
       setStatus("error");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleClose = () => {
-    // client-side navigation so language context is preserved
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
     }
   };
 

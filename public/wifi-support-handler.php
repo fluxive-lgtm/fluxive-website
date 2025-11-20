@@ -35,7 +35,7 @@ $lang      = isset($_POST['lang']) ? trim($_POST['lang']) : null;
 // Easyhost MySQL credentials (your WiFi-support DB)
 $dsn  = 'mysql:host=ID481076_wifisupport.db.webhosting.be;dbname=ID481076_wifisupport;charset=utf8mb4';
 $user = 'ID481076_wifisupport';
-$pass = 'YOUR_DB_PASSWORD_HERE'; // <-- REPLACE with: Pyu5GhU7XfdyPCuvMyR7 (you can change later in Easyhost)
+$pass = 'Pyu5GhU7XfdyPCuvMyR7'; // <-- REPLACE with: Pyu5GhU7XfdyPCuvMyR7 (you can change later in Easyhost)
 
 try {
     $pdo = new PDO($dsn, $user, $pass, [
