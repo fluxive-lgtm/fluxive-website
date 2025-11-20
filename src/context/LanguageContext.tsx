@@ -1,0 +1,29 @@
+"use client";
+
+import { createContext, useContext, useState, ReactNode } from "react";
+
+type Language = "nl" | "en" | "fr";
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined
+);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  // Default language = Dutch (nl)
+  const [language, setLanguage] = useState<Language>("nl");
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  return useContext(LanguageContext);
+}
