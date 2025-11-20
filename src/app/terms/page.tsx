@@ -2,8 +2,40 @@
 
 import { motion } from "framer-motion";
 import { FileText } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+
+type Language = "nl" | "en" | "fr";
 
 export default function TermsOfService() {
+  const langContext = useLanguage();
+  const rawLang = (langContext?.language as Language) || "nl";
+  const language: Language =
+    rawLang === "en" || rawLang === "fr" || rawLang === "nl" ? rawLang : "nl";
+
+  const locale =
+    language === "nl" ? "nl-BE" : language === "fr" ? "fr-BE" : "en-US";
+
+  const formattedDate = new Date().toLocaleDateString(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const t = {
+    pageTitle:
+      language === "nl"
+        ? "Algemene voorwaarden"
+        : language === "fr"
+        ? "Conditions générales"
+        : "Terms of Service",
+    lastUpdatedLabel:
+      language === "nl"
+        ? "Laatst bijgewerkt:"
+        : language === "fr"
+        ? "Dernière mise à jour :"
+        : "Last updated:",
+  };
+
   return (
     <main className="relative min-h-screen pt-32 pb-20">
       <div className="container mx-auto px-6 max-w-4xl">
@@ -15,270 +47,287 @@ export default function TermsOfService() {
           <div className="flex items-center gap-3 mb-6">
             <FileText className="w-10 h-10 text-primary-500" />
             <h1 className="text-4xl md:text-5xl font-display font-bold">
-              Terms of Service
+              {t.pageTitle}
             </h1>
           </div>
-          
+
           <p className="text-gray-600 dark:text-gray-400 mb-8">
-            Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {t.lastUpdatedLabel} {formattedDate}
           </p>
 
           <div className="prose prose-lg dark:prose-invert max-w-none">
+            {/* 1. SCOPE */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">1. Acceptance of Terms</h2>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "1. Toepassingsgebied"
+                  : language === "fr"
+                  ? "1. Champ d’application"
+                  : "1. Scope"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Welcome to FLUXIVE. By accessing or using our website, services, or products, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use our services.
-              </p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                These Terms constitute a legally binding agreement between you and FLUXIVE. We reserve the right to modify these Terms at any time, and your continued use of our services constitutes acceptance of any changes.
+                {language === "nl"
+                  ? "Deze algemene voorwaarden zijn van toepassing op alle voorstellen, offertes, diensten en overeenkomsten tussen FLUXIVE en haar klanten, alsook op het gebruik van onze website."
+                  : language === "fr"
+                  ? "Les présentes conditions générales s’appliquent à toutes les offres, prestations de services et conventions conclues entre FLUXIVE et ses clients, ainsi qu’à l’utilisation de notre site web."
+                  : "These Terms of Service apply to all proposals, offers, services and agreements between FLUXIVE and its clients, as well as to the use of our website."}
               </p>
             </section>
 
+            {/* 2. COMPANY INFO */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">2. Description of Services</h2>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "2. Gegevens van FLUXIVE"
+                  : language === "fr"
+                  ? "2. Informations sur FLUXIVE"
+                  : "2. Company Information"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                FLUXIVE provides a range of professional services, including but not limited to:
-              </p>
-              <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li>IT Services and Infrastructure Management</li>
-                <li>Marketing Solutions and Digital Strategy</li>
-                <li>AI Automation and Machine Learning Solutions</li>
-                <li>Web Development and Custom Applications</li>
-                <li>Penetration Testing and Security Assessments</li>
-                <li>Cybersecurity Services and Consulting</li>
-              </ul>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                The specific terms of service delivery will be outlined in individual service agreements or statements of work.
+                FLUXIVE<br />
+                Brusselsesteenweg 73<br />
+                9280 Lebbeke, België<br />
+                BTW / VAT: BE1029968269<br />
+                {language === "nl"
+                  ? "E-mail: info@fluxive.be"
+                  : language === "fr"
+                  ? "E-mail : info@fluxive.be"
+                  : "Email: info@fluxive.be"}
               </p>
             </section>
 
+            {/* 3. OFFERS & CONTRACTS */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">3. User Responsibilities</h2>
-              <h3 className="text-xl font-semibold mb-3">3.1 Account Security</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                If you create an account with us, you are responsible for:
-              </p>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "3. Offertes en overeenkomsten"
+                  : language === "fr"
+                  ? "3. Offres et contrats"
+                  : "3. Offers and Agreements"}
+              </h2>
               <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li>Maintaining the confidentiality of your account credentials</li>
-                <li>All activities that occur under your account</li>
-                <li>Notifying us immediately of any unauthorized access</li>
-                <li>Ensuring all information provided is accurate and up-to-date</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3">3.2 Acceptable Use</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                You agree not to:
-              </p>
-              <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li>Use our services for any illegal or unauthorized purpose</li>
-                <li>Violate any laws in your jurisdiction</li>
-                <li>Infringe upon the intellectual property rights of others</li>
-                <li>Transmit viruses, malware, or other malicious code</li>
-                <li>Attempt to gain unauthorized access to our systems</li>
-                <li>Interfere with or disrupt the integrity of our services</li>
-                <li>Harass, abuse, or harm other users</li>
-              </ul>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">4. Intellectual Property Rights</h2>
-              <h3 className="text-xl font-semibold mb-3">4.1 Our Content</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                All content on our website, including text, graphics, logos, images, software, and code, is the property of FLUXIVE or our licensors and is protected by copyright, trademark, and other intellectual property laws.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">4.2 Your Content</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                When you provide content to us (e.g., through forms or communications), you grant us a non-exclusive, worldwide, royalty-free license to use, reproduce, and display that content for the purpose of providing our services.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">4.3 Work Product</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Ownership of work product created for you under a service agreement will be specified in the relevant contract or statement of work.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">5. Payment Terms</h2>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Payment terms for our services will be specified in individual service agreements. Generally:
-              </p>
-              <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li>Invoices are payable within 30 days unless otherwise specified</li>
-                <li>Late payments may incur interest charges</li>
-                <li>We reserve the right to suspend services for non-payment</li>
-                <li>All fees are non-refundable unless otherwise stated</li>
-                <li>Prices are subject to change with 30 days' notice</li>
+                <li>
+                  {language === "nl"
+                    ? "Alle offertes zijn vrijblijvend en bevatten, tenzij anders vermeld, een beperkte geldigheidsduur."
+                    : language === "fr"
+                    ? "Toutes les offres sont sans engagement et, sauf indication contraire, ont une durée de validité limitée."
+                    : "All offers are non-binding and, unless stated otherwise, have a limited validity period."}
+                </li>
+                <li>
+                  {language === "nl"
+                    ? "Een overeenkomst komt pas tot stand na schriftelijke of elektronische bevestiging door FLUXIVE (bijvoorbeeld via e-mail of ondertekende offerte)."
+                    : language === "fr"
+                    ? "Un contrat n’est conclu qu’après confirmation écrite ou électronique de FLUXIVE (par exemple par e-mail ou devis signé)."
+                    : "An agreement is only concluded after written or electronic confirmation by FLUXIVE (e.g. by email or signed offer)."}
+                </li>
+                <li>
+                  {language === "nl"
+                    ? "Mondelinge afspraken zijn enkel bindend indien zij schriftelijk bevestigd worden."
+                    : language === "fr"
+                    ? "Les accords oraux ne sont contraignants que s’ils sont confirmés par écrit."
+                    : "Oral agreements are only binding if confirmed in writing."}
+                </li>
               </ul>
             </section>
 
+            {/* 4. SERVICES & OBLIGATIONS */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">6. Confidentiality</h2>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "4. Diensten en verplichtingen"
+                  : language === "fr"
+                  ? "4. Services et obligations"
+                  : "4. Services and Obligations"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Both parties agree to maintain the confidentiality of any proprietary or confidential information disclosed during the course of our business relationship. This obligation survives the termination of services.
-              </p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Confidential information does not include information that:
+                {language === "nl"
+                  ? "FLUXIVE levert haar diensten op een professionele en zorgvuldige manier, volgens de afspraken in de offerte of overeenkomst."
+                  : language === "fr"
+                  ? "FLUXIVE fournit ses services de manière professionnelle et diligente, conformément aux modalités convenues dans l’offre ou le contrat."
+                  : "FLUXIVE provides its services in a professional and diligent manner, in accordance with the conditions agreed in the offer or contract."}
               </p>
               <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li>Is or becomes publicly available through no breach of these Terms</li>
-                <li>Was rightfully known prior to disclosure</li>
-                <li>Is independently developed without use of confidential information</li>
-                <li>Is required to be disclosed by law</li>
+                <li>
+                  {language === "nl"
+                    ? "De klant staat in voor het tijdig aanleveren van correcte en volledige informatie die nodig is voor de uitvoering van de opdracht."
+                    : language === "fr"
+                    ? "Le client est responsable de fournir en temps utile des informations correctes et complètes nécessaires à l’exécution de la mission."
+                    : "The client is responsible for providing timely, correct and complete information required for the execution of the assignment."}
+                </li>
+                <li>
+                  {language === "nl"
+                    ? "Tenzij anders overeengekomen, betreft onze inspanningsverbintenis geen gegarandeerd resultaat (bijvoorbeeld bij marketing, SEO of beveiligingstesten)."
+                    : language === "fr"
+                    ? "Sauf convention contraire, nous sommes tenus à une obligation de moyens, et non de résultat garanti (par exemple en matière de marketing, de SEO ou de tests de sécurité)."
+                    : "Unless otherwise agreed, our obligation is one of best effort, not a guaranteed result (e.g. for marketing, SEO or security testing)."}
+                </li>
               </ul>
             </section>
 
+            {/* 5. PRICES & PAYMENT */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">7. Warranties and Disclaimers</h2>
-              <h3 className="text-xl font-semibold mb-3">7.1 Our Warranties</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                We warrant that our services will be performed in a professional and workmanlike manner consistent with industry standards.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">7.2 Disclaimers</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                EXCEPT AS EXPRESSLY PROVIDED, OUR SERVICES ARE PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
-              </p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                We do not warrant that our services will be uninterrupted, error-free, or completely secure.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">8. Limitation of Liability</h2>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                TO THE MAXIMUM EXTENT PERMITTED BY LAW, FLUXIVE SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.
-              </p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Our total liability for any claims arising from or related to our services shall not exceed the amount paid by you to FLUXIVE in the 12 months preceding the claim.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">9. Indemnification</h2>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                You agree to indemnify, defend, and hold harmless FLUXIVE and its officers, directors, employees, and agents from any claims, liabilities, damages, losses, and expenses arising from:
-              </p>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "5. Prijzen en betaling"
+                  : language === "fr"
+                  ? "5. Prix et paiement"
+                  : "5. Prices and Payment"}
+              </h2>
               <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li>Your violation of these Terms</li>
-                <li>Your violation of any third-party rights</li>
-                <li>Your misuse of our services</li>
-                <li>Your breach of any applicable laws or regulations</li>
+                <li>
+                  {language === "nl"
+                    ? "Alle vermelde prijzen zijn exclusief btw, tenzij uitdrukkelijk anders vermeld."
+                    : language === "fr"
+                    ? "Tous les prix indiqués s’entendent hors TVA, sauf mention contraire."
+                    : "All prices are exclusive of VAT unless explicitly stated otherwise."}
+                </li>
+                <li>
+                  {language === "nl"
+                    ? "Facturen zijn betaalbaar binnen de op de factuur vermelde betalingstermijn. Bij gebreke daaraan geldt een standaardtermijn van 14 dagen na factuurdatum."
+                    : language === "fr"
+                    ? "Les factures sont payables dans le délai indiqué sur la facture. À défaut, un délai standard de 14 jours après la date de facturation s’applique."
+                    : "Invoices are payable within the payment term stated on the invoice. If not specified, a standard term of 14 days after invoice date applies."}
+                </li>
+                <li>
+                  {language === "nl"
+                    ? "Bij laattijdige betaling kunnen nalatigheidsinteresten en administratieve kosten aangerekend worden volgens de geldende wettelijke bepalingen."
+                    : language === "fr"
+                    ? "En cas de retard de paiement, des intérêts de retard et des frais administratifs peuvent être facturés conformément aux dispositions légales applicables."
+                    : "In case of late payment, default interest and administrative costs may be charged in accordance with applicable legal provisions."}
+                </li>
               </ul>
             </section>
 
+            {/* 6. INTELLECTUAL PROPERTY */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">10. Termination</h2>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "6. Intellectuele eigendom"
+                  : language === "fr"
+                  ? "6. Propriété intellectuelle"
+                  : "6. Intellectual Property"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                We reserve the right to suspend or terminate your access to our services at any time, with or without notice, for any reason, including:
-              </p>
-              <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li>Violation of these Terms</li>
-                <li>Fraudulent, abusive, or illegal activity</li>
-                <li>Non-payment of fees</li>
-                <li>Extended period of inactivity</li>
-              </ul>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Upon termination, your right to use our services will immediately cease. Sections of these Terms that by their nature should survive termination will survive.
+                {language === "nl"
+                  ? "Tenzij anders overeengekomen, behoudt FLUXIVE alle intellectuele eigendomsrechten op de door haar ontwikkelde werken, zoals software, websites, scripts, ontwerpen, rapporten en documentatie. De klant krijgt een gebruiksrecht volgens de afgesproken licentievoorwaarden."
+                  : language === "fr"
+                  ? "Sauf accord contraire, FLUXIVE conserve tous les droits de propriété intellectuelle sur les travaux qu’elle développe, tels que logiciels, sites web, scripts, designs, rapports et documentation. Le client reçoit un droit d’utilisation conformément aux conditions de licence convenues."
+                  : "Unless otherwise agreed, FLUXIVE retains all intellectual property rights to the works it develops, such as software, websites, scripts, designs, reports and documentation. The client receives a right of use in accordance with the agreed licence conditions."}
               </p>
             </section>
 
+            {/* 7. LIABILITY */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">11. Dispute Resolution and Governing Law</h2>
-              <h3 className="text-xl font-semibold mb-3">11.1 Informal Resolution</h3>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "7. Aansprakelijkheid"
+                  : language === "fr"
+                  ? "7. Responsabilité"
+                  : "7. Liability"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                In the event of any dispute, we encourage you to contact us first to seek an informal resolution.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">11.2 Governing Law</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                These Terms shall be governed by and construed in accordance with Belgian law, without regard to conflict of law principles.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">11.3 Jurisdiction</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                For business clients, any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of Brussels, Belgium.
-              </p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                For Belgian consumers, you retain the right to bring proceedings before the courts in your place of residence in accordance with Belgian consumer protection law.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">11.4 Mediation</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Before initiating legal proceedings, parties may consider voluntary mediation in accordance with Belgian mediation procedures.
+                {language === "nl"
+                  ? "FLUXIVE is niet aansprakelijk voor indirecte schade, gevolgschade, winstderving of dataverlies. Onze totale contractuele en buitencontractuele aansprakelijkheid is, waar wettelijk toegestaan, beperkt tot het factuurbedrag van de betreffende opdracht of, indien dat hoger is, het bedrag gedekt door onze beroepsaansprakelijkheidsverzekering."
+                  : language === "fr"
+                  ? "FLUXIVE ne peut être tenue responsable des dommages indirects, des pertes de profit ou de données. Notre responsabilité totale, contractuelle et extracontractuelle, est, dans les limites permises par la loi, plafonnée au montant facturé pour la mission concernée ou, si ce montant est plus élevé, au montant couvert par notre assurance responsabilité professionnelle."
+                  : "FLUXIVE is not liable for indirect damages, consequential damages, loss of profit or data loss. Our total contractual and extra-contractual liability is, where legally permitted, limited to the invoiced amount for the relevant assignment or, if higher, the amount covered by our professional liability insurance."}
               </p>
             </section>
 
+            {/* 8. WEBSITE USE */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">12. General Provisions</h2>
-              <h3 className="text-xl font-semibold mb-3">12.1 Entire Agreement</h3>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "8. Gebruik van de website"
+                  : language === "fr"
+                  ? "8. Utilisation du site web"
+                  : "8. Use of the Website"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                These Terms, together with any service agreements, constitute the entire agreement between you and FLUXIVE.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">12.2 Severability</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                If any provision of these Terms is found to be unenforceable, the remaining provisions will remain in full force and effect.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">12.3 Waiver</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights.
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3">12.4 Assignment</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                You may not assign or transfer these Terms without our prior written consent. We may assign these Terms without restriction.
+                {language === "nl"
+                  ? "De inhoud van deze website is uitsluitend bedoeld als algemene informatie. Hoewel we streven naar correcte en actuele informatie, geven we geen garanties over volledigheid of foutloosheid. We behouden het recht om de inhoud op elk moment aan te passen."
+                  : language === "fr"
+                  ? "Le contenu de ce site web est fourni à titre d’information générale uniquement. Bien que nous veillions à l’exactitude et à l’actualité des informations, nous ne garantissons ni leur exhaustivité ni l’absence d’erreurs. Nous nous réservons le droit de modifier le contenu à tout moment."
+                  : "The content on this website is provided for general information purposes only. While we strive for accurate and up-to-date information, we do not guarantee completeness or error-free content. We reserve the right to modify the content at any time."}
               </p>
             </section>
 
+            {/* 9. PRIVACY & COOKIES LINKS */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">13. Belgian Law Compliance</h2>
-              <h3 className="text-xl font-semibold mb-3">13.1 Company Details (Required by Belgian Law)</h3>
-              <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg mb-4">
-                <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>Legal Entity Name:</strong> FLUXIVE</p>
-                <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>VAT Number (BTW):</strong> BE1029968269</p>
-                <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>Company Registration:</strong> Belgium</p>
-                <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>Legal Form:</strong> Private Limited Company (if applicable)</p>
-              </div>
-
-              <h3 className="text-xl font-semibold mb-3">13.2 Consumer Rights (Belgian Law)</h3>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "9. Privacy en cookies"
+                  : language === "fr"
+                  ? "9. Confidentialité et cookies"
+                  : "9. Privacy and Cookies"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                For consumers in Belgium, you have specific rights under the Belgian Code of Economic Law (Wetboek van economisch recht):
+                {language === "nl"
+                  ? "Ons privacybeleid en cookiebeleid maken integraal deel uit van deze algemene voorwaarden."
+                  : language === "fr"
+                  ? "Notre politique de confidentialité et notre politique de cookies font partie intégrante des présentes conditions générales."
+                  : "Our Privacy Policy and Cookie Policy form an integral part of these Terms of Service."}
               </p>
-              <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 mb-4 space-y-2">
-                <li><strong>Right of Withdrawal:</strong> For certain services, you may have a 14-day cooling-off period</li>
-                <li><strong>Guarantee Rights:</strong> Legal guarantee of conformity for goods and services</li>
-                <li><strong>Transparency:</strong> Right to clear, unambiguous information before purchase</li>
-                <li><strong>Unfair Terms:</strong> Protection against unfair contract terms under Belgian consumer law</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3">13.3 Dispute Resolution</h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-2">
+                <a
+                  href="/privacy"
+                  className="text-primary-500 hover:underline"
+                >
+                  {language === "nl"
+                    ? "Lees het privacybeleid"
+                    : language === "fr"
+                    ? "Consulter la politique de confidentialité"
+                    : "Read the Privacy Policy"}
+                </a>
+              </p>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Belgian consumers can also contact:
+                <a
+                  href="/cookies"
+                  className="text-primary-500 hover:underline"
+                >
+                  {language === "nl"
+                    ? "Lees het cookiebeleid"
+                    : language === "fr"
+                    ? "Consulter la politique de cookies"
+                    : "Read the Cookie Policy"}
+                </a>
               </p>
-              <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg mb-4">
-                <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>FOD Economie - Mediation Service</strong></p>
-                <p className="text-gray-700 dark:text-gray-300 mb-2">North Gate III, Koning Albert II-laan 16, 1000 Brussels</p>
-                <p className="text-gray-700 dark:text-gray-300">
-                  <a href="https://economie.fgov.be/" target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline">
-                    economie.fgov.be
-                  </a>
-                </p>
-              </div>
             </section>
 
+            {/* 10. APPLICABLE LAW */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">14. Contact Information</h2>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "10. Toepasselijk recht en bevoegde rechtbank"
+                  : language === "fr"
+                  ? "10. Droit applicable et juridiction compétente"
+                  : "10. Applicable Law and Jurisdiction"}
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                For questions about these Terms, please contact us:
+                {language === "nl"
+                  ? "Op deze algemene voorwaarden is het Belgisch recht van toepassing. In geval van geschil zijn uitsluitend de rechtbanken van het gerechtelijk arrondissement waarin FLUXIVE gevestigd is bevoegd, onverminderd dwingende wettelijke bepalingen."
+                  : language === "fr"
+                  ? "Les présentes conditions générales sont régies par le droit belge. En cas de litige, les tribunaux de l’arrondissement judiciaire où FLUXIVE est établie sont seuls compétents, sans préjudice des dispositions légales impératives."
+                  : "These Terms of Service are governed by Belgian law. In case of a dispute, the courts of the judicial district in which FLUXIVE is established have exclusive jurisdiction, without prejudice to mandatory legal provisions."}
               </p>
-              <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
-                <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>FLUXIVE</strong></p>
-                <p className="text-gray-700 dark:text-gray-300 mb-2"><strong>BTW:</strong> BE1029968269</p>
-                <p className="text-gray-700 dark:text-gray-300 mb-2">Email: legal@fluxive.com</p>
-                <p className="text-gray-700 dark:text-gray-300">Response time: Within 48 hours</p>
-              </div>
+            </section>
+
+            {/* 11. CONTACT */}
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">
+                {language === "nl"
+                  ? "11. Contact"
+                  : language === "fr"
+                  ? "11. Contact"
+                  : "11. Contact"}
+              </h2>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                {language === "nl"
+                  ? "Voor vragen over deze algemene voorwaarden kan je ons contacteren via info@fluxive.be."
+                  : language === "fr"
+                  ? "Pour toute question concernant les présentes conditions générales, vous pouvez nous contacter à l’adresse info@fluxive.be."
+                  : "For questions about these Terms of Service, you can contact us at info@fluxive.be."}
+              </p>
             </section>
           </div>
         </motion.div>
