@@ -5,25 +5,35 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { CookieBanner } from "@/components/CookieBanner";
 import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
+import { LanguageProvider } from "@/context/LanguageContext";
 
-
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap", // Add font display swap for faster initial render
+  display: "swap",
 });
 
-const orbitron = Orbitron({ 
+const orbitron = Orbitron({
   subsets: ["latin"],
   variable: "--font-orbitron",
-  display: "swap", // Add font display swap for faster initial render
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://fluxive.com'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://fluxive.com"
+  ),
   title: "FLUXIVE - Premium IT Services & Solutions",
-  description: "Transform your business with premium IT services, marketing solutions, AI automation, web development, penetration testing, and cybersecurity.",
-  keywords: ["IT Services", "Marketing Solutions", "AI Automation", "Web Development", "Penetration Testing", "Cybersecurity"],
+  description:
+    "Transform your business with premium IT services, marketing solutions, AI automation, web development, penetration testing, and cybersecurity.",
+  keywords: [
+    "IT Services",
+    "Marketing Solutions",
+    "AI Automation",
+    "Web Development",
+    "Penetration Testing",
+    "Cybersecurity",
+  ],
   icons: {
     icon: "/favicon.png",
     apple: "/apple-touch-icon.png",
@@ -49,7 +59,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${orbitron.variable}`} suppressHydrationWarning>
+    <html
+      lang="nl" // default language = Dutch
+      className={`${inter.variable} ${orbitron.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           type="application/ld+json"
@@ -57,36 +71,37 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "FLUXIVE",
-              "url": "https://fluxive.com",
-              "logo": "https://fluxive.com/fluxive-logo.png",
-              "description": "Premium IT Services, Marketing Solutions, AI Automation, Web Development, Penetration Testing, and Cybersecurity",
-              "email": "info@fluxive.be",
-              "telephone": "+32472925741",
-              "contactPoint": {
+              name: "FLUXIVE",
+              url: "https://fluxive.com",
+              logo: "https://fluxive.com/fluxive-logo.png",
+              description:
+                "Premium IT Services, Marketing Solutions, AI Automation, Web Development, Penetration Testing, and Cybersecurity",
+              email: "info@fluxive.be",
+              telephone: "+32472925741",
+              contactPoint: {
                 "@type": "ContactPoint",
-                "telephone": "+32472925741",
-                "contactType": "customer service",
-                "email": "info@fluxive.be",
-                "availableLanguage": ["English", "Dutch", "French"]
+                telephone: "+32472925741",
+                contactType: "customer service",
+                email: "info@fluxive.be",
+                availableLanguage: ["English", "Dutch", "French"],
               },
-              "sameAs": [
+              sameAs: [
                 "https://github.com/fluxive",
                 "https://linkedin.com/company/fluxive",
                 "https://twitter.com/fluxive",
                 "https://instagram.com/fluxive",
-                "https://facebook.com/fluxive"
+                "https://facebook.com/fluxive",
               ],
-              "areaServed": "Worldwide",
-              "serviceType": [
+              areaServed: "Worldwide",
+              serviceType: [
                 "IT Services",
                 "Marketing Solutions",
                 "AI Automation",
                 "Web Development",
                 "Penetration Testing",
-                "Cybersecurity"
-              ]
-            })
+                "Cybersecurity",
+              ],
+            }),
           }}
         />
       </head>
@@ -103,10 +118,13 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <CookieBanner />
-          {children}
-          <ChatWidgetWrapper />
-          <Toaster />
+          {/* 🔹 LanguageProvider wraps EVERYTHING that uses useLanguage */}
+          <LanguageProvider>
+            <CookieBanner />
+            {children}
+            <ChatWidgetWrapper />
+            <Toaster />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

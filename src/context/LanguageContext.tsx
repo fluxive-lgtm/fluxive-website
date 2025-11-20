@@ -14,7 +14,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 );
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  // Default language = Dutch (nl)
+  // Default language = Dutch
   const [language, setLanguage] = useState<Language>("nl");
 
   return (
