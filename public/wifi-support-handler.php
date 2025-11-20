@@ -10,6 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Honeypot anti-spam: hidden field "website" should stay empty
+if (!empty($_POST['website'] ?? '')) {
+    // Pretend success but do nothing (ignore spam)
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
 // Simple required field check
 $required = ['name', 'email', 'issueType', 'urgency', 'message'];
 foreach ($required as $field) {
@@ -26,16 +33,20 @@ $email     = trim($_POST['email']);
 $phone     = isset($_POST['phone']) ? trim($_POST['phone']) : null;
 $company   = isset($_POST['company']) ? trim($_POST['company']) : null;
 $location  = isset($_POST['location']) ? trim($_POST['location']) : null;
-$device    = isset($_POST['device']) ? trim($_POST['device']) : null;
 $issueType = trim($_POST['issueType']);
 $urgency   = trim($_POST['urgency']);
 $message   = trim($_POST['message']);
 $lang      = isset($_POST['lang']) ? trim($_POST['lang']) : null;
 
-// Easyhost MySQL credentials (your WiFi-support DB)
+// Extra logging fields
+$ip        = $_SERVER['REMOTE_ADDR'] ?? null;
+$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+$referrer  = $_SERVER['HTTP_REFERER'] ?? null;
+
+// Easyhost MySQL credentials (WiFi support DB)
 $dsn  = 'mysql:host=ID481076_wifisupport.db.webhosting.be;dbname=ID481076_wifisupport;charset=utf8mb4';
 $user = 'ID481076_wifisupport';
-$pass = 'Pyu5GhU7XfdyPCuvMyR7'; // <-- REPLACE with: Pyu5GhU7XfdyPCuvMyR7 (you can change later in Easyhost)
+$pass = 'Pyu5GhU7XfdyPCuvMyR7'; // <-- change if you updated the DB password
 
 try {
     $pdo = new PDO($dsn, $user, $pass, [
@@ -44,9 +55,11 @@ try {
 
     $stmt = $pdo->prepare(
         'INSERT INTO wifi_support_requests
-         (name, email, phone, company, location, device, issue_type, urgency, message, lang)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+         (name, email, phone, company, location, device, issue_type, urgency, message, lang, status, ip_address, user_agent, referrer)
+         VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
+
+    $status = 'new';
 
     $stmt->execute([
         $name,
@@ -54,17 +67,141 @@ try {
         $phone ?: null,
         $company ?: null,
         $location ?: null,
-        $device ?: null,
         $issueType,
         $urgency,
         $message,
         $lang ?: null,
+        $status,
+        $ip,
+        $userAgent,
+        $referrer,
     ]);
 
     $id = $pdo->lastInsertId();
+
+    // -------------------------------
+    // Email notification to YOU
+    // -------------------------------
+    $toOwner = 'wifisupport@fluxive.be'; // <- your notification email
+    $subjectOwner = "New Wi-Fi Support Request #{$id} - {$issueType}";
+
+    $bodyOwnerLines = [
+        "New Wi-Fi support ticket received:",
+        "",
+        "Ticket ID: {$id}",
+        "Name: {$name}",
+        "Email: {$email}",
+        "Phone: " . ($phone ?: "-"),
+        "Company: " . ($company ?: "-"),
+        "Location: " . ($location ?: "-"),
+        "Issue type: {$issueType}",
+        "Urgency: {$urgency}",
+        "Language: " . ($lang ?: "-"),
+        "",
+        "Message:",
+        $message,
+        "",
+        "Technical info:",
+        "IP address: " . ($ip ?: "-"),
+        "User agent: " . ($userAgent ?: "-"),
+        "Referrer: " . ($referrer ?: "-"),
+        "",
+        "---------------------------",
+        "Stored in DB: ID481076_wifisupport.wifi_support_requests",
+    ];
+
+    $bodyOwner = implode("\n", $bodyOwnerLines);
+
+    $headersOwner   = [];
+    $headersOwner[] = 'From: Fluxive WiFi Support <wifisupport@fluxive.be>';
+    $headersOwner[] = 'Reply-To: ' . $email;
+    $headersOwner[] = 'X-Mailer: PHP/' . phpversion();
+
+    @mail($toOwner, $subjectOwner, $bodyOwner, implode("\r\n", $headersOwner));
+
+    // -------------------------------
+    // Email confirmation to CLIENT
+    // -------------------------------
+
+    // Localized subject/body based on $lang
+    switch ($lang) {
+        case 'fr':
+            $subjectClient = "Confirmation de votre demande d'assistance Wi-Fi (#{$id})";
+            $bodyClientLines = [
+                "Bonjour {$name},",
+                "",
+                "Nous avons bien reçu votre demande d'assistance Wi-Fi. Voici un récapitulatif :",
+                "",
+                "Numéro de ticket : {$id}",
+                "Type de problème : {$issueType}",
+                "Urgence : {$urgency}",
+                "",
+                "Description que vous avez envoyée :",
+                $message,
+                "",
+                "Nous vous contacterons dès que possible.",
+                "",
+                "Cordialement,",
+                "Fluxive — Support Wi-Fi & Réseau",
+                "wifisupport@fluxive.be",
+            ];
+            break;
+
+        case 'en':
+            $subjectClient = "Confirmation of your Wi-Fi support request (#{$id})";
+            $bodyClientLines = [
+                "Hi {$name},",
+                "",
+                "We have received your Wi-Fi support request. Here is a summary:",
+                "",
+                "Ticket ID: {$id}",
+                "Issue type: {$issueType}",
+                "Urgency: {$urgency}",
+                "",
+                "Message you sent:",
+                $message,
+                "",
+                "We will contact you as soon as possible.",
+                "",
+                "Kind regards,",
+                "Fluxive — Wi-Fi & Network Support",
+                "wifisupport@fluxive.be",
+            ];
+            break;
+
+        default: // nl or anything else
+            $subjectClient = "Bevestiging van je Wi-Fi supportaanvraag (#{$id})";
+            $bodyClientLines = [
+                "Beste {$name},",
+                "",
+                "We hebben je Wi-Fi supportaanvraag goed ontvangen. Hieronder een overzicht:",
+                "",
+                "Ticketnummer: {$id}",
+                "Probleemtype: {$issueType}",
+                "Urgentie: {$urgency}",
+                "",
+                "Beschrijving die je stuurde:",
+                $message,
+                "",
+                "We nemen zo snel mogelijk contact met je op.",
+                "",
+                "Met vriendelijke groeten,",
+                "Fluxive — Wi-Fi & Netwerk Support",
+                "wifisupport@fluxive.be",
+            ];
+            break;
+    }
+
+    $bodyClient = implode("\n", $bodyClientLines);
+
+    $headersClient   = [];
+    $headersClient[] = 'From: Fluxive WiFi Support <wifisupport@fluxive.be>';
+    $headersClient[] = 'X-Mailer: PHP/' . phpversion();
+
+    @mail($email, $subjectClient, $bodyClient, implode("\r\n", $headersClient));
+
     echo json_encode(['ok' => true, 'id' => $id]);
 } catch (PDOException $e) {
     http_response_code(500);
-    // Don’t leak DB error details
     echo json_encode(['ok' => false, 'error' => 'Database error']);
 }
