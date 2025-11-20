@@ -10,25 +10,252 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { contactSchema, type ContactFormData } from "@/lib/validations";
-import { Mail, Phone, MapPin, MessageSquare, Send } from "lucide-react";
+import { Mail, Phone, Send } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
-const contactInfo = [
+type Language = "nl" | "en" | "fr";
+
+type ContactInfoItem = {
+  id: "email" | "phone";
+  icon: any;
+  content: string;
+  link: string;
+};
+
+const contactInfo: ContactInfoItem[] = [
   {
+    id: "email",
     icon: Mail,
-    title: "Email Us",
     content: "info@fluxive.be",
     link: "mailto:info@fluxive.be",
   },
   {
+    id: "phone",
     icon: Phone,
-    title: "Call Us",
     content: "+32 472 92 57 41",
     link: "tel:+32472925741",
   },
 ];
 
+type ServiceOption = { value: string; label: string };
+
+type ContactTexts = {
+  headingPrefix: string;
+  headingAccent: string;
+  subheading: string;
+  formTitle: string;
+
+  nameLabel: string;
+  emailLabel: string;
+  phoneLabel: string;
+  companyLabel: string;
+  serviceLabel: string;
+  messageLabel: string;
+
+  namePlaceholder: string;
+  emailPlaceholder: string;
+  phonePlaceholder: string;
+  companyPlaceholder: string;
+  messagePlaceholder: string;
+  servicePlaceholder: string;
+
+  serviceOptions: ServiceOption[];
+
+  contactTitles: {
+    email: string;
+    phone: string;
+  };
+
+  businessHoursTitle: string;
+  monFriLabel: string;
+  monFriHours: string;
+  satLabel: string;
+  satHours: string;
+  sunLabel: string;
+  sunHours: string;
+
+  toastSuccessTitle: string;
+  toastSuccessDescription: string;
+  toastErrorTitle: string;
+  toastErrorDescription: string;
+
+  sendLabel: string;
+  sendingLabel: string;
+};
+
+const contactTexts: Record<Language, ContactTexts> = {
+  en: {
+    headingPrefix: "Get In",
+    headingAccent: "Touch",
+    subheading: "Ready to transform your business? Let's discuss your project.",
+    formTitle: "Send Us a Message",
+
+    nameLabel: "Name *",
+    emailLabel: "Email *",
+    phoneLabel: "Phone",
+    companyLabel: "Company",
+    serviceLabel: "Service *",
+    messageLabel: "Message *",
+
+    namePlaceholder: "John Doe",
+    emailPlaceholder: "john@example.com",
+    phonePlaceholder: "+32 472 92 57 41",
+    companyPlaceholder: "Your Company",
+    messagePlaceholder: "Tell us about your project...",
+    servicePlaceholder: "Select a service",
+
+    serviceOptions: [
+      { value: "IT Services", label: "IT Services" },
+      { value: "Marketing Solutions", label: "Marketing Solutions" },
+      { value: "AI Automation", label: "AI Automation" },
+      { value: "Web Development", label: "Web Development" },
+      { value: "Penetration Testing", label: "Penetration Testing" },
+      { value: "Cybersecurity", label: "Cybersecurity" },
+    ],
+
+    contactTitles: {
+      email: "Email Us",
+      phone: "Call Us",
+    },
+
+    businessHoursTitle: "Business Hours",
+    monFriLabel: "Monday - Friday:",
+    monFriHours: "9:00 AM - 6:00 PM",
+    satLabel: "Saturday:",
+    satHours: "10:00 AM - 4:00 PM",
+    sunLabel: "Sunday:",
+    sunHours: "Closed",
+
+    toastSuccessTitle: "Message Sent! 🎉",
+    toastSuccessDescription:
+      "Thank you for contacting us. We'll get back to you within 24 hours.",
+    toastErrorTitle: "Error",
+    toastErrorDescription:
+      "Something went wrong. Please try again.",
+
+    sendLabel: "Send Message",
+    sendingLabel: "Sending...",
+  },
+
+  nl: {
+    headingPrefix: "Neem",
+    headingAccent: "Contact op",
+    subheading:
+      "Klaar om je bedrijf te laten groeien? Laten we je project bespreken.",
+    formTitle: "Stuur ons een bericht",
+
+    nameLabel: "Naam *",
+    emailLabel: "E-mail *",
+    phoneLabel: "Telefoon",
+    companyLabel: "Bedrijf",
+    serviceLabel: "Service *",
+    messageLabel: "Bericht *",
+
+    namePlaceholder: "Jan Peeters",
+    emailPlaceholder: "jan@example.com",
+    phonePlaceholder: "+32 472 92 57 41",
+    companyPlaceholder: "Jouw bedrijf",
+    messagePlaceholder: "Vertel ons meer over je project...",
+    servicePlaceholder: "Kies een service",
+
+    serviceOptions: [
+      { value: "IT-diensten", label: "IT-diensten" },
+      { value: "Digitale marketing", label: "Digitale marketing" },
+      { value: "AI-automatisatie", label: "AI-automatisatie" },
+      { value: "Webontwikkeling", label: "Webontwikkeling" },
+      { value: "Penetratietesten", label: "Penetratietesten" },
+      { value: "Cybersecurity", label: "Cybersecurity" },
+    ],
+
+    contactTitles: {
+      email: "E-mail",
+      phone: "Bel ons",
+    },
+
+    businessHoursTitle: "Openingsuren",
+    monFriLabel: "Maandag - vrijdag:",
+    monFriHours: "09:00 - 18:00",
+    satLabel: "Zaterdag:",
+    satHours: "10:00 - 16:00",
+    sunLabel: "Zondag:",
+    sunHours: "Gesloten",
+
+    toastSuccessTitle: "Bericht verzonden! 🎉",
+    toastSuccessDescription:
+      "Bedankt voor je bericht. We nemen binnen 24 uur contact met je op.",
+    toastErrorTitle: "Fout",
+    toastErrorDescription:
+      "Er ging iets mis. Probeer het later opnieuw.",
+
+    sendLabel: "Bericht verzenden",
+    sendingLabel: "Verzenden...",
+  },
+
+  fr: {
+    headingPrefix: "Prenez",
+    headingAccent: "Contact",
+    subheading:
+      "Prêt à faire évoluer votre entreprise ? Parlons de votre projet.",
+    formTitle: "Envoyez-nous un message",
+
+    nameLabel: "Nom *",
+    emailLabel: "E-mail *",
+    phoneLabel: "Téléphone",
+    companyLabel: "Entreprise",
+    serviceLabel: "Service *",
+    messageLabel: "Message *",
+
+    namePlaceholder: "Jean Dupont",
+    emailPlaceholder: "jean@example.com",
+    phonePlaceholder: "+32 472 92 57 41",
+    companyPlaceholder: "Votre entreprise",
+    messagePlaceholder: "Parlez-nous de votre projet...",
+    servicePlaceholder: "Choisissez un service",
+
+    serviceOptions: [
+      { value: "Services IT", label: "Services IT" },
+      { value: "Marketing digital", label: "Marketing digital" },
+      { value: "Automatisation IA", label: "Automatisation IA" },
+      { value: "Développement web", label: "Développement web" },
+      { value: "Tests d’intrusion", label: "Tests d’intrusion" },
+      { value: "Cybersécurité", label: "Cybersécurité" },
+    ],
+
+    contactTitles: {
+      email: "E-mail",
+      phone: "Appelez-nous",
+    },
+
+    businessHoursTitle: "Heures d’ouverture",
+    monFriLabel: "Lundi - vendredi :",
+    monFriHours: "09:00 - 18:00",
+    satLabel: "Samedi :",
+    satHours: "10:00 - 16:00",
+    sunLabel: "Dimanche :",
+    sunHours: "Fermé",
+
+    toastSuccessTitle: "Message envoyé ! 🎉",
+    toastSuccessDescription:
+      "Merci pour votre message. Nous vous répondrons dans les 24 heures.",
+    toastErrorTitle: "Erreur",
+    toastErrorDescription:
+      "Une erreur s’est produite. Veuillez réessayer.",
+
+    sendLabel: "Envoyer le message",
+    sendingLabel: "Envoi en cours...",
+  },
+};
+
 export default function Contact() {
   const { toast } = useToast();
+
+  const langContext = useLanguage();
+  const rawLang = (langContext?.language as Language) || "nl";
+  const currentLang: Language =
+    rawLang === "en" || rawLang === "fr" || rawLang === "nl" ? rawLang : "nl";
+
+  const t = contactTexts[currentLang];
+
   const {
     register,
     handleSubmit,
@@ -62,8 +289,8 @@ export default function Contact() {
 
       if (result.success) {
         toast({
-          title: "Message Sent! 🎉",
-          description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+          title: t.toastSuccessTitle,
+          description: t.toastSuccessDescription,
         });
         reset();
       } else {
@@ -72,8 +299,8 @@ export default function Contact() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: t.toastErrorTitle,
+        description: t.toastErrorDescription,
       });
     }
   };
@@ -89,10 +316,11 @@ export default function Contact() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Get In <span className="gradient-text">Touch</span>
+            {t.headingPrefix}{" "}
+            <span className="gradient-text">{t.headingAccent}</span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Ready to transform your business? Let's discuss your project
+            {t.subheading}
           </p>
         </motion.div>
 
@@ -107,65 +335,69 @@ export default function Contact() {
             <Card className="glass-strong border-primary-500/30">
               <CardHeader>
                 <CardTitle className="text-2xl font-display">
-                  Send Us a Message
+                  {t.formTitle}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
-                    <Label htmlFor="name">Name *</Label>
+                    <Label htmlFor="name">{t.nameLabel}</Label>
                     <Input
                       id="name"
                       {...register("name")}
                       autoComplete="name"
                       className="glass-card border-primary-500/20 mt-2"
-                      placeholder="John Doe"
+                      placeholder={t.namePlaceholder}
                     />
                     {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.name.message}
+                      </p>
                     )}
                   </div>
 
                   <div>
-                    <Label htmlFor="email">Email *</Label>
+                    <Label htmlFor="email">{t.emailLabel}</Label>
                     <Input
                       id="email"
                       type="email"
                       {...register("email")}
                       autoComplete="email"
                       className="glass-card border-primary-500/20 mt-2"
-                      placeholder="john@example.com"
+                      placeholder={t.emailPlaceholder}
                     />
                     {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.email.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="phone">Phone</Label>
+                      <Label htmlFor="phone">{t.phoneLabel}</Label>
                       <Input
                         id="phone"
                         {...register("phone")}
                         autoComplete="tel"
                         className="glass-card border-primary-500/20 mt-2"
-                        placeholder="+32 472 92 57 41"
+                        placeholder={t.phonePlaceholder}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="company">Company</Label>
+                      <Label htmlFor="company">{t.companyLabel}</Label>
                       <Input
                         id="company"
                         {...register("company")}
                         autoComplete="organization"
                         className="glass-card border-primary-500/20 mt-2"
-                        placeholder="Your Company"
+                        placeholder={t.companyPlaceholder}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="service">Service *</Label>
+                    <Label htmlFor="service">{t.serviceLabel}</Label>
                     <select
                       id="service"
                       {...register("service")}
@@ -177,29 +409,32 @@ export default function Contact() {
                                 [&>option]:bg-white [&>option]:text-gray-900
                                 dark:[&>option]:bg-black dark:[&>option]:text-gray-100"
                     >
-                      <option value="">Select a service</option>
-                      <option value="IT Services">IT Services</option>
-                      <option value="Marketing Solutions">Marketing Solutions</option>
-                      <option value="AI Automation">AI Automation</option>
-                      <option value="Web Development">Web Development</option>
-                      <option value="Penetration Testing">Penetration Testing</option>
-                      <option value="Cybersecurity">Cybersecurity</option>
+                      <option value="">{t.servicePlaceholder}</option>
+                      {t.serviceOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
                     </select>
                     {errors.service && (
-                      <p className="text-red-500 text-sm mt-1">{errors.service.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.service.message}
+                      </p>
                     )}
                   </div>
 
                   <div>
-                    <Label htmlFor="message">Message *</Label>
+                    <Label htmlFor="message">{t.messageLabel}</Label>
                     <Textarea
                       id="message"
                       {...register("message")}
                       className="glass-card border-primary-500/20 mt-2 min-h-[120px]"
-                      placeholder="Tell us about your project..."
+                      placeholder={t.messagePlaceholder}
                     />
                     {errors.message && (
-                      <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.message.message}
+                      </p>
                     )}
                   </div>
 
@@ -209,7 +444,7 @@ export default function Contact() {
                     disabled={isSubmitting}
                     className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600"
                   >
-                    {isSubmitting ? "Sending..." : "Send Message"}
+                    {isSubmitting ? t.sendingLabel : t.sendLabel}
                     <Send className="ml-2 w-4 h-4" />
                   </Button>
                 </form>
@@ -227,9 +462,14 @@ export default function Contact() {
           >
             {contactInfo.map((info, index) => {
               const Icon = info.icon;
+              const title =
+                info.id === "email"
+                  ? t.contactTitles.email
+                  : t.contactTitles.phone;
+
               return (
                 <motion.div
-                  key={info.title}
+                  key={info.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -242,7 +482,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h3 className="font-display font-bold text-lg mb-1">
-                          {info.title}
+                          {title}
                         </h3>
                         <a
                           href={info.link}
@@ -261,20 +501,20 @@ export default function Contact() {
             <Card className="glass-strong border-primary-500/30 mt-8">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-display font-bold mb-4 gradient-text">
-                  Business Hours
+                  {t.businessHoursTitle}
                 </h3>
                 <div className="space-y-2 text-gray-700 dark:text-gray-300">
                   <p className="flex justify-between">
-                    <span>Monday - Friday:</span>
-                    <span>9:00 AM - 6:00 PM</span>
+                    <span>{t.monFriLabel}</span>
+                    <span>{t.monFriHours}</span>
                   </p>
                   <p className="flex justify-between">
-                    <span>Saturday:</span>
-                    <span>10:00 AM - 4:00 PM</span>
+                    <span>{t.satLabel}</span>
+                    <span>{t.satHours}</span>
                   </p>
                   <p className="flex justify-between">
-                    <span>Sunday:</span>
-                    <span>Closed</span>
+                    <span>{t.sunLabel}</span>
+                    <span>{t.sunHours}</span>
                   </p>
                 </div>
               </CardContent>
