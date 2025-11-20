@@ -19,8 +19,8 @@ export default function WifiSupportPage() {
       <ScrollToTop />
       <Navbar />
 
-      {/* Centered form section */}
-      <section className="relative z-10 flex items-center justify-center px-4 py-16">
+      {/* 👇 ADD pt-32 so content starts below the fixed navbar */}
+      <section className="relative z-10 flex items-center justify-center px-4 py-16 pt-32">
         <div className="w-full max-w-5xl">
           <WifiSupportForm />
         </div>
