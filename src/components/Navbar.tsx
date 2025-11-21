@@ -8,7 +8,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLanguage } from "@/context/LanguageContext";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const ThemeToggle = dynamic(
@@ -21,25 +20,21 @@ const ThemeToggle = dynamic(
 
 type Language = "nl" | "en" | "fr";
 
-// navLinks: internal sections + Blog page
+// navLinks: internal sections on the home page
 const navLinks = [
-  { name: { nl: "Home", en: "Home", fr: "Accueil" }, href: "#", blog: false },
+  { name: { nl: "Home", en: "Home", fr: "Accueil" }, href: "#" },
   {
     name: { nl: "Diensten", en: "Services", fr: "Services" },
     href: "#services",
-    blog: false,
   },
   {
     name: { nl: "Over ons", en: "About", fr: "À propos" },
     href: "#about",
-    blog: false,
   },
   {
     name: { nl: "Contact", en: "Contact", fr: "Contact" },
     href: "#contact",
-    blog: false,
   },
-  
 ];
 
 export default function Navbar() {
@@ -143,29 +138,16 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             className="hidden md:flex items-center gap-8 ml-auto"
           >
-            {navLinks.map((link, index) =>
-              link.blog ? (
-                // BLOG → always go to /blog
-                <Link
-                  key={index}
-                  href="/blog"
-                  className="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors font-medium relative group px-3 py-2"
-                >
-                  {link.name[language]}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-full transition-all duration-300" />
-                </Link>
-              ) : (
-                // Internal sections
-                <button
-                  key={index}
-                  onClick={() => scrollToSection(link.href)}
-                  className="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors font-medium relative group px-3 py-2"
-                >
-                  {link.name[language]}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-full transition-all duration-300" />
-                </button>
-              )
-            )}
+            {navLinks.map((link, index) => (
+              <button
+                key={index}
+                onClick={() => scrollToSection(link.href)}
+                className="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors font-medium relative group px-3 py-2"
+              >
+                {link.name[language]}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-full transition-all duration-300" />
+              </button>
+            ))}
 
             {/* Language Switcher */}
             <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-900 px-3 py-1 rounded-full border border-primary-500/30">
@@ -231,26 +213,15 @@ export default function Navbar() {
                 className="bg-white dark:bg-black w-[300px]"
               >
                 <div className="flex flex-col gap-6 mt-8">
-                  {navLinks.map((link, index) =>
-                    link.blog ? (
-                      <Link
-                        key={index}
-                        href="/blog"
-                        onClick={() => setIsOpen(false)}
-                        className="text-left text-xl font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors py-2"
-                      >
-                        {link.name[language]}
-                      </Link>
-                    ) : (
-                      <button
-                        key={index}
-                        onClick={() => scrollToSection(link.href)}
-                        className="text-left text-xl font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors py-2"
-                      >
-                        {link.name[language]}
-                      </button>
-                    )
-                  )}
+                  {navLinks.map((link, index) => (
+                    <button
+                      key={index}
+                      onClick={() => scrollToSection(link.href)}
+                      className="text-left text-xl font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors py-2"
+                    >
+                      {link.name[language]}
+                    </button>
+                  ))}
 
                   <Button
                     onClick={() => scrollToSection("#contact")}
