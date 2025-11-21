@@ -2,35 +2,50 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLanguage } from "@/context/LanguageContext";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 const ThemeToggle = dynamic(
-  () => import("@/components/ThemeToggle").then((mod) => ({ default: mod.ThemeToggle })),
-  {
-    ssr: false,
-    loading: () => <div className="w-10 h-10" />,
-  }
+  () =>
+    import("@/components/ThemeToggle").then((mod) => ({
+      default: mod.ThemeToggle,
+    })),
+  { ssr: false, loading: () => <div className="w-10 h-10" /> }
 );
 
 type Language = "nl" | "en" | "fr";
 
+// navLinks: internal sections + Blog page
 const navLinks = [
-  { name: { nl: "Home", en: "Home", fr: "Accueil" }, href: "#" },
-  { name: { nl: "Diensten", en: "Services", fr: "Services" }, href: "#services" },
-  { name: { nl: "Over ons", en: "About", fr: "À propos" }, href: "#about" },
-  { name: { nl: "Contact", en: "Contact", fr: "Contact" }, href: "#contact" },
+  { name: { nl: "Home", en: "Home", fr: "Accueil" }, href: "#", blog: false },
+  {
+    name: { nl: "Diensten", en: "Services", fr: "Services" },
+    href: "#services",
+    blog: false,
+  },
+  {
+    name: { nl: "Over ons", en: "About", fr: "À propos" },
+    href: "#about",
+    blog: false,
+  },
+  {
+    name: { nl: "Contact", en: "Contact", fr: "Contact" },
+    href: "#contact",
+    blog: false,
+  },
+  
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false); // stays false now
-  const { theme, resolvedTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   const langContext = useLanguage();
@@ -39,53 +54,55 @@ export default function Navbar() {
     rawLang === "en" || rawLang === "fr" || rawLang === "nl" ? rawLang : "nl";
   const setLanguage = langContext?.setLanguage ?? (() => {});
 
+  const pathname = usePathname();
+  const router = useRouter();
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-
-          // Update scrolled state for background effect
-          setScrolled(currentScrollY > 50);
-
-          // hide-on-scroll logic removed → navbar always visible
-          lastScrollY = currentScrollY;
-          ticking = false;
-        });
-        ticking = true;
-      }
+      setScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToSection = (href: string) => {
     setIsOpen(false);
+
+    // If we are NOT on the home page, navigate to home with hash
+    if (pathname !== "/") {
+      if (href === "#") {
+        router.push("/");
+      } else if (href.startsWith("#")) {
+        router.push(`/${href}`); // e.g. "/#services"
+      } else {
+        router.push(href);
+      }
+      return;
+    }
+
+    // We ARE on the home page → smooth scroll
     if (href === "#") {
       window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    if (href.startsWith("#")) {
+      const el = document.querySelector(href);
+      el?.scrollIntoView({ behavior: "smooth" });
     } else {
-      const element = document.querySelector(href);
-      element?.scrollIntoView({ behavior: "smooth" });
+      router.push(href);
     }
   };
 
   return (
     <motion.nav
       initial={{ y: -100 }}
-      animate={{ y: hidden ? -100 : 0 }} // hidden is always false now → stays at 0
-      transition={{
-        duration: hidden ? 0.2 : 0.3,
-        ease: hidden ? [0.4, 0, 1, 1] : [0, 0, 0.2, 1],
-        type: "tween",
-      }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.3 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white dark:bg-black shadow-md ${
         scrolled ? "py-3" : "py-4"
       }`}
@@ -96,7 +113,6 @@ export default function Navbar() {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
             className="flex items-center flex-shrink-0"
           >
             <button
@@ -125,24 +141,33 @@ export default function Navbar() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
             className="hidden md:flex items-center gap-8 ml-auto"
           >
-            {navLinks.map((link, index) => (
-              <motion.button
-                key={link.href}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                onClick={() => scrollToSection(link.href)}
-                className="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors font-medium relative group px-3 py-2"
-              >
-                {link.name[language]}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-full transition-all duration-300" />
-              </motion.button>
-            ))}
+            {navLinks.map((link, index) =>
+              link.blog ? (
+                // BLOG → always go to /blog
+                <Link
+                  key={index}
+                  href="/blog"
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors font-medium relative group px-3 py-2"
+                >
+                  {link.name[language]}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-full transition-all duration-300" />
+                </Link>
+              ) : (
+                // Internal sections
+                <button
+                  key={index}
+                  onClick={() => scrollToSection(link.href)}
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors font-medium relative group px-3 py-2"
+                >
+                  {link.name[language]}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-full transition-all duration-300" />
+                </button>
+              )
+            )}
 
-            {/* Language Switcher (right corner) */}
+            {/* Language Switcher */}
             <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-900 px-3 py-1 rounded-full border border-primary-500/30">
               {(["nl", "en", "fr"] as Language[]).map((lng) => (
                 <button
@@ -177,7 +202,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
 
-            {/* Small language switcher on mobile */}
+            {/* Mobile language switcher */}
             <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded-full border border-primary-500/30">
               {(["nl", "en", "fr"] as Language[]).map((lng) => (
                 <button
@@ -200,20 +225,33 @@ export default function Navbar() {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
+
               <SheetContent
                 side="right"
                 className="bg-white dark:bg-black w-[300px]"
               >
                 <div className="flex flex-col gap-6 mt-8">
-                  {navLinks.map((link) => (
-                    <button
-                      key={link.href}
-                      onClick={() => scrollToSection(link.href)}
-                      className="text-left text-xl font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors py-2"
-                    >
-                      {link.name[language]}
-                    </button>
-                  ))}
+                  {navLinks.map((link, index) =>
+                    link.blog ? (
+                      <Link
+                        key={index}
+                        href="/blog"
+                        onClick={() => setIsOpen(false)}
+                        className="text-left text-xl font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors py-2"
+                      >
+                        {link.name[language]}
+                      </Link>
+                    ) : (
+                      <button
+                        key={index}
+                        onClick={() => scrollToSection(link.href)}
+                        className="text-left text-xl font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors py-2"
+                      >
+                        {link.name[language]}
+                      </button>
+                    )
+                  )}
+
                   <Button
                     onClick={() => scrollToSection("#contact")}
                     className="bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 w-full"
