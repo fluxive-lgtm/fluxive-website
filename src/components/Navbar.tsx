@@ -37,7 +37,7 @@ export default function Navbar() {
   const rawLang = (langContext?.language as Language) || "nl";
   const language: Language =
     rawLang === "en" || rawLang === "fr" || rawLang === "nl" ? rawLang : "nl";
-  const setLanguage = langContext?.setLanguage ?? (() => {});
+  const setLanguage = langContext?.setLanguage ?? (() => { });
 
   useEffect(() => {
     setMounted(true);
@@ -80,15 +80,14 @@ export default function Navbar() {
   return (
     <motion.nav
       initial={{ y: -100 }}
-      animate={{ y: hidden ? -100 : 0 }} // hidden is always false now → stays at 0
+      animate={{ y: hidden ? -100 : 0 }}
       transition={{
         duration: hidden ? 0.2 : 0.3,
         ease: hidden ? [0.4, 0, 1, 1] : [0, 0, 0.2, 1],
         type: "tween",
       }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white dark:bg-black shadow-md ${
-        scrolled ? "py-3" : "py-4"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white dark:bg-black shadow-md ${scrolled ? "py-3" : "py-4"
+        }`}
     >
       <div className="container mx-auto px-6 md:px-8 lg:px-12">
         <div className="flex items-center justify-between gap-8">
@@ -148,11 +147,10 @@ export default function Navbar() {
                 <button
                   key={lng}
                   onClick={() => setLanguage(lng)}
-                  className={`px-2.5 py-1 text-xs sm:text-sm rounded-full transition ${
-                    language === lng
+                  className={`px-2.5 py-1 text-xs sm:text-sm rounded-full transition ${language === lng
                       ? "bg-primary-500 text-white"
                       : "text-gray-700 dark:text-gray-200 hover:bg-primary-500/20"
-                  }`}
+                    }`}
                 >
                   {lng.toUpperCase()}
                 </button>
@@ -168,8 +166,8 @@ export default function Navbar() {
               {language === "nl"
                 ? "Starten"
                 : language === "fr"
-                ? "Commencer"
-                : "Get Started"}
+                  ? "Commencer"
+                  : "Get Started"}
             </Button>
           </motion.div>
 
@@ -183,11 +181,10 @@ export default function Navbar() {
                 <button
                   key={lng}
                   onClick={() => setLanguage(lng)}
-                  className={`px-2 py-1 text-[10px] rounded-full transition ${
-                    language === lng
+                  className={`px-2 py-1 text-[10px] rounded-full transition ${language === lng
                       ? "bg-primary-500 text-white"
                       : "text-gray-700 dark:text-gray-200 hover:bg-primary-500/20"
-                  }`}
+                    }`}
                 >
                   {lng.toUpperCase()}
                 </button>
@@ -221,8 +218,8 @@ export default function Navbar() {
                     {language === "nl"
                       ? "Starten"
                       : language === "fr"
-                      ? "Commencer"
-                      : "Get Started"}
+                        ? "Commencer"
+                        : "Get Started"}
                   </Button>
                 </div>
               </SheetContent>

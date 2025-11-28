@@ -10,6 +10,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import AnimatedBackground from "@/components/AnimatedBackground";
 
 import { FloatingWifiSupport } from "@/components/FloatingWifiSupport";  // ← NEW IMPORT
+import { FloatingPromo } from "@/components/FloatingPromo";
 
 export default function Home() {
   return (
@@ -29,6 +30,9 @@ export default function Home() {
 
       {/* NEW: Floating 24/7 Wi-Fi Support button */}
       <FloatingWifiSupport />
+
+      {/* NEW: Floating Promo (Free Consultation) */}
+      <FloatingPromo />
 
     </main>
   );
