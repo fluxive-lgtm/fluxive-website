@@ -8,6 +8,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+export async function generateStaticParams() {
+    return servicesData.map((service) => ({
+        slug: service.id,
+    }));
+}
+
 
 export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;

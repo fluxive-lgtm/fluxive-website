@@ -73,7 +73,7 @@ const footerTexts: Record<Language, FooterTexts> = {
         { name: "About Us", href: "#about" },
         { name: "Our Team", href: "#about" },
         { name: "Careers", href: "#" },
-        { name: "Blog", href: "#" },
+        { name: "Blog", href: "/blog" },
       ],
       legal: {
         privacy: "Privacy Policy",
@@ -107,7 +107,7 @@ const footerTexts: Record<Language, FooterTexts> = {
         { name: "Over ons", href: "#about" },
         { name: "Ons team", href: "#about" },
         { name: "Jobs", href: "#" },
-        { name: "Blog", href: "#" },
+        { name: "Blog", href: "/blog" },
       ],
       legal: {
         privacy: "Privacyverklaring",
@@ -141,7 +141,7 @@ const footerTexts: Record<Language, FooterTexts> = {
         { name: "À propos de nous", href: "#about" },
         { name: "Notre équipe", href: "#about" },
         { name: "Emplois", href: "#" },
-        { name: "Blog", href: "#" },
+        { name: "Blog", href: "/blog" },
       ],
       legal: {
         privacy: "Politique de confidentialité",
@@ -277,12 +277,21 @@ export default function Footer() {
             <ul className="space-y-1.5">
               {t.links.company.map((link) => (
                 <li key={link.name}>
-                  <button
-                    onClick={() => scrollToSection(link.href)}
-                    className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors"
-                  >
-                    {link.name}
-                  </button>
+                  {link.href.startsWith("#") ? (
+                    <button
+                      onClick={() => scrollToSection(link.href)}
+                      className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
