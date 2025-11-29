@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 import { blogCategories, BlogPost } from "@/data/blogData"
 import { savePost } from "@/lib/blog"
+import { useLanguage } from "@/context/LanguageContext"
 
 interface PostFormData {
     title: string
@@ -31,6 +32,7 @@ interface PostFormProps {
 export function PostForm({ initialData, isEditing = false }: PostFormProps) {
     const router = useRouter()
     const { toast } = useToast()
+    const { language } = useLanguage()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [imageUrl, setImageUrl] = useState(initialData?.image || "")
 
@@ -66,9 +68,14 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         const formData = new FormData()
         formData.append("file", file)
 
+        const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
+
         try {
             const res = await fetch("/api/upload.php", {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
                 body: formData,
             })
 
@@ -145,7 +152,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                         <SelectContent>
                             {blogCategories.filter(c => c.id !== 'all').map((cat) => (
                                 <SelectItem key={cat.id} value={cat.id}>
-                                    {cat.label}
+                                    {cat.label[language as keyof typeof cat.label]}
                                 </SelectItem>
                             ))}
                         </SelectContent>
