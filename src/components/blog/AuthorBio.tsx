@@ -21,14 +21,18 @@ export default function AuthorBio({ author }: AuthorBioProps) {
                 <h3 className="text-lg font-bold mb-1">Written by {author.name}</h3>
                 <p className="text-primary-600 dark:text-primary-400 text-sm font-medium mb-3">{author.role}</p>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                    Expert in hotel IT infrastructure and digital marketing. 20+ hotel Wi-Fi installations across Belgium. Helping businesses grow through technology.
+                    Expert in hotel IT infrastructure and digital marketing. Solved Wi-Fi and marketing challenges for Hotel Koffieboontje in Bruges. Currently helping businesses grow through technology.
                 </p>
                 <div className="flex items-center justify-center sm:justify-start gap-3">
-                    <Button variant="outline" size="sm" className="h-8 gap-2">
-                        <Linkedin className="w-3 h-3" /> LinkedIn
+                    <Button variant="outline" size="sm" className="h-8 gap-2" asChild>
+                        <a href="https://www.linkedin.com/in/aman-yadav-b1a76a24a" target="_blank" rel="noopener noreferrer">
+                            <Linkedin className="w-3 h-3" /> LinkedIn
+                        </a>
                     </Button>
-                    <Button variant="outline" size="sm" className="h-8 gap-2">
-                        <Mail className="w-3 h-3" /> Email
+                    <Button variant="outline" size="sm" className="h-8 gap-2" asChild>
+                        <a href="mailto:info@fluxive.be">
+                            <Mail className="w-3 h-3" /> Email
+                        </a>
                     </Button>
                 </div>
             </div>

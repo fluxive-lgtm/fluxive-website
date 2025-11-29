@@ -11,15 +11,20 @@ import BlogHero from "@/components/blog/BlogHero";
 import NewsletterSignup from "@/components/blog/NewsletterSignup";
 import BlogList from "@/components/blog/BlogList";
 import { getPosts, BlogPost } from "@/lib/blog";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const context = useLanguage();
+  const language = context?.language || "en";
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setIsLoading(true);
       try {
-        const data = await getPosts();
+        const data = await getPosts(language);
         setPosts(data);
       } catch (error) {
         console.error("Failed to fetch posts:", error);
@@ -29,7 +34,7 @@ export default function BlogPage() {
     };
 
     fetchPosts();
-  }, []);
+  }, [language]);
 
   return (
     <main className="relative min-h-screen overflow-x-hidden" id="main-content">
@@ -37,13 +42,13 @@ export default function BlogPage() {
       <ScrollToTop />
       <Navbar />
 
-      <BlogHero />
+      <BlogHero searchQuery={searchQuery} onSearch={setSearchQuery} />
 
       <section className="py-12 px-4 relative z-10">
         {isLoading ? (
           <div className="container mx-auto text-center">Loading posts...</div>
         ) : (
-          <BlogList initialPosts={posts} />
+          <BlogList initialPosts={posts} searchQuery={searchQuery} />
         )}
       </section>
 

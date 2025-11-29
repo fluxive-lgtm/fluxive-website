@@ -6,7 +6,7 @@ async function testConnection() {
         const connection = await mysql.createConnection({
             host: 'com-linweb842.srv.combell-ops.net',
             user: 'ID481076_blogpost',
-            password: '9Z14868rEUOf4V4497cB',
+            password: 'rBF1fcJc1dXwVxtjzV3D',
             database: 'ID481076_blogpost',
             port: 3306
         });

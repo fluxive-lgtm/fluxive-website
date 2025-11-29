@@ -10,14 +10,18 @@ import { Button } from "@/components/ui/button";
 
 interface BlogListProps {
     initialPosts: BlogPost[];
+    searchQuery: string;
 }
 
-export default function BlogList({ initialPosts }: BlogListProps) {
+export default function BlogList({ initialPosts, searchQuery }: BlogListProps) {
     const [activeCategory, setActiveCategory] = useState<BlogCategory>("all");
 
-    const filteredPosts = activeCategory === "all"
-        ? initialPosts
-        : initialPosts.filter(post => post.category === activeCategory);
+    const filteredPosts = initialPosts.filter(post => {
+        const matchesCategory = activeCategory === "all" || post.category === activeCategory;
+        const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
 
     // Separate featured post (first one) from the rest if showing all
     const featuredPost = activeCategory === "all" ? filteredPosts[0] : null;

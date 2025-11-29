@@ -1,60 +1,51 @@
 
-import { BlogPost } from '@/data/blogData'; // Keep BlogPost import as it's used in function signatures
+import { BlogPost, BlogPostData, blogPosts, LocalizedContent } from '@/data/blogData';
+
 export type { BlogPost };
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
-// Helper to determine if we are running on the server or client
-const isServer = typeof window === 'undefined';
-// Helper to fetch from PHP API
-async function fetchFromPhp(endpoint: string, options: RequestInit = {}) {
-    // In production (static export), the API is at /api/file.php
-    // In dev, we might need to proxy or just use relative path if serving PHP locally
-    // For now, assuming relative path works if deployed, or absolute URL if dev
-    const baseUrl = isServer ? 'http://localhost:3000/api' : '/api';
-    const url = `${baseUrl}/${endpoint}`;
+// Helper to simulate API delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    const res = await fetch(url, options);
-    if (!res.ok) {
-        throw new Error(`API call failed: ${res.statusText}`);
-    }
-    return res.json();
+// Helper to flatten localized content
+function getLocalizedContent(content: LocalizedContent, lang: 'en' | 'nl' | 'fr'): string {
+    return content[lang] || content.en;
 }
 
-export async function getPosts(): Promise<BlogPost[]> {
-    try {
-        // If build time (static generation), we might want to fetch from DB directly or skip
-        // But since we are moving to dynamic PHP, static generation of blog pages 
-        // might need to fetch from the deployed API or be converted to client-side fetching.
-        // For simplicity in this migration, let's assume client-side fetching for admin
-        // and static generation for public pages (which requires the API to be up).
-
-        // However, for the Admin Dashboard, we definitely fetch from API.
-        return await fetchFromPhp('blog.php');
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        return [];
-    }
+function flattenPost(post: BlogPostData, lang: 'en' | 'nl' | 'fr'): BlogPost {
+    return {
+        ...post,
+        title: getLocalizedContent(post.title, lang),
+        excerpt: getLocalizedContent(post.excerpt, lang),
+        content: getLocalizedContent(post.content, lang),
+        // Categories labels are in a separate array, but the category ID remains the same.
+        // If we wanted localized category names in the post object, we'd map them here.
+    };
 }
 
-export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-    try {
-        return await fetchFromPhp(`blog.php?slug=${slug}`);
-    } catch (error) {
-        console.error('Error fetching post:', error);
-        return null;
-    }
+export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en'): Promise<BlogPost[]> {
+    // Simulate network delay
+    await delay(100);
+    return blogPosts.map(post => flattenPost(post, lang));
+}
+
+export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en'): Promise<BlogPost | null> {
+    await delay(100);
+    const post = blogPosts.find(p => p.slug === slug);
+    return post ? flattenPost(post, lang) : null;
 }
 
 export async function savePost(post: BlogPost): Promise<void> {
-    await fetchFromPhp('blog.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(post),
-    });
+    await delay(500);
+    console.log('Mock save post:', post);
+    // Cannot push flat post to nested array without other languages.
+    // For mock purposes, we just log it.
 }
 
 export async function deletePost(slug: string): Promise<void> {
-    await fetchFromPhp(`blog.php?slug=${slug}`, {
-        method: 'DELETE',
-    });
+    await delay(500);
+    console.log('Mock delete post:', slug);
+    const index = blogPosts.findIndex(p => p.slug === slug);
+    if (index >= 0) {
+        blogPosts.splice(index, 1);
+    }
 }

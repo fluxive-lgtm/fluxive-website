@@ -2,6 +2,7 @@
 
 import { blogCategories, BlogCategory } from "@/data/blogData";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface CategoryFilterProps {
     activeCategory: BlogCategory;
@@ -9,11 +10,15 @@ interface CategoryFilterProps {
 }
 
 export default function CategoryFilter({ activeCategory, onSelectCategory }: CategoryFilterProps) {
+    const context = useLanguage();
+    const language = context?.language || "en";
+
     return (
         <div className="flex flex-wrap justify-center gap-2 mb-12">
             {blogCategories.map((category) => {
                 const Icon = category.icon;
                 const isActive = activeCategory === category.id;
+                const label = category.label[language] || category.label.en;
 
                 return (
                     <button
@@ -27,7 +32,7 @@ export default function CategoryFilter({ activeCategory, onSelectCategory }: Cat
                         )}
                     >
                         <Icon className="w-4 h-4" />
-                        {category.label}
+                        {label}
                     </button>
                 );
             })}

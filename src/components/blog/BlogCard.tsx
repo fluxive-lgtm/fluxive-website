@@ -5,14 +5,18 @@ import { BlogPost, blogCategories } from "@/data/blogData";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface BlogCardProps {
     post: BlogPost;
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
+    const context = useLanguage();
+    const language = context?.language || "en";
     const category = blogCategories.find(c => c.id === post.category);
     const Icon = category?.icon;
+    const categoryLabel = category?.label[language] || category?.label.en;
 
     return (
         <Link href={`/blog/view?slug=${post.slug}`} className="group h-full">
@@ -29,7 +33,7 @@ export default function BlogCard({ post }: BlogCardProps) {
                 <CardHeader className="p-6 pb-2">
                     <div className="flex items-center gap-2 mb-3">
                         <Badge variant="secondary" className="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 hover:bg-primary-100 border-primary-200 dark:border-primary-800">
-                            {category?.label}
+                            {categoryLabel}
                         </Badge>
                         <span className="text-xs text-gray-500 flex items-center gap-1">
                             <Clock className="w-3 h-3" /> {post.readingTime}

@@ -5,7 +5,7 @@
 $host = 'ID481076_blogpost.db.webhosting.be';
 $dbname = 'ID481076_blogpost';
 $username = 'ID481076_blogpost';
-$password = '9Z14868rEUOf4V4497cB';
+$password = 'rBF1fcJc1dXwVxtjzV3D';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
