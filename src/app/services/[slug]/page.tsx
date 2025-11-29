@@ -171,13 +171,13 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                                     {service.cta}
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                    <Link href="/#contact">
+                                    <Link href="#contact">
                                         <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6 bg-white text-gray-900 hover:bg-gray-100">
                                             Contact Us Now
                                         </Button>
                                     </Link>
                                     <Link href="tel:+32472925741">
-                                        <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8 py-6 border-white text-white hover:bg-white/10">
+                                        <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8 py-6 border-white text-white bg-transparent hover:bg-white/10">
                                             Call +32 472 92 57 41
                                         </Button>
                                     </Link>
@@ -188,6 +188,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                 </div>
             </section>
 
+            <Contact />
             <Footer />
         </main>
     );

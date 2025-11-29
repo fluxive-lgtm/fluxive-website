@@ -274,7 +274,7 @@ export default function About() {
           viewport={{ once: true }}
           className="mt-20 max-w-4xl mx-auto"
         >
-          <Card className="glass-card border-primary-500/20">
+          <Card className="glass-card border border-white/20 dark:border-white/10 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80">
             <CardContent className="p-8 md:p-12">
               <h3 className="text-3xl font-display font-bold mb-6 text-center">
                 {missionTitle.split(" ").length > 1 ? (
