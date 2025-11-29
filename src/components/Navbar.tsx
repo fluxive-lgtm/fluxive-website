@@ -8,6 +8,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLanguage } from "@/context/LanguageContext";
+import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 
 const ThemeToggle = dynamic(
   () => import("@/components/ThemeToggle").then((mod) => ({ default: mod.ThemeToggle })),
@@ -32,6 +34,8 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false); // stays false now
   const { theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const langContext = useLanguage();
   const rawLang = (langContext?.language as Language) || "nl";
@@ -69,11 +73,17 @@ export default function Navbar() {
 
   const scrollToSection = (href: string) => {
     setIsOpen(false);
-    if (href === "#") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (pathname === "/") {
+      if (href === "#") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        const element = document.querySelector(href);
+        element?.scrollIntoView({ behavior: "smooth" });
+      }
     } else {
-      const element = document.querySelector(href);
-      element?.scrollIntoView({ behavior: "smooth" });
+      // If not on home page, navigate to home page with hash
+      router.push(`/${href === "#" ? "" : href}`);
     }
   };
 
@@ -103,15 +113,19 @@ export default function Navbar() {
               className="flex items-center gap-3 hover:scale-105 transition-transform"
             >
               {mounted && (
-                <img
-                  src={
-                    resolvedTheme === "dark"
-                      ? "/fluxive-logo-dark.png"
-                      : "/fluxive-logo-light.png"
-                  }
-                  alt="Fluxive Logo"
-                  className="h-14 w-14 md:h-16 md:w-16 transition-opacity duration-300"
-                />
+                <div className="relative h-14 w-14 md:h-16 md:w-16 transition-opacity duration-300">
+                  <Image
+                    src={
+                      resolvedTheme === "dark"
+                        ? "/fluxive-logo-dark.png"
+                        : "/fluxive-logo-light.png"
+                    }
+                    alt="Fluxive Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
               )}
               {!mounted && <div className="h-14 w-14 md:h-16 md:w-16" />}
               <span className="text-2xl md:text-3xl font-display font-bold gradient-text">
@@ -148,8 +162,8 @@ export default function Navbar() {
                   key={lng}
                   onClick={() => setLanguage(lng)}
                   className={`px-2.5 py-1 text-xs sm:text-sm rounded-full transition ${language === lng
-                      ? "bg-primary-500 text-white"
-                      : "text-gray-700 dark:text-gray-200 hover:bg-primary-500/20"
+                    ? "bg-primary-500 text-white"
+                    : "text-gray-700 dark:text-gray-200 hover:bg-primary-500/20"
                     }`}
                 >
                   {lng.toUpperCase()}
@@ -182,8 +196,8 @@ export default function Navbar() {
                   key={lng}
                   onClick={() => setLanguage(lng)}
                   className={`px-2 py-1 text-[10px] rounded-full transition ${language === lng
-                      ? "bg-primary-500 text-white"
-                      : "text-gray-700 dark:text-gray-200 hover:bg-primary-500/20"
+                    ? "bg-primary-500 text-white"
+                    : "text-gray-700 dark:text-gray-200 hover:bg-primary-500/20"
                     }`}
                 >
                   {lng.toUpperCase()}

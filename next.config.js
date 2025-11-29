@@ -4,7 +4,7 @@ const path = require('path');
 const nextConfig = {
   // For EasyHost: build static export
   // For Vercel: comment out 'output' line to enable API routes
-  output: process.env.VERCEL ? undefined : 'export',
+  output: process.env.NODE_ENV === 'development' || process.env.VERCEL ? undefined : 'export',
   images: {
     unoptimized: true,
   },
@@ -27,7 +27,7 @@ const nextConfig = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, 'src'),
     };
-    
+
     // Production optimizations
     if (!dev && !isServer) {
       config.optimization = {
@@ -57,7 +57,7 @@ const nextConfig = {
         }
       };
     }
-    
+
     return config;
   },
 };

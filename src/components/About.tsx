@@ -31,7 +31,7 @@ const aboutByLang: Record<Language, AboutContent> = {
       "We combine expertise, innovation, and dedication to deliver exceptional results.",
     missionTitle: "Our Mission",
     missionBody:
-      "At FLUXIVE, we're committed to empowering businesses with innovative technology solutions. Our mission is to transform complex challenges into streamlined processes, helping you achieve your goals faster and more efficiently. With a focus on quality, security, and customer satisfaction, we deliver solutions that drive real business value.",
+      "At FLUXIVE, we solve technology challenges for Belgian hotels, restaurants, small businesses, and homeowners: unreliable Wi-Fi that frustrates guests and families, poor Google visibility that loses customers to competitors, outdated websites that don't convert, and weak cybersecurity that puts data at risk.\n\nOur mission is simple: provide enterprise-level IT infrastructure, digital marketing, and security solutions—at prices everyone can afford. Whether you need home Wi-Fi troubleshooting, business network installation, Google Maps optimization, AI chatbots, website development, or penetration testing—we handle it all under one roof.\n\nFrom a family struggling with Wi-Fi dead zones in their home, to a boutique hotel in Ghent, a restaurant in Brussels, or a growing SME in Antwerp—we deliver technology solutions that work, increase revenue, reduce frustration, and give you peace of mind.\n\nProudly serving residential and business clients across Belgium.",
     features: [
       {
         id: "expert",
@@ -74,7 +74,7 @@ const aboutByLang: Record<Language, AboutContent> = {
       "We combineren expertise, innovatie en betrokkenheid om uitzonderlijke resultaten te leveren.",
     missionTitle: "Onze Missie",
     missionBody:
-      "Bij FLUXIVE helpen we bedrijven vooruit met moderne technologie-oplossingen. Onze missie is om complexe uitdagingen om te zetten in duidelijke, efficiënte processen, zodat jij je doelen sneller en met minder stress bereikt. Met focus op kwaliteit, veiligheid en klanttevredenheid bouwen we oplossingen die échte meerwaarde opleveren voor je business.",
+      "Bij FLUXIVE lossen we technologische uitdagingen op voor Belgische hotels, restaurants, kleine bedrijven en huiseigenaren: onbetrouwbare wifi die gasten en gezinnen frustreert, slechte zichtbaarheid op Google waardoor klanten naar concurrenten gaan, verouderde websites die niet converteren en zwakke cyberbeveiliging die gegevens in gevaar brengt.\n\nOnze missie is simpel: enterprise-niveau IT-infrastructuur, digitale marketing en beveiligingsoplossingen bieden—tegen prijzen die voor iedereen betaalbaar zijn. Of je nu wifi-problemen thuis hebt, een bedrijfsnetwerk moet installeren, Google Maps-optimalisatie, AI-chatbots, website-ontwikkeling of penetratietesten nodig hebt—wij regelen het allemaal onder één dak.\n\nVan een gezin dat worstelt met wifi-dode zones thuis, tot een boetiekhotel in Gent, een restaurant in Brussel of een groeiende KMO in Antwerpen—wij leveren technologische oplossingen die werken, omzet verhogen, frustratie verminderen en gemoedsrust geven.\n\nTrots ten dienste van particuliere en zakelijke klanten in heel België.",
     features: [
       {
         id: "expert",
@@ -120,7 +120,7 @@ const aboutByLang: Record<Language, AboutContent> = {
       "Nous combinons expertise, innovation et engagement pour offrir des résultats concrets.",
     missionTitle: "Notre Mission",
     missionBody:
-      "Chez FLUXIVE, notre objectif est d’aider les entreprises à tirer le meilleur parti de la technologie. Notre mission est de transformer des problèmes complexes en processus simples et fluides, afin que vous atteigniez vos objectifs plus rapidement et plus sereinement. Avec un fort accent sur la qualité, la sécurité et la satisfaction client, nous livrons des solutions qui créent une vraie valeur pour votre activité.",
+      "Chez FLUXIVE, nous résolvons les défis technologiques des hôtels, restaurants, petites entreprises et particuliers belges : Wi-Fi peu fiable qui frustre les invités et les familles, mauvaise visibilité sur Google qui fait perdre des clients au profit de la concurrence, sites web obsolètes qui ne convertissent pas et cybersécurité faible qui met les données en danger.\n\nNotre mission est simple : fournir des infrastructures informatiques, du marketing numérique et des solutions de sécurité de niveau entreprise—à des prix abordables pour tous. Que vous ayez besoin de dépannage Wi-Fi à domicile, d'installation de réseau d'entreprise, d'optimisation Google Maps, de chatbots IA, de développement de site web ou de tests d'intrusion—nous gérons tout sous un même toit.\n\nD'une famille luttant contre les zones mortes Wi-Fi à la maison, à un hôtel-boutique à Gand, un restaurant à Bruxelles ou une PME en croissance à Anvers—nous fournissons des solutions technologiques qui fonctionnent, augmentent les revenus, réduisent la frustration et vous offrent la tranquillité d'esprit.\n\nAu service des clients résidentiels et professionnels partout en Belgique.",
     features: [
       {
         id: "expert",
@@ -244,9 +244,8 @@ export default function About() {
                   onClick={() => setSelectedFeature(feature)}
                 >
                   <Card
-                    className={`glass-strong h-full border-primary-500/30 group transition-all duration-300 ${
-                      isActive ? "ring-2 ring-primary-500" : ""
-                    }`}
+                    className={`glass-strong h-full border-primary-500/30 group transition-all duration-300 ${isActive ? "ring-2 ring-primary-500" : ""
+                      }`}
                   >
                     <CardHeader className="text-center">
                       <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
@@ -289,7 +288,7 @@ export default function About() {
                   <span className="gradient-text">{missionTitle}</span>
                 )}
               </h3>
-              <p className="text-lg text-gray-700 dark:text-gray-300 text-center leading-relaxed">
+              <p className="text-lg text-gray-700 dark:text-gray-300 text-center leading-relaxed whitespace-pre-line">
                 {missionBody}
               </p>
             </CardContent>

@@ -10,8 +10,10 @@ type Language = "nl" | "en" | "fr";
 
 type HeroCopy = {
   badge: string;
-  headingPrefix: string;
+  headingHighlight: string;
+  headingSuffix: string;
   subheading: string;
+  supportingText: string;
   primaryCta: string;
   secondaryCta: string;
   scrollLabel: string;
@@ -20,29 +22,35 @@ type HeroCopy = {
 const heroTexts: Record<Language, HeroCopy> = {
   nl: {
     badge: "Fluxive — IT, Cybersecurity & Marketing",
-    headingPrefix: "Transformeer je bedrijf met",
+    headingHighlight: "IT & Marketing",
+    headingSuffix: "onder één dak — Voor hotels, restaurants & groeiende kmo's in België",
     subheading:
-      "Premium IT-diensten, netwerk- en Wi-Fi-optimalisatie, digitale marketing, AI-automatisatie, webdevelopment, penetratietesten en cybersecurity — allemaal onder één dak.",
-    primaryCta: "Start je project",
-    secondaryCta: "Bekijk de diensten",
+      "Stop met het jongleren met meerdere leveranciers. Krijg enterprise-grade Wi-Fi, cybersecurity en digitale marketing van één vertrouwde partner. Meer directe boekingen. Geen dode zones. Volledige gemoedsrust.",
+    supportingText: "Vertrouwd door Hotel Koffieboontje en 15+ Belgische bedrijven",
+    primaryCta: "Vraag je gratis audit aan",
+    secondaryCta: "Bekijk onze diensten",
     scrollLabel: "Scroll naar beneden",
   },
   en: {
     badge: "Fluxive — Next-Gen IT & Cybersecurity",
-    headingPrefix: "Transform your business with",
+    headingHighlight: "IT & Marketing",
+    headingSuffix: "Under One Roof—For Hotels, Restaurants & Growing SMEs in Belgium",
     subheading:
-      "Premium IT services, network and Wi-Fi optimisation, digital marketing, AI automation, web development, penetration testing and cybersecurity — all under one roof.",
-    primaryCta: "Start Your Project",
-    secondaryCta: "Explore Services",
+      "Stop juggling multiple vendors. Get enterprise-grade Wi-Fi, cybersecurity, and digital marketing from one trusted partner. More direct bookings. Zero dead zones. Complete peace of mind.",
+    supportingText: "Trusted by Hotel Koffieboontje and 15+ Belgian businesses",
+    primaryCta: "Get Your Free Assessment",
+    secondaryCta: "See Our Services",
     scrollLabel: "Scroll Down",
   },
   fr: {
     badge: "Fluxive — IT, Cybersécurité & Marketing digital",
-    headingPrefix: "Transformez votre entreprise avec",
+    headingHighlight: "IT & Marketing",
+    headingSuffix: "sous un même toit — Pour hôtels, restaurants & PME en croissance en Belgique",
     subheading:
-      "Services IT premium, optimisation réseau et Wi-Fi, marketing digital, automatisation IA, développement web, tests de pénétration et cybersécurité — le tout sous un même toit.",
-    primaryCta: "Lancez votre projet",
-    secondaryCta: "Découvrir nos services",
+      "Arrêtez de jongler avec plusieurs fournisseurs. Obtenez un Wi-Fi de qualité entreprise, la cybersécurité et le marketing digital d'un partenaire de confiance. Plus de réservations directes. Zéro zone morte. Tranquillité d'esprit totale.",
+    supportingText: "Recommandé par l'Hôtel Koffieboontje et plus de 15 entreprises belges",
+    primaryCta: "Obtenez votre audit gratuit",
+    secondaryCta: "Voir nos services",
     scrollLabel: "Faire défiler",
   },
 };
@@ -69,8 +77,8 @@ export default function Hero() {
   const langContext = useLanguage();
   const lang: Language =
     (langContext?.language as Language) === "en" ||
-    (langContext?.language as Language) === "fr" ||
-    (langContext?.language as Language) === "nl"
+      (langContext?.language as Language) === "fr" ||
+      (langContext?.language as Language) === "nl"
       ? (langContext?.language as Language)
       : "nl";
 
@@ -120,15 +128,23 @@ export default function Hero() {
             variants={itemVariants}
             className="text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6"
           >
-            {t.headingPrefix} <span className="gradient-text">FLUXIVE</span>
+            <span className="gradient-text">{t.headingHighlight}</span> {t.headingSuffix}
           </motion.h1>
 
           {/* Subheading */}
           <motion.p
             variants={itemVariants}
-            className="text-lg md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 max-w-3xl mx-auto mb-12 leading-relaxed"
+            className="text-lg md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed"
           >
             {t.subheading}
+          </motion.p>
+
+          {/* Supporting Text */}
+          <motion.p
+            variants={itemVariants}
+            className="text-sm md:text-base text-gray-500 dark:text-gray-400 mb-8 font-medium"
+          >
+            {t.supportingText}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -138,7 +154,7 @@ export default function Hero() {
           >
             <Button
               size="lg"
-              className="bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 px-8 py-6 text-lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-6 text-lg shadow-lg hover:shadow-orange-500/20 transition-all duration-300"
               onClick={scrollToContact}
             >
               {t.primaryCta}
