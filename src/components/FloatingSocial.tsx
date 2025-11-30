@@ -6,7 +6,6 @@ import { Linkedin, Instagram, Facebook } from "lucide-react";
 
 const socialLinks = [
   { icon: Linkedin, href: "https://www.linkedin.com/company/109784966", label: "LinkedIn", color: "hover:bg-blue-600" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram", color: "hover:bg-pink-600" },
   { icon: Facebook, href: "https://www.facebook.com/share/1GfaJ6614w/", label: "Facebook", color: "hover:bg-blue-700" },
 ];
 
@@ -66,7 +65,7 @@ export default function FloatingSocial() {
               >
                 <Icon className="w-5 h-5" />
               </Button>
-              
+
               {/* Tooltip */}
               <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 {social.label}

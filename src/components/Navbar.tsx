@@ -113,13 +113,9 @@ export default function Navbar() {
               className="flex items-center gap-3 hover:scale-105 transition-transform"
             >
               {mounted && (
-                <div className="relative h-14 w-14 md:h-16 md:w-16 transition-opacity duration-300">
+                <div className="relative h-12 w-44 md:h-16 md:w-60 transition-opacity duration-300">
                   <Image
-                    src={
-                      resolvedTheme === "dark"
-                        ? "/fluxive-logo-dark.png"
-                        : "/fluxive-logo-light.png"
-                    }
+                    src="/favicon.svg"
                     alt="Fluxive Logo"
                     fill
                     className="object-contain"
@@ -127,10 +123,7 @@ export default function Navbar() {
                   />
                 </div>
               )}
-              {!mounted && <div className="h-14 w-14 md:h-16 md:w-16" />}
-              <span className="text-2xl md:text-3xl font-display font-bold gradient-text">
-                FLUXIVE
-              </span>
+              {!mounted && <div className="h-12 w-44 md:h-16 md:w-60" />}
             </button>
           </motion.div>
 

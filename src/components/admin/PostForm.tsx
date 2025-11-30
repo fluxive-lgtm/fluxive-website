@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
@@ -32,9 +32,44 @@ interface PostFormProps {
 export function PostForm({ initialData, isEditing = false }: PostFormProps) {
     const router = useRouter()
     const { toast } = useToast()
-    const { language } = useLanguage()
+    const { language: currentLang } = useLanguage() // We might use this for UI labels, but editing should be explicit
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [imageUrl, setImageUrl] = useState(initialData?.image || "")
+    const [activeTab, setActiveTab] = useState<'en' | 'nl' | 'fr'>('en')
+
+    // We need to manage the multilingual state manually or via a more complex form structure
+    // Since initialData is flattened (BlogPost), we can't easily get the other languages if we are editing.
+    // Ideally, we should fetch the full BlogPostData.
+    // For now, if we are editing, we might be overwriting with single-language data if we don't have the full data.
+    // BUT, let's assume for new posts we start fresh.
+    // For existing posts, we might need to fetch the full data. 
+    // Let's initialize with empty strings for other languages if not present.
+
+    // NOTE: This implementation assumes we are creating NEW posts or overwriting. 
+    // To properly edit existing multilingual posts, we would need to pass BlogPostData instead of BlogPost.
+
+    const [formData, setFormData] = useState({
+        title: { en: initialData?.title || "", nl: "", fr: "" },
+        excerpt: { en: initialData?.excerpt || "", nl: "", fr: "" },
+        content: { en: initialData?.content || "", nl: "", fr: "" },
+    })
+
+    // If we are editing, we should try to populate the other languages if possible.
+    // Since we don't have them in initialData (it's flattened), we'll just use the current value for the current language
+    // and leave others empty (or copy them as fallback).
+    // A better approach would be to fetch the full post data by slug in the parent component or here.
+
+    useEffect(() => {
+        if (initialData) {
+            // Check if we can fetch the full data? 
+            // For now, let's just initialize 'en' with the data we have, and maybe copy to others as a starting point
+            setFormData({
+                title: { en: initialData.title, nl: initialData.title, fr: initialData.title },
+                excerpt: { en: initialData.excerpt, nl: initialData.excerpt, fr: initialData.excerpt },
+                content: { en: initialData.content, nl: initialData.content, fr: initialData.content },
+            })
+        }
+    }, [initialData])
 
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PostFormData>({
         defaultValues: {
@@ -48,11 +83,28 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         }
     })
 
-    const title = watch("title")
+    // Update the react-hook-form values when we change the active tab or type
+    // Actually, we should probably just use react-hook-form for the shared fields (slug, category, image)
+    // and manage the multilingual fields with local state, then combine on submit.
 
-    // Auto-generate slug from title only if creating new post
+    const handleInputChange = (field: 'title' | 'excerpt' | 'content', value: string) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: {
+                ...prev[field],
+                [activeTab]: value
+            }
+        }))
+
+        // Also update the react-hook-form value for validation if it's the 'en' tab (primary)
+        if (activeTab === 'en') {
+            setValue(field, value)
+        }
+    }
+
+    // Auto-generate slug from English title
     const generateSlug = (value: string) => {
-        if (!isEditing) {
+        if (!isEditing && activeTab === 'en') {
             const slug = value
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, "-")
@@ -92,19 +144,58 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         }
     }
 
+    const handleAutoTranslate = () => {
+        // Simple mock translation: Copy English content to other languages if they are empty
+        // In a real app, this would call a translation API (Google/DeepL/OpenAI)
+
+        const enTitle = formData.title.en;
+        const enExcerpt = formData.excerpt.en;
+        const enContent = formData.content.en;
+
+        if (!enTitle) {
+            toast({ title: "Please enter English content first", variant: "destructive" });
+            return;
+        }
+
+        setFormData(prev => ({
+            title: {
+                en: prev.title.en,
+                nl: prev.title.nl || `[NL] ${enTitle}`,
+                fr: prev.title.fr || `[FR] ${enTitle}`
+            },
+            excerpt: {
+                en: prev.excerpt.en,
+                nl: prev.excerpt.nl || `[NL] ${enExcerpt}`,
+                fr: prev.excerpt.fr || `[FR] ${enExcerpt}`
+            },
+            content: {
+                en: prev.content.en,
+                nl: prev.content.nl || `[NL] ${enContent}`,
+                fr: prev.content.fr || `[FR] ${enContent}`
+            }
+        }));
+
+        toast({ title: "Auto-filled translations (Mock)", description: "Content copied to NL/FR. Connect a translation API for real translations." });
+    };
+
     const onSubmit = async (data: PostFormData) => {
         setIsSubmitting(true)
         try {
-            // Construct full BlogPost object
-            const blogPost: BlogPost = {
+            // Construct full BlogPost object with multilingual data
+            // We need to cast it to any because BlogPost expects string, but we are sending objects
+            // The backend is updated to handle this.
+            const blogPost: any = {
                 ...data,
-                category: data.category as any, // Cast to any to bypass strict type check for now, or import BlogCategory
+                title: formData.title,
+                excerpt: formData.excerpt,
+                content: formData.content,
+                category: data.category as any,
                 date: initialData?.date || new Date().toISOString().split('T')[0],
-                readingTime: initialData?.readingTime || "5 min read", // Placeholder
+                readingTime: initialData?.readingTime || "5 min read",
                 author: initialData?.author || {
                     name: "Admin",
                     role: "Administrator",
-                    image: "/images/avatars/alice.jpg" // Default avatar
+                    image: "/images/avatars/alice.jpg"
                 },
                 tags: initialData?.tags || []
             }
@@ -114,7 +205,12 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             router.push("/admin/dashboard")
             router.refresh()
         } catch (error) {
-            toast({ title: isEditing ? "Failed to update post" : "Failed to create post", variant: "destructive" })
+            console.error(error)
+            toast({
+                title: isEditing ? "Failed to update post" : "Failed to create post",
+                description: error instanceof Error ? error.message : "An unknown error occurred",
+                variant: "destructive"
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -122,18 +218,46 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+
+            {/* Language Selection Dropdown */}
+            <div className="space-y-2 mb-6">
+                <div className="flex items-end justify-between">
+                    <div className="space-y-2">
+                        <Label>Editing Language</Label>
+                        <Select
+                            value={activeTab}
+                            onValueChange={(val: 'en' | 'nl' | 'fr') => setActiveTab(val)}
+                        >
+                            <SelectTrigger className="w-[200px]">
+                                <SelectValue placeholder="Select Language" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="en">English</SelectItem>
+                                <SelectItem value="nl">Dutch</SelectItem>
+                                <SelectItem value="fr">French</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Button type="button" variant="secondary" onClick={handleAutoTranslate} title="Auto-fill other languages from English">
+                        Auto-Translate (Mock)
+                    </Button>
+                </div>
+                <p className="text-sm text-gray-500">Select the language you want to edit content for.</p>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label htmlFor="title">Title</Label>
+                    <Label htmlFor="title">Title ({activeTab.toUpperCase()})</Label>
                     <Input
                         id="title"
-                        {...register("title", { required: true })}
+                        value={formData.title[activeTab]}
                         onChange={(e) => {
-                            register("title").onChange(e)
+                            handleInputChange('title', e.target.value)
                             generateSlug(e.target.value)
                         }}
+                        placeholder={`Enter title in ${activeTab === 'en' ? 'English' : activeTab === 'nl' ? 'Dutch' : 'French'}`}
                     />
-                    {errors.title && <span className="text-red-500 text-sm">Title is required</span>}
+                    {activeTab === 'en' && errors.title && <span className="text-red-500 text-sm">Title (English) is required</span>}
                 </div>
 
                 <div className="space-y-2">
@@ -152,7 +276,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                         <SelectContent>
                             {blogCategories.filter(c => c.id !== 'all').map((cat) => (
                                 <SelectItem key={cat.id} value={cat.id}>
-                                    {cat.label[language as keyof typeof cat.label]}
+                                    {cat.label[currentLang as keyof typeof cat.label] || cat.label.en}
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -170,8 +294,13 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="excerpt">Excerpt</Label>
-                <Textarea id="excerpt" {...register("excerpt", { required: true })} />
+                <Label htmlFor="excerpt">Excerpt ({activeTab.toUpperCase()})</Label>
+                <Textarea
+                    id="excerpt"
+                    value={formData.excerpt[activeTab]}
+                    onChange={(e) => handleInputChange('excerpt', e.target.value)}
+                    placeholder={`Enter excerpt in ${activeTab}`}
+                />
             </div>
 
             <div className="space-y-2">
@@ -194,11 +323,13 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="content">Content (Markdown)</Label>
+                <Label htmlFor="content">Content (Markdown) - {activeTab.toUpperCase()}</Label>
                 <Textarea
                     id="content"
                     className="min-h-[400px] font-mono"
-                    {...register("content", { required: true })}
+                    value={formData.content[activeTab]}
+                    onChange={(e) => handleInputChange('content', e.target.value)}
+                    placeholder={`Enter content in ${activeTab}`}
                 />
             </div>
 

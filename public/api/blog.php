@@ -5,7 +5,7 @@ require_once 'db.php';
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -18,13 +18,28 @@ function getJsonInput() {
     return json_decode(file_get_contents('php://input'), true);
 }
 
+// Helper to decode JSON fields if they are strings
+function decodeMultilingualFields($post) {
+    $fields = ['title', 'excerpt', 'content'];
+    foreach ($fields as $field) {
+        if (isset($post[$field])) {
+            $decoded = json_decode($post[$field], true);
+            // If it decodes to an array/object, use it. Otherwise keep original string (legacy support)
+            if (json_last_error() === JSON_ERROR_NONE && (is_array($decoded) || is_object($decoded))) {
+                $post[$field] = $decoded;
+            }
+        }
+    }
+    return $post;
+}
+
 // GET: Fetch posts
 if ($method === 'GET') {
     $slug = $_GET['slug'] ?? null;
 
     try {
         if ($slug) {
-            $stmt = $pdo->prepare("SELECT * FROM posts WHERE slug = ?");
+            $stmt = $pdo->prepare("SELECT * FROM Post WHERE slug = ?");
             $stmt->execute([$slug]);
             $post = $stmt->fetch();
             
@@ -40,13 +55,16 @@ if ($method === 'GET') {
                 // Boolean conversion
                 $post['featured'] = (bool)$post['featured'];
                 
+                // Decode multilingual fields
+                $post = decodeMultilingualFields($post);
+
                 echo json_encode($post);
             } else {
                 http_response_code(404);
                 echo json_encode(['error' => 'Post not found']);
             }
         } else {
-            $stmt = $pdo->query("SELECT * FROM posts ORDER BY date DESC");
+            $stmt = $pdo->query("SELECT * FROM Post ORDER BY date DESC");
             $posts = $stmt->fetchAll();
             
             // Format posts
@@ -58,6 +76,9 @@ if ($method === 'GET') {
                     'image' => $post['authorImage']
                 ];
                 $post['featured'] = (bool)$post['featured'];
+                
+                // Decode multilingual fields
+                $post = decodeMultilingualFields($post);
             }
             
             echo json_encode($posts);
@@ -73,7 +94,7 @@ elseif ($method === 'POST') {
     $data = getJsonInput();
     
     // Basic validation
-    if (empty($data['slug']) || empty($data['title'])) {
+    if (empty($data['slug'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Missing required fields']);
         exit;
@@ -81,7 +102,7 @@ elseif ($method === 'POST') {
 
     try {
         // Check if post exists
-        $stmt = $pdo->prepare("SELECT id FROM posts WHERE slug = ?");
+        $stmt = $pdo->prepare("SELECT id FROM Post WHERE slug = ?");
         $stmt->execute([$data['slug']]);
         $exists = $stmt->fetch();
 
@@ -91,30 +112,35 @@ elseif ($method === 'POST') {
         $tags = json_encode($data['tags'] ?? []);
         $featured = !empty($data['featured']) ? 1 : 0;
 
+        // Handle multilingual fields: if array/object, json_encode it
+        $title = is_array($data['title']) || is_object($data['title']) ? json_encode($data['title']) : $data['title'];
+        $excerpt = is_array($data['excerpt']) || is_object($data['excerpt']) ? json_encode($data['excerpt']) : $data['excerpt'];
+        $content = is_array($data['content']) || is_object($data['content']) ? json_encode($data['content']) : $data['content'];
+
         if ($exists) {
             // Update
-            $sql = "UPDATE posts SET 
+            $sql = "UPDATE Post SET 
                     title = ?, excerpt = ?, content = ?, date = ?, readingTime = ?, 
                     category = ?, authorName = ?, authorRole = ?, authorImage = ?, 
                     image = ?, tags = ?, featured = ?, updatedAt = NOW()
                     WHERE slug = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                $data['title'], $data['excerpt'], $data['content'], $data['date'], $data['readingTime'],
+                $title, $excerpt, $content, $data['date'], $data['readingTime'],
                 $data['category'], $authorName, $authorRole, $authorImage,
                 $data['image'], $tags, $featured,
                 $data['slug']
             ]);
         } else {
             // Create
-            $sql = "INSERT INTO posts (
+            $sql = "INSERT INTO Post (
                     id, slug, title, excerpt, content, date, readingTime, 
                     category, authorName, authorRole, authorImage, 
                     image, tags, featured, createdAt, updatedAt
                 ) VALUES (UUID(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                $data['slug'], $data['title'], $data['excerpt'], $data['content'], $data['date'], $data['readingTime'],
+                $data['slug'], $title, $excerpt, $content, $data['date'], $data['readingTime'],
                 $data['category'], $authorName, $authorRole, $authorImage,
                 $data['image'], $tags, $featured
             ]);
@@ -138,7 +164,7 @@ elseif ($method === 'DELETE') {
     }
 
     try {
-        $stmt = $pdo->prepare("DELETE FROM posts WHERE slug = ?");
+        $stmt = $pdo->prepare("DELETE FROM Post WHERE slug = ?");
         $stmt->execute([$slug]);
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {

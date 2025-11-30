@@ -36,26 +36,26 @@ const aboutByLang: Record<Language, AboutContent> = {
       {
         id: "expert",
         icon: Users,
-        title: "Expert Team",
-        description: "Seasoned professionals with years of industry experience",
+        title: "One Partner for Everything",
+        description: "IT, Wi-Fi, Marketing & Security under one roof",
         details:
-          "FLUXIVE is built on a mix of cybersecurity, web development, IT infrastructure and digital marketing expertise. That means when we design a solution for you, we’re not guessing – we’ve seen how things work in real environments: hotels, agencies, small businesses and enterprise projects. You get people who understand both the technical side and the business side, who can advise you on what is realistic, secure and sustainable instead of selling you buzzwords.",
+          "Why manage 5 different vendors when you can have one? FLUXIVE handles your entire tech stack: from the internet cable coming into your building to the Google ads bringing customers to your door. We understand how these systems interact—so when your Wi-Fi goes down, we don't blame the ISP, we just fix it.",
       },
       {
         id: "tech",
         icon: Zap,
-        title: "Cutting-Edge Technology",
-        description: "Latest tools and frameworks to deliver modern solutions",
+        title: "No Tech Jargon",
+        description: "We explain everything in plain language",
         details:
-          "We use modern stacks like Next.js, Tailwind CSS, cloud-native tools, AI models and best-in-class security tooling instead of outdated systems that slow you down. For you this means: faster websites, smarter automations, better analytics and stronger security – all built on technologies that are actively maintained and ready for the future. We don’t use tech just because it’s trendy; we pick what fits your business and keeps maintenance simple.",
+          "We don't hide behind complex acronyms. Whether we're explaining a firewall rule or an SEO strategy, we speak your language. We believe you should understand exactly what you're paying for and how it helps your business (or home) run better.",
       },
       {
         id: "tailored",
         icon: Target,
-        title: "Tailored Solutions",
-        description: "Custom approaches designed for your specific needs",
+        title: "For Everyone",
+        description: "From 50-Room Hotels to Single-Family Homes",
         details:
-          "Every business has different pain points: a hotel might struggle with bookings and Wi-Fi, a restaurant with Google Maps visibility, an agency with automation, a small shop with a basic but professional website. At FLUXIVE we don’t push one single package to everyone. We analyse your situation, budget and goals, then design a roadmap that fits you – whether that’s fixing Google Business Profile issues, deploying better Wi-Fi, building an AI chatbot, redesigning your site, or a mix of all of these.",
+          "We bring enterprise-grade quality to everyone. A homeowner needing stable Wi-Fi deserves the same reliability as a busy hotel. A small local restaurant deserves the same marketing expertise as a big chain. We scale our solutions to fit your specific needs and budget.",
       },
       {
         id: "proven",
@@ -63,7 +63,7 @@ const aboutByLang: Record<Language, AboutContent> = {
         title: "Proven Track Record",
         description: "500+ successful projects and satisfied clients worldwide",
         details:
-          "From local hotels and small businesses to larger international projects, we’ve worked on security assessments, websites, marketing campaigns and automation flows that actually shipped – not just concepts on paper. Our focus is always on measurable results: more bookings, more leads, more stability, better security and smoother operations. This real-world experience is what we bring into every new project, so you don’t have to learn everything the hard way yourself.",
+          "From local hotels and small businesses to larger international projects, we’ve worked on security assessments, websites, marketing campaigns and automation flows that actually shipped – not just concepts on paper. Our focus is always on measurable results: more bookings, more leads, more stability, better security and smoother operations.",
       },
     ],
   },
@@ -79,28 +79,28 @@ const aboutByLang: Record<Language, AboutContent> = {
       {
         id: "expert",
         icon: Users,
-        title: "Expertteam",
+        title: "Eén partner voor alles",
         description:
-          "Professionals met jaren praktijkervaring in verschillende sectoren",
+          "IT, Wi-Fi, Marketing & Security onder één dak",
         details:
-          "FLUXIVE is gebouwd op een mix van cybersecurity, webdevelopment, IT-infrastructuur en digitale marketing. Als we een oplossing voor je uitwerken, gokken we niet – we baseren ons op wat we gezien hebben in echte omgevingen: hotels, agencies, kmo’s en grotere projecten. Je krijgt mensen die zowel de technische kant als de businesskant begrijpen en je adviseren over wat realistisch, veilig en toekomstbestendig is – zonder loze buzzwords.",
+          "Waarom 5 verschillende leveranciers beheren als je er één kunt hebben? FLUXIVE beheert je volledige tech-stack: van de internetkabel die je gebouw binnenkomt tot de Google-advertenties die klanten naar je deur brengen. Wij begrijpen hoe deze systemen samenwerken.",
       },
       {
         id: "tech",
         icon: Zap,
-        title: "Moderne technologie",
+        title: "Geen technisch jargon",
         description:
-          "De juiste tools en frameworks om toekomstgerichte oplossingen te bouwen",
+          "We leggen alles uit in begrijpelijke taal",
         details:
-          "We werken met moderne stacks zoals Next.js, Tailwind CSS, cloud-native oplossingen, AI-modellen en sterke securitytools in plaats van verouderde systemen die je vertragen. Voor jou betekent dat: snellere websites, slimmere automatisaties, betere inzichten en sterkere beveiliging – gebouwd op technologie die actief onderhouden wordt en klaar is voor morgen. We gebruiken geen tools omdat ze ‘hip’ zijn, maar omdat ze passen bij jouw bedrijf en het beheer eenvoudig houden.",
+          "We verschuilen ons niet achter ingewikkelde afkortingen. Of we nu een firewall-regel of een SEO-strategie uitleggen, we spreken jouw taal. We vinden dat je precies moet begrijpen waarvoor je betaalt en hoe het je bedrijf (of huis) beter laat draaien.",
       },
       {
         id: "tailored",
         icon: Target,
-        title: "Oplossingen op maat",
-        description: "Aanpak afgestemd op jouw sector, doelen en budget",
+        title: "Voor iedereen",
+        description: "Van hotels met 50 kamers tot gezinswoningen",
         details:
-          "Elk bedrijf heeft andere pijnpunten: een hotel worstelt misschien met bookings en Wi-Fi, een restaurant met zichtbaarheid op Google Maps, een agency met automatisatie, een kleine winkel met een eenvoudige maar professionele website. Bij FLUXIVE duwen we niemand in één standaardpakket. We kijken naar je situatie, je budget en je doelen en maken dan een stappenplan dat bij jou past – of dat nu gaat over Google Business-profiel, beter Wi-Fi, een AI-chatbot, een redesign van je site of een combinatie van alles.",
+          "We brengen kwaliteit van ondernemingsniveau naar iedereen. Een huiseigenaar die stabiele wifi nodig heeft, verdient dezelfde betrouwbaarheid als een druk hotel. Een klein lokaal restaurant verdient dezelfde marketingexpertise als een grote keten. We schalen onze oplossingen op maat van jouw behoeften en budget.",
       },
       {
         id: "proven",
@@ -109,7 +109,7 @@ const aboutByLang: Record<Language, AboutContent> = {
         description:
           "500+ afgeronde projecten en tevreden klanten in binnen- en buitenland",
         details:
-          "Van lokale hotels en kmo’s tot grotere internationale projecten: we hebben gewerkt aan security-audits, websites, marketingcampagnes en automatiseringen die effectief in productie zijn gegaan – geen theoretische slides. We focussen altijd op meetbaar resultaat: meer bookings, meer leads, meer stabiliteit, betere beveiliging en vlottere dagelijkse werking. Die praktijkervaring nemen we mee in elk nieuw project, zodat jij niet alles zelf hoeft uit te zoeken.",
+          "Van lokale hotels en kmo’s tot grotere internationale projecten: we hebben gewerkt aan security-audits, websites, marketingcampagnes en automatiseringen die effectief in productie zijn gegaan – geen theoretische slides. We focussen altijd op meetbaar resultaat: meer bookings, meer leads, meer stabiliteit, betere beveiliging en vlottere dagelijkse werking.",
       },
     ],
   },
@@ -125,29 +125,29 @@ const aboutByLang: Record<Language, AboutContent> = {
       {
         id: "expert",
         icon: Users,
-        title: "Équipe experte",
+        title: "Un partenaire pour tout",
         description:
-          "Des professionnels expérimentés avec une solide expérience terrain",
+          "IT, Wi-Fi, Marketing & Sécurité sous un même toit",
         details:
-          "FLUXIVE repose sur un mélange de compétences en cybersécurité, développement web, infrastructure IT et marketing digital. Lorsque nous concevons une solution pour vous, nous ne travaillons pas à l’aveugle – nous nous appuyons sur ce que nous avons vu dans des environnements réels : hôtels, agences, PME et projets internationaux. Vous travaillez avec des personnes qui comprennent à la fois la technique et le business, et qui peuvent vous conseiller sur ce qui est réaliste, sécurisé et durable, sans jargon inutile.",
+          "Pourquoi gérer 5 fournisseurs différents quand vous pouvez en avoir un seul ? FLUXIVE gère toute votre technologie : du câble internet qui entre dans votre bâtiment aux publicités Google qui amènent les clients à votre porte. Nous comprenons comment ces systèmes interagissent.",
       },
       {
         id: "tech",
         icon: Zap,
-        title: "Technologie de pointe",
+        title: "Pas de jargon technique",
         description:
-          "Outils modernes et frameworks adaptés à votre entreprise",
+          "Nous expliquons tout dans un langage clair",
         details:
-          "Nous utilisons des stacks modernes comme Next.js, Tailwind CSS, des outils cloud-native, des modèles d’IA et des solutions de sécurité avancées, plutôt que des systèmes dépassés qui vous ralentissent. Pour vous, cela se traduit par : des sites plus rapides, des automatisations plus intelligentes, de meilleurs indicateurs et une sécurité renforcée – le tout basé sur des technologies maintenues et prêtes pour l’avenir. Nous n’utilisons pas un outil parce qu’il est à la mode, mais parce qu’il est pertinent pour votre cas.",
+          "Nous ne nous cachons pas derrière des acronymes complexes. Que nous expliquions une règle de pare-feu ou une stratégie SEO, nous parlons votre langue. Nous pensons que vous devez comprendre exactement ce que vous payez et comment cela aide votre entreprise (ou votre maison) à mieux fonctionner.",
       },
       {
         id: "tailored",
         icon: Target,
-        title: "Solutions sur mesure",
+        title: "Pour tout le monde",
         description:
-          "Une approche adaptée à vos besoins, votre secteur et votre budget",
+          "Des hôtels de 50 chambres aux maisons unifamiliales",
         details:
-          "Chaque entreprise a ses propres défis : un hôtel peut avoir des difficultés avec les réservations et le Wi-Fi, un restaurant avec sa visibilité sur Google Maps, une agence avec l’automatisation, une petite boutique avec un site web simple mais professionnel. Chez FLUXIVE, nous ne vendons pas un seul package standard à tout le monde. Nous analysons votre situation, votre budget et vos objectifs, puis nous construisons une feuille de route adaptée – qu’il s’agisse de corriger votre fiche Google Business, d’améliorer le Wi-Fi, de créer un chatbot IA, de refondre votre site, ou d’un mélange de tout cela.",
+          "Nous apportons une qualité de niveau entreprise à tous. Un propriétaire ayant besoin d'un Wi-Fi stable mérite la même fiabilité qu'un hôtel animé. Un petit restaurant local mérite la même expertise marketing qu'une grande chaîne. Nous adaptons nos solutions à vos besoins et à votre budget.",
       },
       {
         id: "proven",
@@ -156,7 +156,7 @@ const aboutByLang: Record<Language, AboutContent> = {
         description:
           "500+ projets réussis et des clients satisfaits en Belgique et ailleurs",
         details:
-          "Des hôtels locaux et petites entreprises aux projets internationaux plus importants, nous avons réalisé des audits de sécurité, sites web, campagnes marketing et automatisations réellement déployés – pas seulement des concepts sur papier. Nous visons toujours des résultats mesurables : plus de réservations, plus de leads, plus de stabilité, une meilleure sécurité et des opérations plus fluides. Cette expérience de terrain, nous la mettons au service de chaque nouveau projet, pour que vous n’ayez pas à tout apprendre par essais et erreurs.",
+          "Des hôtels locaux et petites entreprises aux projets internationaux plus importants, nous avons réalisé des audits de sécurité, sites web, campagnes marketing et automatisations réellement déployés – pas seulement des concepts sur papier. Nous visons toujours des résultats mesurables : plus de réservations, plus de leads, plus de stabilité, une meilleure sécurité et des opérations plus fluides.",
       },
     ],
   },

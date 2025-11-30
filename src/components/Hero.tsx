@@ -23,7 +23,7 @@ const heroTexts: Record<Language, HeroCopy> = {
   nl: {
     badge: "Fluxive — IT, Cybersecurity & Marketing",
     headingHighlight: "IT & Marketing",
-    headingSuffix: "onder één dak — Voor hotels, restaurants & groeiende kmo's in België",
+    headingSuffix: "onder één dak — Voor hotels, restaurants, kmo's & particulieren in België",
     subheading:
       "Stop met het jongleren met meerdere leveranciers. Krijg enterprise-grade Wi-Fi, cybersecurity en digitale marketing van één vertrouwde partner. Meer directe boekingen. Geen dode zones. Volledige gemoedsrust.",
     supportingText: "Vertrouwd door Hotel Koffieboontje en 15+ Belgische bedrijven",
@@ -34,7 +34,7 @@ const heroTexts: Record<Language, HeroCopy> = {
   en: {
     badge: "Fluxive — Next-Gen IT & Cybersecurity",
     headingHighlight: "IT & Marketing",
-    headingSuffix: "Under One Roof—For Hotels, Restaurants & Growing SMEs in Belgium",
+    headingSuffix: "Under One Roof—For Hotels, Restaurants, SMEs & Homeowners in Belgium",
     subheading:
       "Stop juggling multiple vendors. Get enterprise-grade Wi-Fi, cybersecurity, and digital marketing from one trusted partner. More direct bookings. Zero dead zones. Complete peace of mind.",
     supportingText: "Trusted by Hotel Koffieboontje and 15+ Belgian businesses",
@@ -45,7 +45,7 @@ const heroTexts: Record<Language, HeroCopy> = {
   fr: {
     badge: "Fluxive — IT, Cybersécurité & Marketing digital",
     headingHighlight: "IT & Marketing",
-    headingSuffix: "sous un même toit — Pour hôtels, restaurants & PME en croissance en Belgique",
+    headingSuffix: "sous un même toit — Pour hôtels, restaurants, PME & particuliers en Belgique",
     subheading:
       "Arrêtez de jongler avec plusieurs fournisseurs. Obtenez un Wi-Fi de qualité entreprise, la cybersécurité et le marketing digital d'un partenaire de confiance. Plus de réservations directes. Zéro zone morte. Tranquillité d'esprit totale.",
     supportingText: "Recommandé par l'Hôtel Koffieboontje et plus de 15 entreprises belges",

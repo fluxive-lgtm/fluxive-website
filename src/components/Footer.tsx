@@ -202,21 +202,14 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               {mounted && (
                 <img
-                  src={
-                    resolvedTheme === "dark"
-                      ? "/fluxive-logo-dark.png"
-                      : "/fluxive-logo-light.png"
-                  }
+                  src="/favicon.svg"
                   alt="Fluxive Logo"
-                  className="h-10 w-10 md:h-12 md:w-12 transition-opacity duration-300"
+                  className="h-12 w-44 md:h-16 md:w-60 object-contain transition-opacity duration-300"
                 />
               )}
               {!mounted && (
-                <div className="h-10 w-10 md:h-12 md:w-12" />
+                <div className="h-12 w-44 md:h-16 md:w-60" />
               )}
-              <h3 className="text-xl md:text-2xl font-display font-bold gradient-text">
-                FLUXIVE
-              </h3>
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">
               {t.companyDescription}

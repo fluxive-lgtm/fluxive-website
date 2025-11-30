@@ -15,6 +15,13 @@ interface BlogListProps {
 
 export default function BlogList({ initialPosts, searchQuery }: BlogListProps) {
     const [activeCategory, setActiveCategory] = useState<BlogCategory>("all");
+    const [currentPage, setCurrentPage] = useState(1);
+    const POSTS_PER_PAGE = 6;
+
+    // Reset to first page when category or search changes
+    if (currentPage !== 1 && (activeCategory !== "all" || searchQuery)) {
+        setCurrentPage(1);
+    }
 
     const filteredPosts = initialPosts.filter(post => {
         const matchesCategory = activeCategory === "all" || post.category === activeCategory;
@@ -24,17 +31,34 @@ export default function BlogList({ initialPosts, searchQuery }: BlogListProps) {
     });
 
     // Separate featured post (first one) from the rest if showing all
-    const featuredPost = activeCategory === "all" ? filteredPosts[0] : null;
-    const gridPosts = activeCategory === "all" ? filteredPosts.slice(1) : filteredPosts;
+    const featuredPost = activeCategory === "all" && !searchQuery && currentPage === 1 ? filteredPosts[0] : null;
+
+    // If we have a featured post, we don't show it in the grid
+    // If we are on page 1 and showing all categories, the first post is featured, so we slice from 1
+    // Otherwise we slice from 0
+    const postsToPaginate = (activeCategory === "all" && !searchQuery) ? filteredPosts.slice(1) : filteredPosts;
+
+    const totalPages = Math.ceil(postsToPaginate.length / POSTS_PER_PAGE);
+
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    const currentPosts = postsToPaginate.slice(startIndex, startIndex + POSTS_PER_PAGE);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        document.getElementById('blog-grid')?.scrollIntoView({ behavior: 'smooth' });
+    };
 
     return (
-        <div className="container mx-auto max-w-6xl">
+        <div className="container mx-auto max-w-6xl" id="blog-grid">
             <CategoryFilter
                 activeCategory={activeCategory}
-                onSelectCategory={setActiveCategory}
+                onSelectCategory={(category) => {
+                    setActiveCategory(category);
+                    setCurrentPage(1);
+                }}
             />
 
-            {/* Featured Post Section */}
+            {/* Featured Post Section - Only on first page and when no search/filter */}
             {featuredPost && (
                 <div className="mb-16">
                     <Link href={`/blog/view?slug=${featuredPost.slug}`} className="group block">
@@ -73,20 +97,49 @@ export default function BlogList({ initialPosts, searchQuery }: BlogListProps) {
             )}
 
             {/* Posts Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {gridPosts.map((post) => (
-                    <BlogCard key={post.slug} post={post} />
-                ))}
-            </div>
+            {currentPosts.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {currentPosts.map((post) => (
+                        <BlogCard key={post.slug} post={post} />
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-20 text-gray-500">
+                    No posts found matching your criteria.
+                </div>
+            )}
 
-            {/* Pagination (Placeholder) */}
-            <div className="mt-16 flex justify-center gap-2">
-                <Button variant="outline" disabled>Previous</Button>
-                <Button variant="default" className="bg-primary-500">1</Button>
-                <Button variant="outline">2</Button>
-                <Button variant="outline">3</Button>
-                <Button variant="outline">Next</Button>
-            </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="mt-16 flex justify-center gap-2">
+                    <Button
+                        variant="outline"
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                    >
+                        Previous
+                    </Button>
+
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <Button
+                            key={page}
+                            variant={currentPage === page ? "default" : "outline"}
+                            className={currentPage === page ? "bg-primary-500 hover:bg-primary-600" : ""}
+                            onClick={() => handlePageChange(page)}
+                        >
+                            {page}
+                        </Button>
+                    ))}
+
+                    <Button
+                        variant="outline"
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

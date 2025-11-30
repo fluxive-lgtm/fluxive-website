@@ -1,9 +1,10 @@
+import ReactMarkdown from "react-markdown";
 import { servicesData } from "@/data/servicesData";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
-import { CheckCircle, ArrowRight, Clock, Shield, TrendingUp, Zap } from "lucide-react";
+import { CheckCircle, Shield, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +14,6 @@ export async function generateStaticParams() {
         slug: service.id,
     }));
 }
-
 
 export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -45,21 +45,6 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                         </p>
                     </div>
                 </div>
-            </section>
-
-            {/* Full Description */}
-            <section className="py-16 bg-white dark:bg-gray-950">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto prose dark:prose-invert lg:prose-lg">
-                        <div className="whitespace-pre-line text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                            {service.fullDescription}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* What We Do & Perfect For Grid */}
-            <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
                 <div className="container mx-auto px-4">
                     <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
                         {/* What We Do */}

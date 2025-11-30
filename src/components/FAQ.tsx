@@ -13,6 +13,21 @@ type Language = "en" | "nl" | "fr";
 
 const faqsEn = [
   {
+    question: "Do you work with homeowners or only businesses?",
+    answer:
+      "Both! We help hotels, restaurants, and offices with professional IT solutions, and we also assist homeowners with Wi-Fi problems, weak signals, and home network installation.",
+  },
+  {
+    question: "I'm just a homeowner with Wi-Fi issues – isn't that too small for you?",
+    answer:
+      "Not at all! Whether it's a 3-story home or a 50-room hotel, we take every Wi-Fi problem seriously. No project is too small.",
+  },
+  {
+    question: "How much does it cost to improve my Wi-Fi?",
+    answer:
+      "Every situation is different – it depends on your space, current equipment, and specific issues. Contact us for a free assessment and we'll give you honest recommendations.",
+  },
+  {
     question: "What services does Fluxive offer?",
     answer:
       "Fluxive provides a full mix of IT, cybersecurity and digital services including secure network and Wi-Fi design, firewall and router configuration, penetration testing, website and landing page development, Google Maps and SEO optimisation, online advertising and AI automation such as chatbots and workflows. We support everything from basic infrastructure to your entire online presence.",
@@ -56,6 +71,21 @@ const faqsEn = [
 
 const faqsNl = [
   {
+    question: "Werken jullie ook voor particulieren of alleen voor bedrijven?",
+    answer:
+      "Allebei! We helpen hotels, restaurants en kantoren met professionele IT-oplossingen, maar we helpen ook huiseigenaren met wifi-problemen, zwak signaal en thuisnetwerkinstallaties.",
+  },
+  {
+    question: "Ik ben maar een particulier met wifi-problemen – is dat niet te klein voor jullie?",
+    answer:
+      "Helemaal niet! Of het nu gaat om een huis met 3 verdiepingen of een hotel met 50 kamers, we nemen elk wifi-probleem serieus. Geen enkel project is te klein.",
+  },
+  {
+    question: "Hoeveel kost het om mijn wifi te verbeteren?",
+    answer:
+      "Elke situatie is anders – het hangt af van je ruimte, huidige apparatuur en specifieke problemen. Neem contact met ons op voor een gratis evaluatie en we geven je eerlijk advies.",
+  },
+  {
     question: "Welke diensten biedt Fluxive aan?",
     answer:
       "Fluxive biedt een complete mix van IT-, cybersecurity- en digitale diensten, waaronder veilig netwerk- en Wi-Fi-ontwerp, firewall- en routerconfiguratie, penetratietesten, website- en landingspagina-ontwikkeling, Google Maps- en SEO-optimalisatie, online advertenties en AI-automatisatie zoals chatbots en workflows. We ondersteunen alles van basisinfrastructuur tot volledige online zichtbaarheid.",
@@ -98,6 +128,21 @@ const faqsNl = [
 ];
 
 const faqsFr = [
+  {
+    question: "Travaillez-vous avec des particuliers ou seulement des entreprises ?",
+    answer:
+      "Les deux ! Nous aidons les hôtels, restaurants et bureaux avec des solutions IT professionnelles, mais nous assistons aussi les propriétaires avec leurs problèmes de Wi-Fi, signaux faibles et installations réseau à domicile.",
+  },
+  {
+    question: "Je suis un particulier avec des soucis de Wi-Fi – ce n'est pas trop petit pour vous ?",
+    answer:
+      "Pas du tout ! Qu'il s'agisse d'une maison à 3 étages ou d'un hôtel de 50 chambres, nous prenons chaque problème Wi-Fi au sérieux. Aucun projet n'est trop petit.",
+  },
+  {
+    question: "Combien coûte l'amélioration de mon Wi-Fi ?",
+    answer:
+      "Chaque situation est différente – cela dépend de votre espace, de l'équipement actuel et des problèmes spécifiques. Contactez-nous pour une évaluation gratuite et nous vous donnerons des recommandations honnêtes.",
+  },
   {
     question: "Quels services propose Fluxive ?",
     answer:

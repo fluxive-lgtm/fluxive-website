@@ -30,48 +30,48 @@ export default function ChatWidget() {
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const [isWelcomeHiding, setIsWelcomeHiding] = useState(false)
-  
+
   // Minimum swipe distance (in px) to trigger close
   const minSwipeDistance = 100
-  
+
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null)
     setTouchStart(e.targetTouches[0].clientX)
   }
-  
+
   const onTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX)
   }
-  
+
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return
-    
+
     const distance = touchEnd - touchStart
     const isLeftToRightSwipe = distance > minSwipeDistance
-    
+
     if (isLeftToRightSwipe) {
       setIsOpen(false)
     }
   }
-  
+
   // Generate or retrieve persistent session ID
   const [sessionId] = useState(() => {
     if (typeof window !== 'undefined') {
       // Check if we already have a session ID in localStorage
       let storedSessionId = localStorage.getItem('fluxive_chat_session_id')
-      
+
       if (!storedSessionId) {
         // Create new session ID if it doesn't exist
         storedSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         localStorage.setItem('fluxive_chat_session_id', storedSessionId)
       }
-      
+
       return storedSessionId
     }
     // Fallback for SSR
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   })
-  
+
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -98,7 +98,7 @@ export default function ChatWidget() {
     } else {
       document.body.classList.remove('chat-open')
     }
-    
+
     return () => {
       document.body.classList.remove('chat-open')
     }
@@ -152,8 +152,8 @@ export default function ChatWidget() {
       // Get user's local time and timezone info
       const now = new Date()
       const userTimeInfo = {
-        localTime: now.toLocaleString('en-US', { 
-          hour: '2-digit', 
+        localTime: now.toLocaleString('en-US', {
+          hour: '2-digit',
           minute: '2-digit',
           hour12: true,
           weekday: 'long',
@@ -166,9 +166,9 @@ export default function ChatWidget() {
         timestamp: now.toISOString()
       }
 
-      // Use API route (will be on Vercel)
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/chat'
-      
+      // Use API route or direct webhook
+      const apiUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || process.env.NEXT_PUBLIC_API_URL || '/api/chat'
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -231,59 +231,59 @@ export default function ChatWidget() {
 
                 // Add content character by character for smooth typing effect
                 const newContent = parsed.content
-                
+
                 for (let i = 0; i < newContent.length; i++) {
                   accumulatedText += newContent[i]
-                  
+
                   // Check if we've detected a code block starting (```json, ```typescript, etc.)
                   if (!isCodeBlockDetected && accumulatedText.includes('```')) {
                     isCodeBlockDetected = true
                     codeBlockStarted = true
-                    
+
                     // Extract text before code block
                     const textBeforeCode = accumulatedText.split('```')[0].trim()
-                    
+
                     console.log('🎨 Code block detected! Showing loading animation...')
                     console.log('📝 Text before code:', textBeforeCode)
-                    
+
                     // Show loading animation immediately
                     setMessages((prev) =>
                       prev.map((msg) =>
                         msg.id === assistantMessageId
-                          ? { 
-                              ...msg, 
-                              content: textBeforeCode,
-                              hasComponents: false,
-                              generativeContent: null,
-                              isGenerating: true
-                            }
+                          ? {
+                            ...msg,
+                            content: textBeforeCode,
+                            hasComponents: false,
+                            generativeContent: null,
+                            isGenerating: true
+                          }
                           : msg
                       )
                     )
-                    
+
                     // Stop character-by-character updates, just accumulate
                     break
                   }
-                  
+
                   // If no code block detected yet, continue with smooth typing
                   if (!isCodeBlockDetected) {
                     // Delay based on character type for natural typing
                     const char = newContent[i]
                     const delay = char === ' ' ? 20 : char.match(/[.,!?;:]/) ? 40 : 15
-                    
+
                     await new Promise(resolve => setTimeout(resolve, delay))
 
                     // Update message with smooth streaming
                     setMessages((prev) =>
                       prev.map((msg) =>
                         msg.id === assistantMessageId
-                          ? { 
-                              ...msg, 
-                              content: accumulatedText,
-                              hasComponents: false,
-                              generativeContent: null,
-                              isGenerating: false
-                            }
+                          ? {
+                            ...msg,
+                            content: accumulatedText,
+                            hasComponents: false,
+                            generativeContent: null,
+                            isGenerating: false
+                          }
                           : msg
                       )
                     )
@@ -313,30 +313,30 @@ export default function ChatWidget() {
         if (isStreamingComplete && accumulatedText) {
           console.log('✅ Streaming complete. Processing response...')
           console.log('📄 Full accumulated text length:', accumulatedText.length)
-          
+
           const { hasComponents, content, plainText } = parseAIResponse(accumulatedText)
-          
+
           console.log('🔍 Parse results:', { hasComponents, plainTextLength: plainText.length })
-          
+
           // If code block was detected during streaming, keep showing loading for a moment
           if (isCodeBlockDetected) {
             console.log('⏳ Showing loading animation for 1.2s before rendering component...')
             await new Promise(resolve => setTimeout(resolve, 1200))
           }
-          
+
           console.log('🎉 Rendering final component!')
-          
+
           // Render final components
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMessageId
-                ? { 
-                    ...msg, 
-                    content: hasComponents ? plainText : accumulatedText,
-                    hasComponents,
-                    generativeContent: content,
-                    isGenerating: false
-                  }
+                ? {
+                  ...msg,
+                  content: hasComponents ? plainText : accumulatedText,
+                  hasComponents,
+                  generativeContent: content,
+                  isGenerating: false
+                }
                 : msg
             )
           )
@@ -357,7 +357,7 @@ export default function ChatWidget() {
       const errorMessage = error instanceof Error && error.message === "Webhook URL is not configured"
         ? "⚠️ Chat service is not configured. Please contact support."
         : "❌ Sorry, I encountered an error. Please try again."
-      
+
       setMessages((prev) => [
         ...prev,
         {
@@ -402,8 +402,8 @@ export default function ChatWidget() {
             initial={{ x: "100%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
-            transition={{ 
-              duration: 0.5, 
+            transition={{
+              duration: 0.5,
               ease: [0.32, 0.72, 0, 1],
               opacity: { duration: 0.3 }
             }}
@@ -424,10 +424,10 @@ export default function ChatWidget() {
                   <div className="w-1 h-8 bg-primary rounded-full" />
                 </div>
               </div>
-              
+
               {/* Accent Bar */}
               <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary via-primary/60 to-primary/30" />
-              
+
               {/* Header */}
               <div className="relative flex items-center justify-between px-4 sm:px-6 py-3 sm:py-5 border-b border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 backdrop-blur-sm flex-shrink-0">
                 <div className="flex items-center gap-3 sm:gap-4">
@@ -475,198 +475,191 @@ export default function ChatWidget() {
                   {messages
                     .filter(message => message.role === "user" || message.content.length > 0)
                     .map((message, index) => (
-                    <motion.div
-                      key={message.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ 
-                        opacity: (message.id === "welcome" && isWelcomeHiding) ? 0 : 1, 
-                        y: (message.id === "welcome" && isWelcomeHiding) ? -20 : 0,
-                        scale: (message.id === "welcome" && isWelcomeHiding) ? 0.95 : 1
-                      }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                      className={`flex gap-3 ${
-                        message.role === "user" ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      {/* Avatar for AI */}
-                      {message.role === "assistant" && (
-                        <div className="flex-shrink-0 mt-1">
-                          <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-primary/90 to-primary/70 flex items-center justify-center shadow-md">
-                            <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                          </div>
-                        </div>
-                      )}
-
-                      <div className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"} max-w-[85%]`}>
-                        <div
-                          className={`rounded-2xl sm:rounded-3xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-md hover:shadow-lg transition-shadow w-full overflow-hidden ${
-                            message.role === "user"
-                              ? "bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-primary-foreground"
-                              : "bg-card border border-border/50 text-card-foreground backdrop-blur-sm"
+                      <motion.div
+                        key={message.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{
+                          opacity: (message.id === "welcome" && isWelcomeHiding) ? 0 : 1,
+                          y: (message.id === "welcome" && isWelcomeHiding) ? -20 : 0,
+                          scale: (message.id === "welcome" && isWelcomeHiding) ? 0.95 : 1
+                        }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"
                           }`}
-                        >
-                        {/* Show loading animation when generating components */}
-                        {message.isGenerating ? (
-                          <div className="space-y-2 sm:space-y-3">
-                            {message.content && (
-                              <div className={`prose max-w-none text-sm sm:text-base ${
-                                message.role === "user" 
-                                  ? "prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-li:text-primary-foreground" 
-                                  : "dark:prose-invert"
-                              }`}>
-                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                  {message.content}
-                                </ReactMarkdown>
-                              </div>
-                            )}
-                            <ComponentLoadingAnimation />
-                          </div>
-                        ) : message.hasComponents && message.generativeContent ? (
-                          <div className="space-y-2 sm:space-y-3">
-                            {message.content && (
-                              <div className={`prose max-w-none text-sm sm:text-base ${
-                                message.role === "user" 
-                                  ? "prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-li:text-primary-foreground" 
-                                  : "dark:prose-invert"
-                              }`}>
-                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                  {message.content}
-                                </ReactMarkdown>
-                              </div>
-                            )}
-                            <div className="generative-ui-content w-full overflow-x-auto">
-                              {renderGenerativeContent(message.generativeContent)}
+                      >
+                        {/* Avatar for AI */}
+                        {message.role === "assistant" && (
+                          <div className="flex-shrink-0 mt-1">
+                            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-primary/90 to-primary/70 flex items-center justify-center shadow-md">
+                              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                             </div>
                           </div>
-                        ) : (
-                          <div className={`prose max-w-none text-sm sm:text-base ${
-                            message.role === "user" 
-                              ? "prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-li:text-primary-foreground" 
-                              : "dark:prose-invert"
-                          }`}>
-                            <ReactMarkdown
-                              remarkPlugins={[remarkGfm]}
-                              components={{
-                              // Custom heading styles
-                              h1: ({ children }) => (
-                                <h1 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 mt-1.5 sm:mt-2">{children}</h1>
-                              ),
-                              h2: ({ children }) => (
-                                <h2 className="text-lg sm:text-xl font-bold mb-1.5 sm:mb-2 mt-1.5 sm:mt-2">{children}</h2>
-                              ),
-                              h3: ({ children }) => (
-                                <h3 className="text-base sm:text-lg font-semibold mb-1.5 sm:mb-2 mt-1.5 sm:mt-2">{children}</h3>
-                              ),
-                              // Custom paragraph styles
-                              p: ({ children }) => (
-                                <p className="text-[13px] sm:text-[15px] leading-relaxed mb-1.5 sm:mb-2 last:mb-0">
-                                  {children}
-                                </p>
-                              ),
-                              // Custom list styles
-                              ul: ({ children }) => (
-                                <ul className="space-y-0.5 sm:space-y-1 my-2 sm:my-3 ml-3 sm:ml-4">{children}</ul>
-                              ),
-                              ol: ({ children }) => (
-                                <ol className="space-y-0.5 sm:space-y-1 my-2 sm:my-3 ml-3 sm:ml-4">{children}</ol>
-                              ),
-                              li: ({ children }) => (
-                                <li className="text-[13px] sm:text-[15px] leading-relaxed">{children}</li>
-                              ),
-                              // Custom link styles
-                              a: ({ href, children }) => (
-                                <a
-                                  href={href}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={`${
-                                    message.role === "user"
-                                      ? "text-primary-foreground underline hover:opacity-80"
-                                      : "text-primary hover:text-primary/80 underline"
-                                  } transition-colors`}
-                                >
-                                  {children}
-                                </a>
-                              ),
-                              // Custom code block with syntax highlighting
-                              code({ node, inline, className, children, ...props }: any) {
-                                const match = /language-(\w+)/.exec(className || "")
-                                return !inline && match ? (
-                                  <div className="my-3 rounded-xl overflow-hidden">
-                                    <SyntaxHighlighter
-                                      style={atomDark}
-                                      language={match[1]}
-                                      PreTag="div"
-                                      className="text-sm"
-                                      {...props}
-                                    >
-                                      {String(children).replace(/\n$/, "")}
-                                    </SyntaxHighlighter>
-                                  </div>
-                                ) : (
-                                  <code
-                                    className={`${
-                                      message.role === "user"
-                                        ? "bg-white/20 text-primary-foreground"
-                                        : "bg-primary/20 text-primary"
-                                    } px-1.5 py-0.5 rounded text-sm font-mono`}
-                                    {...props}
-                                  >
-                                    {children}
-                                  </code>
-                                )
-                              },
-                              // Custom blockquote
-                              blockquote: ({ children }) => (
-                                <blockquote className="border-l-4 border-primary pl-4 py-2 my-3 italic">
-                                  {children}
-                                </blockquote>
-                              ),
-                              // Custom table
-                              table: ({ children }) => (
-                                <div className="overflow-x-auto my-3">
-                                  <table className="min-w-full border border-white/10 rounded-lg">
-                                    {children}
-                                  </table>
-                                </div>
-                              ),
-                              th: ({ children }) => (
-                                <th className="border border-white/10 px-3 py-2 bg-white/5 font-semibold text-left">
-                                  {children}
-                                </th>
-                              ),
-                              td: ({ children }) => (
-                                <td className="border border-white/10 px-3 py-2">
-                                  {children}
-                                </td>
-                              ),
-                            }}
+                        )}
+
+                        <div className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"} max-w-[85%]`}>
+                          <div
+                            className={`rounded-2xl sm:rounded-3xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-md hover:shadow-lg transition-shadow w-full overflow-hidden ${message.role === "user"
+                              ? "bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-primary-foreground"
+                              : "bg-card border border-border/50 text-card-foreground backdrop-blur-sm"
+                              }`}
                           >
-                            {message.content}
-                          </ReactMarkdown>
+                            {/* Show loading animation when generating components */}
+                            {message.isGenerating ? (
+                              <div className="space-y-2 sm:space-y-3">
+                                {message.content && (
+                                  <div className={`prose max-w-none text-sm sm:text-base ${message.role === "user"
+                                    ? "prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-li:text-primary-foreground"
+                                    : "dark:prose-invert"
+                                    }`}>
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                      {message.content}
+                                    </ReactMarkdown>
+                                  </div>
+                                )}
+                                <ComponentLoadingAnimation />
+                              </div>
+                            ) : message.hasComponents && message.generativeContent ? (
+                              <div className="space-y-2 sm:space-y-3">
+                                {message.content && (
+                                  <div className={`prose max-w-none text-sm sm:text-base ${message.role === "user"
+                                    ? "prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-li:text-primary-foreground"
+                                    : "dark:prose-invert"
+                                    }`}>
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                      {message.content}
+                                    </ReactMarkdown>
+                                  </div>
+                                )}
+                                <div className="generative-ui-content w-full overflow-x-auto">
+                                  {renderGenerativeContent(message.generativeContent)}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className={`prose max-w-none text-sm sm:text-base ${message.role === "user"
+                                ? "prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground prose-li:text-primary-foreground"
+                                : "dark:prose-invert"
+                                }`}>
+                                <ReactMarkdown
+                                  remarkPlugins={[remarkGfm]}
+                                  components={{
+                                    // Custom heading styles
+                                    h1: ({ children }) => (
+                                      <h1 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 mt-1.5 sm:mt-2">{children}</h1>
+                                    ),
+                                    h2: ({ children }) => (
+                                      <h2 className="text-lg sm:text-xl font-bold mb-1.5 sm:mb-2 mt-1.5 sm:mt-2">{children}</h2>
+                                    ),
+                                    h3: ({ children }) => (
+                                      <h3 className="text-base sm:text-lg font-semibold mb-1.5 sm:mb-2 mt-1.5 sm:mt-2">{children}</h3>
+                                    ),
+                                    // Custom paragraph styles
+                                    p: ({ children }) => (
+                                      <p className="text-[13px] sm:text-[15px] leading-relaxed mb-1.5 sm:mb-2 last:mb-0">
+                                        {children}
+                                      </p>
+                                    ),
+                                    // Custom list styles
+                                    ul: ({ children }) => (
+                                      <ul className="space-y-0.5 sm:space-y-1 my-2 sm:my-3 ml-3 sm:ml-4">{children}</ul>
+                                    ),
+                                    ol: ({ children }) => (
+                                      <ol className="space-y-0.5 sm:space-y-1 my-2 sm:my-3 ml-3 sm:ml-4">{children}</ol>
+                                    ),
+                                    li: ({ children }) => (
+                                      <li className="text-[13px] sm:text-[15px] leading-relaxed">{children}</li>
+                                    ),
+                                    // Custom link styles
+                                    a: ({ href, children }) => (
+                                      <a
+                                        href={href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`${message.role === "user"
+                                          ? "text-primary-foreground underline hover:opacity-80"
+                                          : "text-primary hover:text-primary/80 underline"
+                                          } transition-colors`}
+                                      >
+                                        {children}
+                                      </a>
+                                    ),
+                                    // Custom code block with syntax highlighting
+                                    code({ node, inline, className, children, ...props }: any) {
+                                      const match = /language-(\w+)/.exec(className || "")
+                                      return !inline && match ? (
+                                        <div className="my-3 rounded-xl overflow-hidden">
+                                          <SyntaxHighlighter
+                                            style={atomDark}
+                                            language={match[1]}
+                                            PreTag="div"
+                                            className="text-sm"
+                                            {...props}
+                                          >
+                                            {String(children).replace(/\n$/, "")}
+                                          </SyntaxHighlighter>
+                                        </div>
+                                      ) : (
+                                        <code
+                                          className={`${message.role === "user"
+                                            ? "bg-white/20 text-primary-foreground"
+                                            : "bg-primary/20 text-primary"
+                                            } px-1.5 py-0.5 rounded text-sm font-mono`}
+                                          {...props}
+                                        >
+                                          {children}
+                                        </code>
+                                      )
+                                    },
+                                    // Custom blockquote
+                                    blockquote: ({ children }) => (
+                                      <blockquote className="border-l-4 border-primary pl-4 py-2 my-3 italic">
+                                        {children}
+                                      </blockquote>
+                                    ),
+                                    // Custom table
+                                    table: ({ children }) => (
+                                      <div className="overflow-x-auto my-3">
+                                        <table className="min-w-full border border-white/10 rounded-lg">
+                                          {children}
+                                        </table>
+                                      </div>
+                                    ),
+                                    th: ({ children }) => (
+                                      <th className="border border-white/10 px-3 py-2 bg-white/5 font-semibold text-left">
+                                        {children}
+                                      </th>
+                                    ),
+                                    td: ({ children }) => (
+                                      <td className="border border-white/10 px-3 py-2">
+                                        {children}
+                                      </td>
+                                    ),
+                                  }}
+                                >
+                                  {message.content}
+                                </ReactMarkdown>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Timestamp */}
+                          <p className={`text-[10px] mt-1.5 ${message.role === "user" ? "text-white/50" : "text-muted-foreground/60"}`}>
+                            {message.timestamp.toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+
+                        {/* Avatar for User */}
+                        {message.role === "user" && (
+                          <div className="flex-shrink-0 mt-1">
+                            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-muted-foreground/90 to-muted-foreground/70 flex items-center justify-center shadow-md">
+                              <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+                            </div>
                           </div>
                         )}
-                        </div>
-
-                        {/* Timestamp */}
-                        <p className={`text-[10px] mt-1.5 ${message.role === "user" ? "text-white/50" : "text-muted-foreground/60"}`}>
-                          {message.timestamp.toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-
-                      {/* Avatar for User */}
-                      {message.role === "user" && (
-                        <div className="flex-shrink-0 mt-1">
-                          <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-muted-foreground/90 to-muted-foreground/70 flex items-center justify-center shadow-md">
-                            <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                          </div>
-                        </div>
-                      )}
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))}
 
                   {/* Typing Indicator */}
                   {isLoading && (
@@ -732,7 +725,7 @@ export default function ChatWidget() {
                 </div>
                 <p className="text-[9px] sm:text-[10px] text-muted-foreground/70 mt-2 sm:mt-2.5 text-center flex items-center justify-center gap-1 sm:gap-1.5">
                   <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary" />
-                                    Powered by <span className="text-primary font-semibold">FLUXIVE AI</span>
+                  Powered by <span className="text-primary font-semibold">FLUXIVE AI</span>
                 </p>
               </div>
             </div>

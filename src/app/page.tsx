@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import FloatingSocial from "@/components/FloatingSocial";
 import ScrollToTop from "@/components/ScrollToTop";
 import AnimatedBackground from "@/components/AnimatedBackground";
+import CommonProblems from "@/components/CommonProblems";
 
 import { FloatingWifiSupport } from "@/components/FloatingWifiSupport";  // ← NEW IMPORT
 import { FloatingPromo } from "@/components/FloatingPromo";
@@ -21,6 +22,7 @@ export default function Home() {
       <Hero />
       <Services />
       <About />
+      <CommonProblems />
       <FAQ />
       <Contact />
       <Footer />

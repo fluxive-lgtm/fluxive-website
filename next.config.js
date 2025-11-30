@@ -5,6 +5,7 @@ const nextConfig = {
   // For EasyHost: build static export
   // For Vercel: comment out 'output' line to enable API routes
   output: process.env.NODE_ENV === 'development' || process.env.VERCEL ? undefined : 'export',
+  trailingSlash: true,
   images: {
     unoptimized: true,
   },

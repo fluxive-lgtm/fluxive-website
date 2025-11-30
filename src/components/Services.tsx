@@ -27,6 +27,7 @@ type ServiceText = {
   title: string;
   description: string;
   features: string[];
+  perfectFor: string;
 };
 
 type Service = {
@@ -80,6 +81,7 @@ const services: Service[] = [
           "Enterprise-grade security",
           "24/7 monitoring and support",
         ],
+        perfectFor: "Perfect for: Hotels, Restaurants, Offices & Residential Homes",
       },
       nl: {
         title: "IT-diensten & Wi-Fi-oplossingen",
@@ -91,6 +93,7 @@ const services: Service[] = [
           "Kostenefficiënte netwerkhardware",
           "Doorlopende remote monitoring & support",
         ],
+        perfectFor: "Ideaal voor: Hotels, Restaurants, Kantoren & Woningen",
       },
       fr: {
         title: "Services IT & Solutions Wi-Fi",
@@ -102,6 +105,7 @@ const services: Service[] = [
           "Matériel réseau rentable",
           "Monitoring & support à distance continus",
         ],
+        perfectFor: "Parfait pour : Hôtels, Restaurants, Bureaux & Résidences",
       },
     },
   },
@@ -122,6 +126,7 @@ const services: Service[] = [
           "Reputation management",
           "Content marketing",
         ],
+        perfectFor: "Perfect for: Hotels, Restaurants & Local Businesses",
       },
       nl: {
         title: "Digitale marketing & Google Maps",
@@ -133,6 +138,7 @@ const services: Service[] = [
           "Campagnes voor hotels & lokale zaken",
           "Review- en reputatiestrategie",
         ],
+        perfectFor: "Ideaal voor: Hotels, Restaurants & Lokale Bedrijven",
       },
       fr: {
         title: "Marketing digital & Google Maps",
@@ -144,6 +150,7 @@ const services: Service[] = [
           "Campagnes pour hôtels & commerces locaux",
           "Stratégie d’avis et de réputation",
         ],
+        perfectFor: "Parfait pour : Hôtels, Restaurants & Commerces Locaux",
       },
     },
   },
@@ -164,6 +171,7 @@ const services: Service[] = [
           "Booking automation",
           "FAQ automation",
         ],
+        perfectFor: "Perfect for: Service Businesses & Agencies",
       },
       nl: {
         title: "AI-automatisatie & maatwerk chatbots",
@@ -175,6 +183,7 @@ const services: Service[] = [
           "Automatische e-mails, facturen & herinneringen",
           "Maatwerk AI-flows voor elk type bedrijf",
         ],
+        perfectFor: "Ideaal voor: Dienstverleners & Agencies",
       },
       fr: {
         title: "Automatisation IA & chatbots sur mesure",
@@ -186,6 +195,7 @@ const services: Service[] = [
           "E-mails, factures & rappels automatisés",
           "Scénarios IA sur mesure pour chaque entreprise",
         ],
+        perfectFor: "Parfait pour : Prestataires de Services & Agences",
       },
     },
   },
@@ -206,6 +216,7 @@ const services: Service[] = [
           "Mobile-first development",
           "Conversion optimization",
         ],
+        perfectFor: "Perfect for: Startups, SMEs & Rebranding",
       },
       nl: {
         title: "Moderne webdesign & development",
@@ -217,6 +228,7 @@ const services: Service[] = [
           "SEO-vriendelijke structuur",
           "Integratie van AI-chatbots & analytics",
         ],
+        perfectFor: "Ideaal voor: Startups, KMO's & Rebranding",
       },
       fr: {
         title: "Webdesign moderne & développement",
@@ -228,6 +240,7 @@ const services: Service[] = [
           "Structure optimisée pour le SEO",
           "Intégration de chatbots IA & analytics",
         ],
+        perfectFor: "Parfait pour : Startups, PME & Rebranding",
       },
     },
   },
@@ -248,6 +261,7 @@ const services: Service[] = [
           "Internal network testing",
           "Comprehensive reporting",
         ],
+        perfectFor: "Perfect for: E-commerce, SaaS & Data-Heavy SMEs",
       },
       nl: {
         title: "Penetratietesten",
@@ -259,6 +273,7 @@ const services: Service[] = [
           "Rapporten in duidelijke taal",
           "Geprioritiseerd actie- en verbeterplan",
         ],
+        perfectFor: "Ideaal voor: E-commerce, SaaS & Data-intensieve KMO's",
       },
       fr: {
         title: "Tests d’intrusion",
@@ -270,6 +285,7 @@ const services: Service[] = [
           "Rapports clairs orientés métier",
           "Plan de remédiation priorisé",
         ],
+        perfectFor: "Parfait pour : E-commerce, SaaS & PME gérant des données",
       },
     },
   },
@@ -290,6 +306,7 @@ const services: Service[] = [
           "Incident Response Guidance",
           "Policies, Backups & Best Practices",
         ],
+        perfectFor: "Perfect for: SMEs, Offices & Retail",
       },
       nl: {
         title: "Cybersecurity & Bescherming",
@@ -301,6 +318,7 @@ const services: Service[] = [
           "Hulp bij incidenten",
           "Beleid, back-ups & best practices",
         ],
+        perfectFor: "Ideaal voor: KMO's, Kantoren & Retail",
       },
       fr: {
         title: "Cybersécurité & Protection",
@@ -312,6 +330,7 @@ const services: Service[] = [
           "Assistance en cas d'incident",
           "Politiques, sauvegardes & bonnes pratiques",
         ],
+        perfectFor: "Parfait pour : PME, Bureaux & Retail",
       },
     },
   },
@@ -400,6 +419,12 @@ export default function Services() {
                         <CardDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-center line-clamp-3 min-h-[4rem]">
                           {t.description}
                         </CardDescription>
+                        {/* Perfect For Label */}
+                        <div className="mt-2 text-center">
+                          <span className="inline-block px-2 py-1 rounded-md bg-primary-50 dark:bg-primary-900/20 text-[10px] sm:text-xs font-medium text-primary-700 dark:text-primary-300 border border-primary-100 dark:border-primary-800">
+                            {t.perfectFor}
+                          </span>
+                        </div>
                       </CardHeader>
                       <CardContent className="p-4 sm:p-5 pt-0 flex-grow">
                         <ul className="space-y-1.5 sm:space-y-2">

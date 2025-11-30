@@ -1,12 +1,22 @@
 <?php
 // public/wifi-support-handler.php
 
+require_once 'api/db_connect.php'; // Includes $pdo and check_rate_limit()
+
 header('Content-Type: application/json');
 
 // Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'Method not allowed']);
+    exit;
+}
+
+// Rate Limiting: 5 requests per hour per IP
+$ip = $_SERVER['REMOTE_ADDR'];
+if (!check_rate_limit($pdo, $ip, 'wifi_support_request', 5, 3600)) {
+    http_response_code(429);
+    echo json_encode(['ok' => false, 'error' => 'Too many requests. Please try again later.']);
     exit;
 }
 

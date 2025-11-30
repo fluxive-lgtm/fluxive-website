@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $ip = $_SERVER['REMOTE_ADDR'];
 
 // Rate Limiting: 5 failed attempts per 15 minutes
-if (!check_rate_limit($pdo, $ip, 'admin_login_fail', 5, 900)) {
+if (!check_rate_limit($pdo, $ip, 'admin_login_fail', 10, 900)) {
     http_response_code(429);
     echo json_encode(['error' => 'Too many failed login attempts. Please try again in 15 minutes.']);
     exit;
@@ -33,7 +33,7 @@ $username = $data['username'] ?? '';
 $password = $data['password'] ?? '';
 
 // Hardcoded credentials (CHANGE THIS PASSWORD!)
-if ($username === 'admin' && $password === 'admin123') {
+if ($username === 'admin' && $password === 'U6AaQHHfBtwWdXtb1qrD') {
     // Generate a secure token
     $token = bin2hex(random_bytes(32));
     
