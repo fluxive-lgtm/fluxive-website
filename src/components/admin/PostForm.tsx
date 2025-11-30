@@ -21,6 +21,7 @@ interface PostFormData {
     content: string
     category: string
     image: string
+    coverImage: string
     featured: boolean
 }
 
@@ -35,6 +36,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
     const { language: currentLang } = useLanguage() // We might use this for UI labels, but editing should be explicit
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [imageUrl, setImageUrl] = useState(initialData?.image || "")
+    const [coverImageUrl, setCoverImageUrl] = useState(initialData?.coverImage || "")
     const [activeTab, setActiveTab] = useState<'en' | 'nl' | 'fr'>('en')
 
     // We need to manage the multilingual state manually or via a more complex form structure
@@ -79,6 +81,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             content: initialData?.content || "",
             category: initialData?.category || "wifi",
             image: initialData?.image || "",
+            coverImage: initialData?.coverImage || "",
             featured: initialData?.featured || false
         }
     })
@@ -113,7 +116,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         }
     }
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'coverImage') => {
         const file = e.target.files?.[0]
         if (!file) return
 
@@ -133,9 +136,14 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
 
             if (res.ok) {
                 const data = await res.json()
-                setImageUrl(data.url)
-                setValue("image", data.url)
-                toast({ title: "Image uploaded successfully" })
+                if (field === 'image') {
+                    setImageUrl(data.url)
+                    setValue("image", data.url)
+                } else {
+                    setCoverImageUrl(data.url)
+                    setValue("coverImage", data.url)
+                }
+                toast({ title: "File uploaded successfully" })
             } else {
                 toast({ title: "Upload failed", variant: "destructive" })
             }
@@ -304,22 +312,45 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="image">Featured Image</Label>
+                <Label htmlFor="image">Featured Media (Image or Video)</Label>
                 <div className="flex gap-4 items-center">
                     <Input
                         id="image-upload"
                         type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
+                        accept="image/*,video/*"
+                        onChange={(e) => handleFileUpload(e, 'image')}
                         className="w-full"
                     />
                     {imageUrl && (
-                        <div className="h-10 w-10 relative rounded overflow-hidden border">
-                            <img src={imageUrl} alt="Preview" className="object-cover w-full h-full" />
+                        <div className="h-20 w-20 relative rounded overflow-hidden border">
+                            {imageUrl.match(/\.(mp4|webm)$/i) ? (
+                                <video src={imageUrl} className="object-cover w-full h-full" />
+                            ) : (
+                                <img src={imageUrl} alt="Preview" className="object-cover w-full h-full" />
+                            )}
                         </div>
                     )}
                 </div>
                 <Input type="hidden" {...register("image")} />
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="coverImage">Cover Image (Optional)</Label>
+                <div className="flex gap-4 items-center">
+                    <Input
+                        id="cover-image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, 'coverImage')}
+                        className="w-full"
+                    />
+                    {coverImageUrl && (
+                        <div className="h-20 w-20 relative rounded overflow-hidden border">
+                            <img src={coverImageUrl} alt="Preview" className="object-cover w-full h-full" />
+                        </div>
+                    )}
+                </div>
+                <Input type="hidden" {...register("coverImage")} />
             </div>
 
             <div className="space-y-2">

@@ -46,6 +46,7 @@ function apiPostToBlogPostData(apiPost: any): BlogPostData {
         category: apiPost.category,
         author: apiPost.author,
         image: apiPost.image,
+        coverImage: apiPost.coverImage,
         tags: apiPost.tags,
         featured: apiPost.featured
     };

@@ -79,7 +79,13 @@ function BlogPostContent() {
             <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
                 {/* Background Image with Overlay */}
                 <div className="absolute inset-0 z-0">
-                    {post.image ? (
+                    {post.coverImage ? (
+                        <img
+                            src={post.coverImage}
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : post.image && !post.image.match(/\.(mp4|webm)$/i) ? (
                         <img
                             src={post.image}
                             alt={post.title}
@@ -145,6 +151,14 @@ function BlogPostContent() {
 
                             {/* Main Content (Center) */}
                             <article className="lg:col-span-8 lg:col-start-3">
+                                {post.image && post.image.match(/\.(mp4|webm)$/i) && (
+                                    <div className="mb-8 rounded-2xl overflow-hidden shadow-lg">
+                                        <video controls className="w-full">
+                                            <source src={post.image} type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                )}
                                 <div className="prose prose-lg dark:prose-invert prose-primary max-w-none 
                                     prose-headings:font-display prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
                                     prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed

@@ -22,6 +22,7 @@ export interface BlogPostData {
         image?: string;
     };
     image: string;
+    coverImage?: string; // New field for cover photo
     tags: string[]; // We could localize tags too, but let's keep it simple for now or use EN tags
     featured?: boolean;
 }
@@ -41,6 +42,7 @@ export interface BlogPost {
         image?: string;
     };
     image: string;
+    coverImage?: string;
     tags: string[];
     featured?: boolean;
 }

@@ -59,12 +59,12 @@ if (!file_exists($uploadDir)) {
 
 // 3. Strict File Validation
 // Whitelist extensions
-$allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4', 'webm'];
 $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
 if (!in_array($extension, $allowedExtensions)) {
     http_response_code(400);
-    echo json_encode(['error' => 'Invalid file type. Only images are allowed.']);
+    echo json_encode(['error' => 'Invalid file type. Only images and videos are allowed.']);
     exit;
 }
 
@@ -75,7 +75,9 @@ $allowedMimeTypes = [
     'image/jpeg',
     'image/png',
     'image/webp',
-    'image/gif'
+    'image/gif',
+    'video/mp4',
+    'video/webm'
 ];
 
 if (!in_array($mimeType, $allowedMimeTypes)) {

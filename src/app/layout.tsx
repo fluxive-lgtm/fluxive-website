@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "Cybersecurity",
   ],
   icons: {
-    icon: "/favicon.png",
+    icon: "/favicon.svg",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
