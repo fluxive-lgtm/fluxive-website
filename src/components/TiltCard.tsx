@@ -16,6 +16,7 @@ export function TiltCard({ children, className = "" }: TiltCardProps) {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
+    if (window.innerWidth < 768) return; // Disable on mobile
 
     const rect = ref.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -32,6 +33,7 @@ export function TiltCard({ children, className = "" }: TiltCardProps) {
   };
 
   const handleMouseEnter = () => {
+    if (window.innerWidth < 768) return;
     setIsHovering(true);
   };
 
