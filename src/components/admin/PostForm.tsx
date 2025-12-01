@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
-import { blogCategories, BlogPost } from "@/data/blogData"
+import { blogCategories, BlogPost, BlogPostData } from "@/data/blogData"
 import { savePost } from "@/lib/blog"
 import { useLanguage } from "@/context/LanguageContext"
 
@@ -26,7 +26,7 @@ interface PostFormData {
 }
 
 interface PostFormProps {
-    initialData?: BlogPost
+    initialData?: BlogPost | BlogPostData
     isEditing?: boolean
 }
 
@@ -51,9 +51,21 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
     // To properly edit existing multilingual posts, we would need to pass BlogPostData instead of BlogPost.
 
     const [formData, setFormData] = useState({
-        title: { en: initialData?.title || "", nl: "", fr: "" },
-        excerpt: { en: initialData?.excerpt || "", nl: "", fr: "" },
-        content: { en: initialData?.content || "", nl: "", fr: "" },
+        title: {
+            en: (initialData as BlogPostData)?.title?.en || (initialData as BlogPost)?.title || "",
+            nl: (initialData as BlogPostData)?.title?.nl || "",
+            fr: (initialData as BlogPostData)?.title?.fr || ""
+        },
+        excerpt: {
+            en: (initialData as BlogPostData)?.excerpt?.en || (initialData as BlogPost)?.excerpt || "",
+            nl: (initialData as BlogPostData)?.excerpt?.nl || "",
+            fr: (initialData as BlogPostData)?.excerpt?.fr || ""
+        },
+        content: {
+            en: (initialData as BlogPostData)?.content?.en || (initialData as BlogPost)?.content || "",
+            nl: (initialData as BlogPostData)?.content?.nl || "",
+            fr: (initialData as BlogPostData)?.content?.fr || ""
+        },
     })
 
     // If we are editing, we should try to populate the other languages if possible.
@@ -63,22 +75,33 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
 
     useEffect(() => {
         if (initialData) {
-            // Check if we can fetch the full data? 
-            // For now, let's just initialize 'en' with the data we have, and maybe copy to others as a starting point
-            setFormData({
-                title: { en: initialData.title, nl: initialData.title, fr: initialData.title },
-                excerpt: { en: initialData.excerpt, nl: initialData.excerpt, fr: initialData.excerpt },
-                content: { en: initialData.content, nl: initialData.content, fr: initialData.content },
-            })
+            const isLocalized = (data: any): data is BlogPostData => {
+                return typeof data.title === 'object';
+            }
+
+            if (isLocalized(initialData)) {
+                setFormData({
+                    title: { en: initialData.title.en, nl: initialData.title.nl, fr: initialData.title.fr },
+                    excerpt: { en: initialData.excerpt.en, nl: initialData.excerpt.nl, fr: initialData.excerpt.fr },
+                    content: { en: initialData.content.en, nl: initialData.content.nl, fr: initialData.content.fr },
+                })
+            } else {
+                // Fallback for flattened data (shouldn't happen if we use getFullPostBySlug)
+                setFormData({
+                    title: { en: initialData.title, nl: initialData.title, fr: initialData.title },
+                    excerpt: { en: initialData.excerpt, nl: initialData.excerpt, fr: initialData.excerpt },
+                    content: { en: initialData.content, nl: initialData.content, fr: initialData.content },
+                })
+            }
         }
     }, [initialData])
 
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PostFormData>({
         defaultValues: {
-            title: initialData?.title || "",
+            title: (initialData as BlogPostData)?.title?.en || (initialData as BlogPost)?.title || "",
             slug: initialData?.slug || "",
-            excerpt: initialData?.excerpt || "",
-            content: initialData?.content || "",
+            excerpt: (initialData as BlogPostData)?.excerpt?.en || (initialData as BlogPost)?.excerpt || "",
+            content: (initialData as BlogPostData)?.content?.en || (initialData as BlogPost)?.content || "",
             category: initialData?.category || "wifi",
             image: initialData?.image || "",
             coverImage: initialData?.coverImage || "",

@@ -3,19 +3,19 @@
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { PostForm } from "@/components/admin/PostForm"
-import { getPostBySlug, BlogPost } from "@/lib/blog"
+import { getFullPostBySlug, BlogPost, BlogPostData } from "@/lib/blog"
 
 function EditPostContent() {
     const searchParams = useSearchParams()
     const slug = searchParams.get("slug")
-    const [post, setPost] = useState<BlogPost | null>(null)
+    const [post, setPost] = useState<BlogPost | BlogPostData | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchPost = async () => {
             if (!slug) return
             try {
-                const data = await getPostBySlug(slug)
+                const data = await getFullPostBySlug(slug)
                 setPost(data)
             } catch (error) {
                 console.error("Failed to fetch post:", error)

@@ -1,7 +1,7 @@
 
 import { BlogPost, BlogPostData, blogPosts as staticPosts, LocalizedContent } from '@/data/blogData';
 
-export type { BlogPost };
+export type { BlogPost, BlogPostData };
 
 // Helper to simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -97,6 +97,21 @@ export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en
     // Fallback to static
     const post = staticPosts.find(p => p.slug === slug);
     return post ? flattenPost(post, lang) : null;
+}
+
+export async function getFullPostBySlug(slug: string): Promise<BlogPostData | null> {
+    try {
+        const res = await fetch(`/api/blog.php?slug=${slug}`);
+        if (res.ok) {
+            const apiPost = await res.json();
+            return apiPostToBlogPostData(apiPost);
+        }
+    } catch (error) {
+        console.error("API fetch failed for slug:", slug, error);
+    }
+
+    // Fallback to static
+    return staticPosts.find(p => p.slug === slug) || null;
 }
 
 export async function savePost(post: BlogPost): Promise<void> {
