@@ -403,7 +403,7 @@ export default function Services() {
                 <Link href={`/services/${service.id}`} className="w-full">
                   <TiltCard>
                     <Card
-                      className="glass-card group w-full h-full flex flex-col border border-white/20 dark:border-white/10 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 transition-all duration-300 hover:shadow-2xl hover:shadow-primary-500/20"
+                      className={`glass-card group w-full h-full flex flex-col border ${service.borderColor} backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 transition-all duration-300 hover:shadow-2xl hover:shadow-primary-500/20`}
                     >
                       <CardHeader className="p-4 sm:p-5 flex-shrink-0">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">

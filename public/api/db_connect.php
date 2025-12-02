@@ -71,4 +71,6 @@ function check_rate_limit($pdo, $ip, $action, $limit, $window) {
 
     return true;
 }
+
+
 ?>

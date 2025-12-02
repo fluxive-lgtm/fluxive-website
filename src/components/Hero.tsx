@@ -26,7 +26,7 @@ const heroTexts: Record<Language, HeroCopy> = {
     headingSuffix: "onder één dak — Voor hotels, restaurants, kmo's & particulieren in België",
     subheading:
       "Stop met het jongleren met meerdere leveranciers. Krijg enterprise-grade Wi-Fi, cybersecurity en digitale marketing van één vertrouwde partner. Meer directe boekingen. Geen dode zones. Volledige gemoedsrust.",
-    supportingText: "Vertrouwd door Hotel Koffieboontje en 15+ Belgische bedrijven",
+    supportingText: "Vertrouwd door 15+ Belgische bedrijven, waaronder:",
     primaryCta: "Vraag je gratis audit aan",
     secondaryCta: "Bekijk onze diensten",
     scrollLabel: "Scroll naar beneden",
@@ -37,7 +37,7 @@ const heroTexts: Record<Language, HeroCopy> = {
     headingSuffix: "Under One Roof—For Hotels, Restaurants, SMEs & Homeowners in Belgium",
     subheading:
       "Stop juggling multiple vendors. Get enterprise-grade Wi-Fi, cybersecurity, and digital marketing from one trusted partner. More direct bookings. Zero dead zones. Complete peace of mind.",
-    supportingText: "Trusted by Hotel Koffieboontje and 15+ Belgian businesses",
+    supportingText: "Trusted by 15+ Belgian businesses, including:",
     primaryCta: "Get Your Free Assessment",
     secondaryCta: "See Our Services",
     scrollLabel: "Scroll Down",
@@ -48,7 +48,7 @@ const heroTexts: Record<Language, HeroCopy> = {
     headingSuffix: "sous un même toit — Pour hôtels, restaurants, PME & particuliers en Belgique",
     subheading:
       "Arrêtez de jongler avec plusieurs fournisseurs. Obtenez un Wi-Fi de qualité entreprise, la cybersécurité et le marketing digital d'un partenaire de confiance. Plus de réservations directes. Zéro zone morte. Tranquillité d'esprit totale.",
-    supportingText: "Recommandé par l'Hôtel Koffieboontje et plus de 15 entreprises belges",
+    supportingText: "Recommandé par plus de 15 entreprises belges, dont :",
     primaryCta: "Obtenez votre audit gratuit",
     secondaryCta: "Voir nos services",
     scrollLabel: "Faire défiler",
@@ -139,13 +139,46 @@ export default function Hero() {
             {t.subheading}
           </motion.p>
 
-          {/* Supporting Text */}
-          <motion.p
-            variants={itemVariants}
-            className="text-sm md:text-base text-gray-500 dark:text-gray-400 mb-8 font-medium"
-          >
-            {t.supportingText}
-          </motion.p>
+          {/* Supporting Text & Clients */}
+          <motion.div variants={itemVariants} className="mb-8">
+            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-medium mb-3">
+              {t.supportingText}
+            </p>
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm md:text-base text-gray-600 dark:text-gray-300 font-medium">
+              <a
+                href="http://www.hotel-koffieboontje.be/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary-500 transition-colors"
+              >
+                Hotel Koffieboontje
+              </a>
+              <a
+                href="https://koffieboontjebudget.be/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary-500 transition-colors"
+              >
+                Koffieboontje Budget
+              </a>
+              <a
+                href="http://www.bikerentalkoffieboontje.be/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary-500 transition-colors"
+              >
+                Adventure Bike Rental
+              </a>
+              <a
+                href="http://www.fidelaccountants.be/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary-500 transition-colors"
+              >
+                FIDEL Accountants
+              </a>
+            </div>
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
