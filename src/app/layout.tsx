@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { CookieBanner } from "@/components/CookieBanner";
 import ChatWidgetWrapper from "@/components/ChatWidgetWrapper";
 import { LanguageProvider } from "@/context/LanguageContext";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -126,6 +127,20 @@ export default function RootLayout({
             <Toaster />
           </LanguageProvider>
         </ThemeProvider>
+
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-81Y9857P2K"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-81Y9857P2K');
+          `}
+        </Script>
       </body>
     </html>
   );

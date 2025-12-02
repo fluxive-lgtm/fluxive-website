@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -159,11 +160,11 @@ const contactTexts: Record<Language, ContactTexts> = {
     servicePlaceholder: "Kies een service",
 
     serviceOptions: [
-      { value: "IT-diensten", label: "IT-diensten" },
-      { value: "Digitale marketing", label: "Digitale marketing" },
-      { value: "AI-automatisatie", label: "AI-automatisatie" },
-      { value: "Webontwikkeling", label: "Webontwikkeling" },
-      { value: "Penetratietesten", label: "Penetratietesten" },
+      { value: "IT Services", label: "IT-diensten" },
+      { value: "Marketing Solutions", label: "Digitale marketing" },
+      { value: "AI Automation", label: "AI-automatisatie" },
+      { value: "Web Development", label: "Webontwikkeling" },
+      { value: "Penetration Testing", label: "Penetratietesten" },
       { value: "Cybersecurity", label: "Cybersecurity" },
     ],
 
@@ -213,12 +214,12 @@ const contactTexts: Record<Language, ContactTexts> = {
     servicePlaceholder: "Choisissez un service",
 
     serviceOptions: [
-      { value: "Services IT", label: "Services IT" },
-      { value: "Marketing digital", label: "Marketing digital" },
-      { value: "Automatisation IA", label: "Automatisation IA" },
-      { value: "Développement web", label: "Développement web" },
-      { value: "Tests d’intrusion", label: "Tests d’intrusion" },
-      { value: "Cybersécurité", label: "Cybersécurité" },
+      { value: "IT Services", label: "Services IT" },
+      { value: "Marketing Solutions", label: "Marketing digital" },
+      { value: "AI Automation", label: "Automatisation IA" },
+      { value: "Web Development", label: "Développement web" },
+      { value: "Penetration Testing", label: "Tests d’intrusion" },
+      { value: "Cybersecurity", label: "Cybersécurité" },
     ],
 
     contactTitles: {
@@ -256,6 +257,8 @@ export default function Contact() {
 
   const t = contactTexts[currentLang];
 
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+
   const {
     register,
     handleSubmit,
@@ -267,36 +270,38 @@ export default function Contact() {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("phone", data.phone || "");
+      formData.append("company", data.company || "");
+      formData.append("service", data.service);
+      formData.append("message", data.message);
+      formData.append("lang", currentLang);
+      // Honeypot (must be empty)
+      formData.append("website", "");
+
+      const response = await fetch("/contact-handler.php", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
-          name: data.name,
-          email: data.email,
-          phone: data.phone || "Not provided",
-          company: data.company || "Not provided",
-          service: data.service,
-          message: data.message,
-          subject: `New Contact Form Submission from ${data.name}`,
-        }),
+        body: formData,
       });
 
       const result = await response.json();
 
-      if (result.success) {
+      if (result.ok) {
+        setStatus("success");
+        // Optional: still show toast or rely on the UI
         toast({
           title: t.toastSuccessTitle,
           description: t.toastSuccessDescription,
         });
         reset();
       } else {
-        throw new Error("Submission failed");
+        throw new Error(result.error || "Submission failed");
       }
     } catch (error) {
+      console.error(error);
+      setStatus("error");
       toast({
         variant: "destructive",
         title: t.toastErrorTitle,
@@ -339,116 +344,161 @@ export default function Contact() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <div>
-                    <Label htmlFor="name">{t.nameLabel}</Label>
-                    <Input
-                      id="name"
-                      {...register("name")}
-                      autoComplete="name"
-                      className="glass-card border-primary-500/20 mt-2"
-                      placeholder={t.namePlaceholder}
-                    />
-                    {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.name.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="email">{t.emailLabel}</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      {...register("email")}
-                      autoComplete="email"
-                      className="glass-card border-primary-500/20 mt-2"
-                      placeholder={t.emailPlaceholder}
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.email.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="phone">{t.phoneLabel}</Label>
-                      <Input
-                        id="phone"
-                        {...register("phone")}
-                        autoComplete="tel"
-                        className="glass-card border-primary-500/20 mt-2"
-                        placeholder={t.phonePlaceholder}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="company">{t.companyLabel}</Label>
-                      <Input
-                        id="company"
-                        {...register("company")}
-                        autoComplete="organization"
-                        className="glass-card border-primary-500/20 mt-2"
-                        placeholder={t.companyPlaceholder}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="service">{t.serviceLabel}</Label>
-                    <select
-                      id="service"
-                      {...register("service")}
-                      suppressHydrationWarning
-                      className="w-full h-10 rounded-md border border-primary-500/20 px-3 py-2 text-sm mt-2 
-                                bg-white dark:bg-black
-                                text-gray-900 dark:text-gray-100
-                                focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
-                                transition-colors
-                                [&>option]:bg-white [&>option]:text-gray-900
-                                dark:[&>option]:bg-black dark:[&>option]:text-gray-100"
-                    >
-                      <option value="">{t.servicePlaceholder}</option>
-                      {t.serviceOptions.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.service && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.service.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message">{t.messageLabel}</Label>
-                    <Textarea
-                      id="message"
-                      {...register("message")}
-                      className="glass-card border-primary-500/20 mt-2 min-h-[120px]"
-                      placeholder={t.messagePlaceholder}
-                    />
-                    {errors.message && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.message.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600"
+                {status === "success" ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, type: "spring" }}
+                    className="flex flex-col items-center justify-center py-12 text-center space-y-6"
                   >
-                    {isSubmitting ? t.sendingLabel : t.sendLabel}
-                    <Send className="ml-2 w-4 h-4" />
-                  </Button>
-                </form>
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{
+                        delay: 0.2,
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 15,
+                      }}
+                      className="w-24 h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-5xl shadow-lg shadow-primary-500/30"
+                    >
+                      🚀
+                    </motion.div>
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold font-display gradient-text">
+                        {t.toastSuccessTitle}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-300 max-w-xs mx-auto">
+                        {t.toastSuccessDescription}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        setStatus("idle");
+                        reset();
+                      }}
+                      variant="outline"
+                      className="mt-4 border-primary-500/30 hover:bg-primary-500/10"
+                    >
+                      Send another message
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="space-y-6"
+                    suppressHydrationWarning
+                  >
+                    <div>
+                      <Label htmlFor="name">{t.nameLabel}</Label>
+                      <Input
+                        id="name"
+                        {...register("name")}
+                        autoComplete="name"
+                        className="glass-card border-primary-500/20 mt-2"
+                        placeholder={t.namePlaceholder}
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="email">{t.emailLabel}</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        {...register("email")}
+                        autoComplete="email"
+                        className="glass-card border-primary-500/20 mt-2"
+                        placeholder={t.emailPlaceholder}
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.email.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="phone">{t.phoneLabel}</Label>
+                        <Input
+                          id="phone"
+                          {...register("phone")}
+                          autoComplete="tel"
+                          className="glass-card border-primary-500/20 mt-2"
+                          placeholder={t.phonePlaceholder}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="company">{t.companyLabel}</Label>
+                        <Input
+                          id="company"
+                          {...register("company")}
+                          autoComplete="organization"
+                          className="glass-card border-primary-500/20 mt-2"
+                          placeholder={t.companyPlaceholder}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="service">{t.serviceLabel}</Label>
+                      <select
+                        id="service"
+                        {...register("service")}
+                        suppressHydrationWarning
+                        className="w-full h-10 rounded-md border border-primary-500/20 px-3 py-2 text-sm mt-2 
+                                  bg-white dark:bg-black
+                                  text-gray-900 dark:text-gray-100
+                                  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
+                                  transition-colors
+                                  [&>option]:bg-white [&>option]:text-gray-900
+                                  dark:[&>option]:bg-black dark:[&>option]:text-gray-100"
+                      >
+                        <option value="">{t.servicePlaceholder}</option>
+                        {t.serviceOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.service && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.service.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="message">{t.messageLabel}</Label>
+                      <Textarea
+                        id="message"
+                        {...register("message")}
+                        className="glass-card border-primary-500/20 mt-2 min-h-[120px]"
+                        placeholder={t.messagePlaceholder}
+                      />
+                      {errors.message && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.message.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={isSubmitting}
+                      className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600"
+                    >
+                      {isSubmitting ? t.sendingLabel : t.sendLabel}
+                      <Send className="ml-2 w-4 h-4" />
+                    </Button>
+                  </form>
+                )}
               </CardContent>
             </Card>
           </motion.div>
