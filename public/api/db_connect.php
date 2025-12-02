@@ -33,6 +33,28 @@ try {
         )
     ");
 
+    // Create admins table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS admins (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(50) NOT NULL UNIQUE,
+            password_hash VARCHAR(255) NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+
+    // Seed default admin if not exists
+    $stmt = $pdo->query("SELECT COUNT(*) FROM admins");
+    if ($stmt->fetchColumn() == 0) {
+        // Default credentials: admin / U6AaQHHfBtwWdXtb1qrD
+        // We use password_hash() to store it securely
+        $defaultPass = 'U6AaQHHfBtwWdXtb1qrD';
+        $hash = password_hash($defaultPass, PASSWORD_DEFAULT);
+        
+        $insert = $pdo->prepare("INSERT INTO admins (username, password_hash) VALUES (?, ?)");
+        $insert->execute(['admin', $hash]);
+    }
+
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);

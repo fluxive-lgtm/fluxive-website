@@ -33,7 +33,12 @@ $username = $data['username'] ?? '';
 $password = $data['password'] ?? '';
 
 // Hardcoded credentials (CHANGE THIS PASSWORD!)
-if ($username === 'admin' && $password === 'U6AaQHHfBtwWdXtb1qrD') {
+// Check credentials against DB
+$stmt = $pdo->prepare("SELECT id, password_hash FROM admins WHERE username = ?");
+$stmt->execute([$username]);
+$user = $stmt->fetch();
+
+if ($user && password_verify($password, $user['password_hash'])) {
     // Generate a secure token
     $token = bin2hex(random_bytes(32));
     

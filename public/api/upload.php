@@ -51,6 +51,14 @@ if (!isset($_FILES['file'])) {
 }
 
 $file = $_FILES['file'];
+
+// Check file size (max 5MB)
+$maxSize = 5 * 1024 * 1024; // 5MB in bytes
+if ($file['size'] > $maxSize) {
+    http_response_code(400);
+    echo json_encode(['error' => 'File too large. Maximum size is 5MB.']);
+    exit;
+}
 $uploadDir = '../uploads/'; // Relative to public/api/
 
 if (!file_exists($uploadDir)) {
