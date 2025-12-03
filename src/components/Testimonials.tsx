@@ -5,9 +5,19 @@ import useEmblaCarousel from "embla-carousel-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import ReviewForm from "./ReviewForm";
 
-const testimonials = [
+interface Review {
+  id: number;
+  company_name: string;
+  review_text: string;
+  rating: number;
+  created_at: string;
+}
+
+// Fallback static testimonials
+const staticTestimonials = [
   {
     id: 1,
     name: "Sarah Johnson",
@@ -35,28 +45,46 @@ const testimonials = [
     rating: 5,
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
   },
-  {
-    id: 4,
-    name: "David Park",
-    role: "CEO, SecureNet",
-    company: "SecureNet Solutions",
-    content: "FLUXIVE's penetration testing services identified critical vulnerabilities that we never knew existed. Their comprehensive approach to cybersecurity gave us peace of mind.",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-  },
-  {
-    id: 5,
-    name: "Jessica Williams",
-    role: "Product Manager, CloudScale",
-    company: "CloudScale",
-    content: "The web development team at FLUXIVE built us a stunning, high-performance platform that our users love. Fast, responsive, and exactly what we envisioned.",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
-  },
 ];
 
 export default function Testimonials() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [reviews, setReviews] = useState<any[]>(staticTestimonials);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch('/api/get_reviews.php');
+        if (response.ok) {
+          const data = await response.json();
+          // Map DB fields to component fields
+          const mappedReviews = data.map((review: Review) => ({
+            id: review.id,
+            name: review.company_name, // Using company name as name for now
+            role: "Verified Client",
+            company: review.company_name,
+            content: review.review_text,
+            rating: review.rating,
+            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${review.company_name}`,
+          }));
+
+          // Combine with static or replace? Let's append to static for now to keep the section full
+          // or if we have enough real reviews, use them.
+          // For now, let's just use the fetched ones if any, otherwise fallback.
+          if (mappedReviews.length > 0) {
+            setReviews([...mappedReviews, ...staticTestimonials]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch reviews", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -93,24 +121,29 @@ export default function Testimonials() {
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6">
-              {testimonials.map((testimonial, index) => (
+              {reviews.map((testimonial, index) => (
                 <motion.div
-                  key={testimonial.id}
+                  key={`${testimonial.id}-${index}`}
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                   className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0"
                 >
-                  <Card className="glass-card border-primary-500/20 h-full hover:border-primary-500/40 transition-all group">
-                    <CardContent className="p-8">
+                  <Card
+                    className={`glass-card h-full transition-all group ${["Hotel Koffieboontje", "Koffieboontje Budget", "Adventure Bike Rental", "FIDEL Accountants"].some(vip => testimonial.company.includes(vip))
+                        ? "border-yellow-500/50 hover:border-yellow-500 shadow-[0_0_30px_-10px_rgba(234,179,8,0.3)]"
+                        : "border-primary-500/20 hover:border-primary-500/40"
+                      }`}
+                  >
+                    <CardContent className="p-8 h-full flex flex-col">
                       <Quote className="w-12 h-12 text-primary-500 mb-4 group-hover:scale-110 transition-transform" />
-                      
-                      <p className="text-gray-300 dark:text-gray-300 text-lg mb-6 leading-relaxed">
+
+                      <p className="text-gray-300 dark:text-gray-300 text-lg mb-6 leading-relaxed flex-grow">
                         "{testimonial.content}"
                       </p>
 
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 mt-auto">
                         <img
                           src={testimonial.avatar}
                           alt={testimonial.name}
@@ -168,6 +201,9 @@ export default function Testimonials() {
             </Button>
           </div>
         </div>
+
+        {/* Review Form Section */}
+        <ReviewForm />
 
         {/* Stats */}
         <motion.div

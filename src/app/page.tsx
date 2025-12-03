@@ -12,6 +12,7 @@ import CommonProblems from "@/components/CommonProblems";
 
 import { FloatingWifiSupport } from "@/components/FloatingWifiSupport";  // ← NEW IMPORT
 import { FloatingPromo } from "@/components/FloatingPromo";
+import { FloatingReview } from "@/components/FloatingReview";
 
 export default function Home() {
   return (
@@ -35,6 +36,9 @@ export default function Home() {
 
       {/* NEW: Floating Promo (Free Consultation) */}
       <FloatingPromo />
+
+      {/* NEW: Floating Review Icon */}
+      <FloatingReview />
 
     </main>
   );
