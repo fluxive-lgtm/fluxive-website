@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCallback, useEffect, useState } from "react";
 import ReviewForm from "./ReviewForm";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Review {
   id: number;
@@ -16,75 +17,65 @@ interface Review {
   created_at: string;
 }
 
-// Fallback static testimonials
-const staticTestimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    role: "CTO, TechCorp",
-    company: "TechCorp Inc.",
-    content: "FLUXIVE transformed our IT infrastructure completely. Their team's expertise and dedication to our project exceeded all expectations. The results speak for themselves - 50% improvement in system performance.",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+const translations = {
+  title: {
+    nl: "Wat Onze Klanten Zeggen",
+    en: "What Our Clients Say",
+    fr: "Ce Que Disent Nos Clients"
   },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "Founder, StartupX",
-    company: "StartupX",
-    content: "The marketing solutions provided by FLUXIVE helped us grow from 0 to 100K users in just 6 months. Their data-driven approach and creative campaigns are unmatched.",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+  subtitle: {
+    nl: "Geloof ons niet zomaar op ons woord - hoor het van enkele van onze tevreden klanten",
+    en: "Don't just take our word for it - hear from some of our satisfied clients",
+    fr: "Ne nous croyez pas sur parole - écoutez certains de nos clients satisfaits"
   },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    role: "VP of Operations, InnovateCo",
-    company: "InnovateCo",
-    content: "AI automation implemented by FLUXIVE saved us 40 hours per week in manual processes. The ROI was visible within the first month. Absolutely fantastic work!",
-    rating: 5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-  },
-];
+  verified: {
+    nl: "Geverifieerde Klant",
+    en: "Verified Client",
+    fr: "Client Vérifié"
+  }
+};
 
 export default function Testimonials() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
-  const [reviews, setReviews] = useState<any[]>(staticTestimonials);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
+        // Fetch from PHP backend
         const response = await fetch('/api/get_reviews.php');
-        if (response.ok) {
+        const contentType = response.headers.get("content-type");
+
+        if (response.ok && contentType && contentType.includes("application/json")) {
           const data = await response.json();
           // Map DB fields to component fields
           const mappedReviews = data.map((review: Review) => ({
             id: review.id,
             name: review.company_name, // Using company name as name for now
-            role: "Verified Client",
+            role: translations.verified[language as keyof typeof translations.verified] || "Verified Client",
             company: review.company_name,
             content: review.review_text,
             rating: review.rating,
             avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${review.company_name}`,
           }));
 
-          // Combine with static or replace? Let's append to static for now to keep the section full
-          // or if we have enough real reviews, use them.
-          // For now, let's just use the fetched ones if any, otherwise fallback.
-          if (mappedReviews.length > 0) {
-            setReviews([...mappedReviews, ...staticTestimonials]);
-          }
+          setReviews(mappedReviews);
+        } else {
+          console.warn("API returned non-JSON response (likely static PHP file). Using empty state.");
+          setReviews([]);
         }
       } catch (error) {
         console.error("Failed to fetch reviews", error);
+        setReviews([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchReviews();
-  }, []);
+  }, [language]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -93,6 +84,9 @@ export default function Testimonials() {
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
+
+  const t = translations;
+  const currentLang = (language as keyof typeof translations.title) || 'en';
 
   return (
     <section id="testimonials" className="py-24 relative overflow-hidden">
@@ -111,17 +105,17 @@ export default function Testimonials() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            What Our <span className="gradient-text">Clients Say</span>
+            {t.title[currentLang].split(" ").slice(0, -2).join(" ")} <span className="gradient-text">{t.title[currentLang].split(" ").slice(-2).join(" ")}</span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Don't just take our word for it - hear from some of our satisfied clients
+            {t.subtitle[currentLang]}
           </p>
         </motion.div>
 
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6">
-              {reviews.map((testimonial, index) => (
+              {reviews.length > 0 ? reviews.map((testimonial, index) => (
                 <motion.div
                   key={`${testimonial.id}-${index}`}
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -132,8 +126,8 @@ export default function Testimonials() {
                 >
                   <Card
                     className={`glass-card h-full transition-all group ${["Hotel Koffieboontje", "Koffieboontje Budget", "Adventure Bike Rental", "FIDEL Accountants"].some(vip => testimonial.company.includes(vip))
-                        ? "border-yellow-500/50 hover:border-yellow-500 shadow-[0_0_30px_-10px_rgba(234,179,8,0.3)]"
-                        : "border-primary-500/20 hover:border-primary-500/40"
+                      ? "border-yellow-500/50 hover:border-yellow-500 shadow-[0_0_30px_-10px_rgba(234,179,8,0.3)]"
+                      : "border-primary-500/20 hover:border-primary-500/40"
                       }`}
                   >
                     <CardContent className="p-8 h-full flex flex-col">
@@ -177,7 +171,11 @@ export default function Testimonials() {
                     </CardContent>
                   </Card>
                 </motion.div>
-              ))}
+              )) : (
+                <div className="w-full text-center py-12 text-gray-500">
+                  No reviews yet. Be the first to leave one!
+                </div>
+              )}
             </div>
           </div>
 
@@ -206,34 +204,6 @@ export default function Testimonials() {
         <ReviewForm />
 
         {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16"
-        >
-          {[
-            { label: "Client Satisfaction", value: "98%" },
-            { label: "Projects Delivered", value: "500+" },
-            { label: "Years Experience", value: "10+" },
-            { label: "Team Members", value: "50+" },
-          ].map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-              viewport={{ once: true }}
-              className="glass-card p-6 rounded-xl text-center hover:scale-105 transition-transform"
-            >
-              <div className="text-3xl md:text-4xl font-display font-bold gradient-text mb-2">
-                {stat.value}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
     </section>
   );

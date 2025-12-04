@@ -93,7 +93,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pb-32">
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500 rounded-full mix-blend-multiply blur-3xl opacity-20 animate-float" />
@@ -212,7 +212,7 @@ export default function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
         onClick={scrollToServices}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer group"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer group z-20"
       >
         <div className="w-6 h-10 border-2 border-primary-500 rounded-full flex justify-center p-2 group-hover:border-primary-400">
           <motion.div

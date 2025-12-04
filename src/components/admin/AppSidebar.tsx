@@ -1,6 +1,6 @@
 "use client"
 
-import { LayoutDashboard, FileText, LogOut, Settings, Star } from "lucide-react"
+import { LayoutDashboard, FileText, LogOut, Settings, Star, Briefcase } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -34,6 +34,11 @@ const items = [
         title: "Reviews",
         url: "/admin/reviews",
         icon: Star,
+    },
+    {
+        title: "Our Work",
+        url: "/admin/our-work",
+        icon: Briefcase,
     },
 ]
 
