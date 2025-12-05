@@ -44,12 +44,21 @@ export default function Testimonials() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        // Fetch from PHP backend
-        const response = await fetch('/api/get_reviews.php');
-        const contentType = response.headers.get("content-type");
+        // Fetch from PHP backend with cache busting
+        const response = await fetch(`/api/get_reviews.php?t=${Date.now()}`, {
+          cache: 'no-store',
+          headers: {
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache'
+          }
+        });
 
-        if (response.ok && contentType && contentType.includes("application/json")) {
-          const data = await response.json();
+        const contentType = response.headers.get("content-type");
+        const text = await response.text();
+
+        try {
+          const data = JSON.parse(text);
+
           // Map DB fields to component fields
           const mappedReviews = data.map((review: any) => {
             // Determine content based on language
@@ -72,8 +81,9 @@ export default function Testimonials() {
           });
 
           setReviews(mappedReviews);
-        } else {
-          console.warn("API returned non-JSON response (likely static PHP file). Using empty state.");
+        } catch (e) {
+          console.warn("API returned non-JSON response:", text.substring(0, 100));
+          // If we are in dev mode and it's PHP source code, use empty state
           setReviews([]);
         }
       } catch (error) {
@@ -135,48 +145,54 @@ export default function Testimonials() {
                   className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0"
                 >
                   <Card
-                    className={`glass-card h-full transition-all group ${["Hotel Koffieboontje", "Koffieboontje Budget", "Adventure Bike Rental", "FIDEL Accountants"].some(vip => testimonial.company.includes(vip))
+                    className={`glass-card h-full transition-all duration-300 group hover:-translate-y-2 ${["Hotel Koffieboontje", "Koffieboontje Budget", "Adventure Bike Rental", "FIDEL Accountants"].some(vip => testimonial.company.includes(vip))
                       ? "border-yellow-500/50 hover:border-yellow-500 shadow-[0_0_30px_-10px_rgba(234,179,8,0.3)]"
-                      : "border-primary-500/20 hover:border-primary-500/40"
+                      : "border-white/10 hover:border-primary-500/30 hover:shadow-[0_0_30px_-10px_rgba(var(--primary-rgb),0.2)]"
                       }`}
                   >
-                    <CardContent className="p-8 h-full flex flex-col">
-                      <Quote className="w-12 h-12 text-primary-500 mb-4 group-hover:scale-110 transition-transform" />
+                    <CardContent className="p-8 h-full flex flex-col relative overflow-hidden">
+                      {/* Decorative Quote Background */}
+                      <Quote className="absolute top-4 right-4 w-24 h-24 text-primary-500/5 rotate-12 pointer-events-none" />
 
-                      <p className="text-gray-300 dark:text-gray-300 text-lg mb-6 leading-relaxed flex-grow">
-                        "{testimonial.content}"
-                      </p>
-
-                      <div className="flex items-center gap-4 mt-auto">
-                        <img
-                          src={testimonial.avatar}
-                          alt={testimonial.name}
-                          className="w-12 h-12 rounded-full border-2 border-primary-500"
-                        />
-                        <div>
-                          <div className="font-display font-bold text-foreground">
-                            {testimonial.name}
-                          </div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">
-                            {testimonial.role}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-500">
-                            {testimonial.company}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Star Rating */}
-                      <div className="flex gap-1 mt-4">
+                      <div className="flex gap-1 mb-6">
                         {[...Array(testimonial.rating)].map((_, i) => (
                           <svg
                             key={i}
-                            className="w-5 h-5 text-yellow-400 fill-current"
+                            className="w-5 h-5 text-yellow-400 fill-current drop-shadow-sm"
                             viewBox="0 0 20 20"
                           >
                             <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                           </svg>
                         ))}
+                      </div>
+
+                      <p className="text-gray-700 dark:text-gray-200 text-lg mb-8 leading-relaxed flex-grow font-medium italic relative z-10">
+                        "{testimonial.content}"
+                      </p>
+
+                      <div className="flex items-center gap-4 mt-auto pt-6 border-t border-gray-100 dark:border-gray-800">
+                        <div className="relative">
+                          <img
+                            src={testimonial.avatar}
+                            alt={testimonial.name}
+                            className="w-14 h-14 rounded-full border-2 border-white dark:border-gray-800 shadow-md"
+                          />
+                          <div className="absolute -bottom-1 -right-1 bg-primary-500 rounded-full p-1 border-2 border-white dark:border-gray-800">
+                            <Quote className="w-3 h-3 text-white fill-current" />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="font-display font-bold text-foreground text-lg">
+                            {testimonial.name}
+                          </div>
+                          <div className="text-sm text-primary-600 dark:text-primary-400 font-medium">
+                            {testimonial.role}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+                            {testimonial.company}
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

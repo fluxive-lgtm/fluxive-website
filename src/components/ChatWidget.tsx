@@ -166,8 +166,8 @@ export default function ChatWidget() {
         timestamp: now.toISOString()
       }
 
-      // Use API route or direct webhook
-      const apiUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || process.env.NEXT_PUBLIC_API_URL || '/api/chat'
+      // Use PHP API proxy for static hosting compatibility
+      const apiUrl = '/api/chat.php'
 
       const response = await fetch(apiUrl, {
         method: "POST",

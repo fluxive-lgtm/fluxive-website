@@ -28,12 +28,13 @@ if (!$reviewId) {
 }
 
 try {
+    // Update review status to approved
     $stmt = $pdoReviews->prepare("UPDATE reviews SET is_approved = 1 WHERE id = ?");
     $stmt->execute([$reviewId]);
 
-    echo json_encode(['message' => 'Review approved successfully']);
+    echo json_encode(['success' => true]);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Failed to approve review: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Failed to update review status: ' . $e->getMessage()]);
 }
 ?>
