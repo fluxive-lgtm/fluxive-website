@@ -93,7 +93,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pb-32">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-32">
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500 rounded-full mix-blend-multiply blur-3xl opacity-20 animate-float" />
