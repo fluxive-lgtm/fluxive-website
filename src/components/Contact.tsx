@@ -281,7 +281,7 @@ export default function Contact() {
       // Honeypot (must be empty)
       formData.append("website", "");
 
-      const response = await fetch("/contact-handler.php", {
+      const response = await fetch("/api/contact.php", {
         method: "POST",
         body: formData,
       });

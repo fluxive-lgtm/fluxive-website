@@ -2,6 +2,8 @@
 // public/api/upload_content_image.php
 
 require_once 'db_connect_ourwork.php';
+require_once 'auth_check.php';
+require_auth();
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');

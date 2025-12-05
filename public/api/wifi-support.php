@@ -10,6 +10,16 @@ ob_start();
 
 header('Content-Type: application/json');
 
+require_once 'db_connect.php'; // For check_rate_limit
+
+// Rate Limiting: 5 requests per hour per IP
+$ip = $_SERVER['REMOTE_ADDR'];
+if (!check_rate_limit($pdo, $ip, 'wifi_support_request', 5, 3600)) {
+    http_response_code(429);
+    echo json_encode(['ok' => false, 'error' => 'Too many requests. Please try again later.']);
+    exit;
+}
+
 try {
     // Only allow POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

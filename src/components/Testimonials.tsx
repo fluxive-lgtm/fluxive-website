@@ -61,13 +61,8 @@ export default function Testimonials() {
 
           // Map DB fields to component fields
           const mappedReviews = data.map((review: any) => {
-            // Determine content based on language
+            // Determine content (default to review_text)
             let content = review.review_text;
-            if (language === 'nl' && review.review_text_nl) {
-              content = review.review_text_nl;
-            } else if (language === 'en' && review.review_text_en) {
-              content = review.review_text_en;
-            }
 
             return {
               id: review.id,

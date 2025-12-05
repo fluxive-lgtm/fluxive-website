@@ -16,7 +16,7 @@ $approvedOnly = isset($_GET['approved_only']) ? filter_var($_GET['approved_only'
 
 try {
     if ($approvedOnly) {
-        $stmt = $pdoReviews->prepare("SELECT id, company_name, review_text, review_text_en, review_text_nl, rating, created_at, is_approved FROM reviews WHERE is_approved = 1 ORDER BY created_at DESC");
+        $stmt = $pdoReviews->prepare("SELECT id, company_name, review_text, rating, created_at, is_approved FROM reviews WHERE is_approved = 1 ORDER BY created_at DESC");
     } else {
         // For admin, usually we'd check auth here, but for simplicity we'll rely on the frontend to call this with approved_only=false only in admin context
         // Ideally, this should be protected.

@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once 'db_connect_reviews.php';
+require_once 'auth_check.php';
+require_auth();
 
 $data = json_decode(file_get_contents('php://input'), true);
 $reviewId = $data['id'] ?? null;

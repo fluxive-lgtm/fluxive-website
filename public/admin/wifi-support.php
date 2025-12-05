@@ -27,7 +27,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'login') {
 // Handle logout
 if (isset($_GET['logout'])) {
     unset($_SESSION['wifi_admin_logged_in']);
-    header('Location: wifi-support-admin.php');
+    header('Location: wifi-support.php');
     exit;
 }
 

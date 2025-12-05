@@ -1,7 +1,7 @@
 <?php
 // public/contact-handler.php
 
-require_once 'api/db_connect.php'; // Includes $pdo (shared) and check_rate_limit()
+require_once 'db_connect.php'; // Includes $pdo (shared) and check_rate_limit()
 
 header('Content-Type: application/json');
 

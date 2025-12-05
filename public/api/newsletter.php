@@ -1,7 +1,7 @@
 <?php
 // public/newsletter-handler.php
 
-require_once 'api/db_connect.php'; // Includes $pdo and check_rate_limit()
+require_once 'db_connect.php'; // Includes $pdo and check_rate_limit()
 
 header('Content-Type: application/json');
 
