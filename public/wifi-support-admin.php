@@ -10,7 +10,7 @@ const WIFI_ADMIN_PASSWORD = 'g2TEJPBXXKCHacFJfs1s!'; // <-- CHANGE this to somet
 // Easyhost DB
 $dsn  = 'mysql:host=ID481076_wifisupport.db.webhosting.be;dbname=ID481076_wifisupport;charset=utf8mb4';
 $user = 'ID481076_wifisupport';
-$pass = 'Pyu5GhU7XfdyPCuvMyR7'; // <-- update if needed
+$pass = '4210j5nm28WDOlVjt08u'; // <-- update if needed
 
 // -----------------------------
 // Handle login

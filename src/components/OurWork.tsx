@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import Link from "next/link";
 
 interface Project {
     id: number;
@@ -107,23 +108,29 @@ export default function OurWork() {
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                             viewport={{ once: true }}
                         >
-                            <Card className="glass-card overflow-hidden h-full hover:scale-[1.02] transition-transform duration-300 border-primary-500/20 hover:border-primary-500/40">
-                                <div className="aspect-video relative overflow-hidden">
-                                    <img
-                                        src={project.image_url}
-                                        alt={project.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                                    />
-                                </div>
-                                <CardContent className="p-6">
-                                    <h3 className="text-xl font-bold font-display mb-2">
-                                        {project.title}
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                                        {project.description}
-                                    </p>
-                                </CardContent>
-                            </Card>
+                            <Link href={`/case-studies/${project.id}`} className="block h-full">
+                                <Card className="glass-card overflow-hidden h-full hover:scale-[1.02] transition-transform duration-300 border-primary-500/20 hover:border-primary-500/40">
+                                    <div className="aspect-video relative overflow-hidden">
+                                        <img
+                                            src={project.image_url}
+                                            alt={project.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                                        />
+                                    </div>
+                                    <CardContent className="p-6">
+                                        <h3 className="text-xl font-bold font-display mb-2">
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3">
+                                            {project.description}
+                                        </p>
+                                        <div className="mt-4 text-primary-500 text-sm font-medium flex items-center">
+                                            {currentLang === 'nl' ? 'Lees Meer' : 'Read More'}
+                                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
                         </motion.div>
                     ))}
                 </div>

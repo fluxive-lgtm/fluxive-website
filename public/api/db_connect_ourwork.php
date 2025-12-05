@@ -17,11 +17,32 @@ try {
         CREATE TABLE IF NOT EXISTS projects (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
+            title_nl VARCHAR(255),
             description TEXT,
+            description_nl TEXT,
+            content_en LONGTEXT,
+            content_nl LONGTEXT,
             image_url VARCHAR(255) NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ");
+
+    // Auto-migration to ensure columns exist (for existing tables)
+    $columns = [
+        'title_nl' => 'VARCHAR(255) DEFAULT NULL',
+        'description_nl' => 'TEXT DEFAULT NULL',
+        'content_en' => 'LONGTEXT DEFAULT NULL',
+        'content_nl' => 'LONGTEXT DEFAULT NULL'
+    ];
+
+    foreach ($columns as $column => $definition) {
+        try {
+            $pdo->query("SELECT $column FROM projects LIMIT 1");
+        } catch (PDOException $e) {
+            // Column doesn't exist, add it
+            $pdo->exec("ALTER TABLE projects ADD COLUMN $column $definition");
+        }
+    }
 
 } catch (PDOException $e) {
     http_response_code(500);

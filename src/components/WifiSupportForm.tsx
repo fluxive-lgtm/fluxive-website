@@ -143,16 +143,17 @@ export function WifiSupportForm() {
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "ok" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleChange =
     (field: keyof typeof form) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >
-    ) => {
-      setForm((f) => ({ ...f, [field]: e.target.value }));
-    };
+      (
+        e: React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
+      ) => {
+        setForm((f) => ({ ...f, [field]: e.target.value }));
+      };
 
   const handleClose = () => {
     // client-side navigation so language context is preserved
@@ -209,6 +210,7 @@ export function WifiSupportForm() {
     } catch (err) {
       console.error(err);
       setStatus("error");
+      setErrorMessage(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
@@ -359,7 +361,7 @@ export function WifiSupportForm() {
                 <p className="text-sm text-green-600">{t.success}</p>
               )}
               {status === "error" && (
-                <p className="text-sm text-red-600">{t.error}</p>
+                <p className="text-sm text-red-600">{errorMessage || t.error}</p>
               )}
             </div>
           </form>

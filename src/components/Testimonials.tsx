@@ -51,15 +51,25 @@ export default function Testimonials() {
         if (response.ok && contentType && contentType.includes("application/json")) {
           const data = await response.json();
           // Map DB fields to component fields
-          const mappedReviews = data.map((review: Review) => ({
-            id: review.id,
-            name: review.company_name, // Using company name as name for now
-            role: translations.verified[language as keyof typeof translations.verified] || "Verified Client",
-            company: review.company_name,
-            content: review.review_text,
-            rating: review.rating,
-            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${review.company_name}`,
-          }));
+          const mappedReviews = data.map((review: any) => {
+            // Determine content based on language
+            let content = review.review_text;
+            if (language === 'nl' && review.review_text_nl) {
+              content = review.review_text_nl;
+            } else if (language === 'en' && review.review_text_en) {
+              content = review.review_text_en;
+            }
+
+            return {
+              id: review.id,
+              name: review.company_name, // Using company name as name for now
+              role: translations.verified[language as keyof typeof translations.verified] || "Verified Client",
+              company: review.company_name,
+              content: content,
+              rating: review.rating,
+              avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${review.company_name}`,
+            };
+          });
 
           setReviews(mappedReviews);
         } else {
