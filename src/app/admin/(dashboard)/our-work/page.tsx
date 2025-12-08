@@ -67,8 +67,13 @@ export default function OurWorkAdminPage() {
                 });
             }
 
+            const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
+
             const response = await fetch("/api/upload_project.php", {
                 method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
                 body: formData,
             });
 
@@ -103,9 +108,14 @@ export default function OurWorkAdminPage() {
         if (!confirm("Are you sure you want to delete this project?")) return;
 
         try {
+            const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
+
             const response = await fetch("/api/delete_project.php", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ id }),
             });
 
@@ -174,9 +184,14 @@ export default function OurWorkAdminPage() {
         const formData = new FormData();
         formData.append("image", file);
 
+        const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
+
         try {
             const response = await fetch("/api/upload_content_image.php", {
                 method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
                 body: formData,
             });
 
