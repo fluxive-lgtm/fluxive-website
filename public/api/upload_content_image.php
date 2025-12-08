@@ -25,6 +25,11 @@ try {
         throw new Exception('Image upload failed');
     }
 
+    // Check file size (max 10MB)
+    if ($_FILES['image']['size'] > 10 * 1024 * 1024) {
+        throw new Exception('Image too large. Maximum size is 10MB.');
+    }
+
     $uploadDir = '../uploads/content/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);

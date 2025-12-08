@@ -52,11 +52,40 @@ if (!isset($_FILES['file'])) {
 
 $file = $_FILES['file'];
 
-// Check file size (max 5MB)
-$maxSize = 5 * 1024 * 1024; // 5MB in bytes
+// Check for PHP upload errors
+if ($file['error'] !== UPLOAD_ERR_OK) {
+    $message = 'File upload error';
+    switch ($file['error']) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            $message = 'File too large (server limit)';
+            break;
+        case UPLOAD_ERR_PARTIAL:
+            $message = 'File only partially uploaded';
+            break;
+        case UPLOAD_ERR_NO_FILE:
+            $message = 'No file was uploaded';
+            break;
+        case UPLOAD_ERR_NO_TMP_DIR:
+            $message = 'Missing a temporary folder';
+            break;
+        case UPLOAD_ERR_CANT_WRITE:
+            $message = 'Failed to write file to disk';
+            break;
+        case UPLOAD_ERR_EXTENSION:
+            $message = 'File upload stopped by extension';
+            break;
+    }
+    http_response_code(400);
+    echo json_encode(['error' => $message]);
+    exit;
+}
+
+// Check file size (max 10MB explicitly)
+$maxSize = 10 * 1024 * 1024; // 10MB in bytes
 if ($file['size'] > $maxSize) {
     http_response_code(400);
-    echo json_encode(['error' => 'File too large. Maximum size is 5MB.']);
+    echo json_encode(['error' => 'File too large. Maximum size is 10MB.']);
     exit;
 }
 $uploadDir = '../uploads/'; // Relative to public/api/

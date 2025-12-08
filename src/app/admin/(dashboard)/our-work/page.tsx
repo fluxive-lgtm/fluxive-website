@@ -13,10 +13,13 @@ interface Project {
     id: number;
     title: string;
     title_nl?: string;
+    title_fr?: string;
     description: string;
     description_nl?: string;
+    description_fr?: string;
     content_en?: string;
     content_nl?: string;
+    content_fr?: string;
     image_url: string;
     created_at: string;
 }
@@ -235,9 +238,10 @@ export default function OurWorkAdminPage() {
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                <TabsList className="grid w-full grid-cols-2">
+                                <TabsList className="grid w-full grid-cols-3">
                                     <TabsTrigger value="en">English</TabsTrigger>
                                     <TabsTrigger value="nl">Dutch</TabsTrigger>
+                                    <TabsTrigger value="fr">French</TabsTrigger>
                                 </TabsList>
 
                                 <div className="mt-4 space-y-4">
@@ -333,6 +337,54 @@ export default function OurWorkAdminPage() {
                                                 name="content_nl"
                                                 defaultValue={editingProject?.content_nl}
                                                 placeholder="# Case Study Titel\n\n## Het Probleem\n..."
+                                                className="min-h-[300px] font-mono text-sm"
+                                            />
+                                        </div>
+                                    </TabsContent>
+
+                                    {/* French Fields */}
+                                    <TabsContent value="fr" className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium">Project Title (FR)</label>
+                                            <Input
+                                                name="title_fr"
+                                                defaultValue={editingProject?.title_fr}
+                                                placeholder="e.g. Refonte de Site Web"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium">Short Description (FR)</label>
+                                            <Textarea
+                                                name="description_fr"
+                                                defaultValue={editingProject?.description_fr}
+                                                placeholder="Brève description..."
+                                                className="min-h-[100px]"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-center">
+                                                <label className="text-sm font-medium">Full Content (FR) - Markdown Supported</label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="file"
+                                                        id="content-image-fr"
+                                                        className="hidden"
+                                                        accept="image/*"
+                                                        onChange={handleContentImageUpload}
+                                                    />
+                                                    <label
+                                                        htmlFor="content-image-fr"
+                                                        className="cursor-pointer text-xs flex items-center text-primary-500 hover:text-primary-600"
+                                                    >
+                                                        <ImageIcon className="w-3 h-3 mr-1" />
+                                                        Upload Image for Content
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <Textarea
+                                                name="content_fr"
+                                                defaultValue={editingProject?.content_fr}
+                                                placeholder="# Titre de l'Étude de Cas\n\n## Le Problème\n..."
                                                 className="min-h-[300px] font-mono text-sm"
                                             />
                                         </div>

@@ -170,10 +170,11 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                 }
                 toast({ title: "File uploaded successfully" })
             } else {
-                toast({ title: "Upload failed", variant: "destructive" })
+                const errorData = await res.json().catch(() => ({ error: "Upload failed" }));
+                toast({ title: "Upload failed", description: errorData.error, variant: "destructive" })
             }
         } catch (error) {
-            toast({ title: "Upload error", variant: "destructive" })
+            toast({ title: "Upload error", description: "Network error or server unreachable", variant: "destructive" })
         }
     }
 
@@ -216,7 +217,8 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                     const type = file.type.startsWith('video/') ? 'video' : 'image';
                     setMedia(prev => [...prev, { url: data.url, type }])
                 } else {
-                    toast({ title: `Failed to upload ${file.name}`, variant: "destructive" })
+                    const errorData = await res.json().catch(() => ({ error: "Upload failed" }));
+                    toast({ title: `Failed to upload ${file.name}`, description: errorData.error, variant: "destructive" })
                 }
             } catch (error) {
                 toast({ title: `Error uploading ${file.name}`, variant: "destructive" })

@@ -28,6 +28,9 @@ try {
     $description_nl = $_POST['description_nl'] ?? '';
     $content_en = $_POST['content_en'] ?? '';
     $content_nl = $_POST['content_nl'] ?? '';
+    $title_fr = $_POST['title_fr'] ?? '';
+    $description_fr = $_POST['description_fr'] ?? '';
+    $content_fr = $_POST['content_fr'] ?? '';
 
     if (empty($title)) {
         throw new Exception('Title is required');
@@ -36,6 +39,9 @@ try {
     // Handle main image (backward compatibility or thumbnail)
     $imageUrl = null;
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        if ($_FILES['image']['size'] > 10 * 1024 * 1024) {
+            throw new Exception('Main image too large. Maximum size is 10MB.');
+        }
         $uploadDir = '../uploads/projects/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
@@ -72,6 +78,9 @@ try {
 
         for ($i = 0; $i < $count; $i++) {
             if ($mediaFiles['error'][$i] === UPLOAD_ERR_OK) {
+                if ($mediaFiles['size'][$i] > 10 * 1024 * 1024) {
+                    throw new Exception("File '{$mediaFiles['name'][$i]}' is too large. Maximum size is 10MB.");
+                }
                 $ext = strtolower(pathinfo($mediaFiles['name'][$i], PATHINFO_EXTENSION));
                 if (in_array($ext, $allowedImageExts)) {
                     $imageCount++;
@@ -117,9 +126,9 @@ try {
     }
 
     if ($id) {
-        // Update existing project
-        $sql = "UPDATE projects SET title = ?, title_nl = ?, description = ?, description_nl = ?, content_en = ?, content_nl = ?";
-        $params = [$title, $title_nl, $description, $description_nl, $content_en, $content_nl];
+    // Update existing project
+        $sql = "UPDATE projects SET title = ?, title_nl = ?, title_fr = ?, description = ?, description_nl = ?, description_fr = ?, content_en = ?, content_nl = ?, content_fr = ?";
+        $params = [$title, $title_nl, $title_fr, $description, $description_nl, $description_fr, $content_en, $content_nl, $content_fr];
 
         if ($imageUrl) {
             $sql .= ", image_url = ?";
@@ -159,8 +168,8 @@ try {
             // For now, let's be lenient or use a placeholder if needed, but user requirement implies uploading files.
         }
 
-        $stmt = $pdo->prepare("INSERT INTO projects (title, title_nl, description, description_nl, content_en, content_nl, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $title_nl, $description, $description_nl, $content_en, $content_nl, $imageUrl]);
+        $stmt = $pdo->prepare("INSERT INTO projects (title, title_nl, title_fr, description, description_nl, description_fr, content_en, content_nl, content_fr, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$title, $title_nl, $title_fr, $description, $description_nl, $description_fr, $content_en, $content_nl, $content_fr, $imageUrl]);
         $newProjectId = $pdo->lastInsertId();
 
         // Insert media files
