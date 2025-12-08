@@ -23,6 +23,7 @@ export interface BlogPostData {
     };
     image: string;
     coverImage?: string; // New field for cover photo
+    videoEmbed?: string; // New field for YouTube embed code
     tags: string[]; // We could localize tags too, but let's keep it simple for now or use EN tags
     featured?: boolean;
     media?: { url: string; type: 'image' | 'video' }[]; // Gallery media
@@ -44,6 +45,7 @@ export interface BlogPost {
     };
     image: string;
     coverImage?: string;
+    videoEmbed?: string;
     tags: string[];
     featured?: boolean;
     media?: { url: string; type: 'image' | 'video' }[];

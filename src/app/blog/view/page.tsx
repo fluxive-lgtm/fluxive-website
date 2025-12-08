@@ -151,6 +151,11 @@ function BlogPostContent() {
 
                             {/* Main Content (Center) */}
                             <article className="lg:col-span-8 lg:col-start-3">
+                                {post.videoEmbed && (
+                                    <div className="mb-8 rounded-2xl overflow-hidden shadow-lg aspect-video">
+                                        <div dangerouslySetInnerHTML={{ __html: post.videoEmbed }} className="w-full h-full [&_iframe]:w-full [&_iframe]:h-full" />
+                                    </div>
+                                )}
                                 {post.image && post.image.match(/\.(mp4|webm)$/i) && (
                                     <div className="mb-8 rounded-2xl overflow-hidden shadow-lg">
                                         <video controls className="w-full">
@@ -172,10 +177,18 @@ function BlogPostContent() {
                                     <div className="flex items-center justify-between mb-8">
                                         <h3 className="text-xl font-bold font-display">Share this article</h3>
                                         <div className="flex gap-2">
-                                            <button className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-[#0077b5] hover:text-white transition-all duration-300">
+                                            <button
+                                                onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')}
+                                                className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-[#0077b5] hover:text-white transition-all duration-300"
+                                                title="Share on LinkedIn"
+                                            >
                                                 <Linkedin className="w-5 h-5" />
                                             </button>
-                                            <button className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-[#1877f2] hover:text-white transition-all duration-300">
+                                            <button
+                                                onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')}
+                                                className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-[#1877f2] hover:text-white transition-all duration-300"
+                                                title="Share on Facebook"
+                                            >
                                                 <Facebook className="w-5 h-5" />
                                             </button>
                                         </div>

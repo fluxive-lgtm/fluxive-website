@@ -23,6 +23,7 @@ interface PostFormData {
     category: string
     image: string
     coverImage: string
+    videoEmbed: string
     featured: boolean
 }
 
@@ -107,6 +108,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             category: initialData?.category || "wifi",
             image: initialData?.image || "",
             coverImage: initialData?.coverImage || "",
+            videoEmbed: initialData?.videoEmbed || "",
             featured: initialData?.featured || false
         }
     })
@@ -431,6 +433,17 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                     )}
                 </div>
                 <Input type="hidden" {...register("coverImage")} />
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="videoEmbed">YouTube Video Embed Code (Optional)</Label>
+                <Textarea
+                    id="videoEmbed"
+                    placeholder={`<iframe width="560" height="315" src="https://www.youtube.com/embed/..." ...></iframe>`}
+                    {...register("videoEmbed")}
+                    className="font-mono text-xs"
+                />
+                <p className="text-xs text-gray-500">Paste the full iframe code from YouTube here. It will be displayed below the title.</p>
             </div>
 
             <div className="space-y-2">
