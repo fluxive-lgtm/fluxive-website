@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 type Language = "nl" | "en" | "fr";
 
@@ -17,8 +17,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // Default language = Dutch
   const [language, setLanguage] = useState<Language>("nl");
 
+  useEffect(() => {
+    const savedLang = localStorage.getItem("language") as Language;
+    if (savedLang && ["nl", "en", "fr"].includes(savedLang)) {
+      setLanguage(savedLang);
+    }
+  }, []);
+
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem("language", lang);
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage }}>
       {children}
     </LanguageContext.Provider>
   );

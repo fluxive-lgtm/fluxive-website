@@ -53,10 +53,14 @@ function apiPostToBlogPostData(apiPost: any): BlogPostData {
     };
 }
 
-export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en'): Promise<BlogPost[]> {
+export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = false): Promise<BlogPost[]> {
     // During build (server-side), return static data to avoid "Invalid URL" errors
     if (typeof window === 'undefined') {
-        return staticPosts.map(post => flattenPost(post, lang));
+        const posts = staticPosts.map(post => flattenPost(post, lang));
+        if (strictFilter) {
+            return posts.filter(p => p.title && p.title.trim() !== '');
+        }
+        return posts;
     }
 
     try {
@@ -68,19 +72,29 @@ export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en'): Promise<BlogPos
         // Convert API posts to internal format
         const dynamicPosts = apiPosts.map((p: any) => flattenPost(apiPostToBlogPostData(p), lang));
 
-        // Combine with static posts (optional, or just return dynamic)
-        // For now, let's return dynamic posts. If empty, maybe fallback?
-        // But user wants their NEW post.
+        if (strictFilter) {
+            return dynamicPosts.filter((p: BlogPost) => p.title && p.title.trim() !== '');
+        }
+
+        // Return dynamic posts
         if (dynamicPosts.length > 0) {
             return dynamicPosts;
         }
 
-        // Fallback to static if API is empty (e.g. local dev without DB)
-        return staticPosts.map(post => flattenPost(post, lang));
+        // Fallback to static if API is empty
+        const fallbackPosts = staticPosts.map(post => flattenPost(post, lang));
+        if (strictFilter) {
+            return fallbackPosts.filter(p => p.title && p.title.trim() !== '');
+        }
+        return fallbackPosts;
 
     } catch (error) {
         console.error("API fetch failed, falling back to static data:", error);
-        return staticPosts.map(post => flattenPost(post, lang));
+        const fallbackPosts = staticPosts.map(post => flattenPost(post, lang));
+        if (strictFilter) {
+            return fallbackPosts.filter(p => p.title && p.title.trim() !== '');
+        }
+        return fallbackPosts;
     }
 }
 
