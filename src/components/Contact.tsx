@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -82,6 +83,7 @@ type ContactTexts = {
 
   sendLabel: string;
   sendingLabel: string;
+  privacyConsentLabel: string;
 };
 
 const contactTexts: Record<Language, ContactTexts> = {
@@ -136,6 +138,7 @@ const contactTexts: Record<Language, ContactTexts> = {
 
     sendLabel: "Send Message",
     sendingLabel: "Sending...",
+    privacyConsentLabel: "I agree to the privacy policy",
   },
 
   nl: {
@@ -190,6 +193,7 @@ const contactTexts: Record<Language, ContactTexts> = {
 
     sendLabel: "Bericht verzenden",
     sendingLabel: "Verzenden...",
+    privacyConsentLabel: "Ik ga akkoord met het privacybeleid",
   },
 
   fr: {
@@ -244,6 +248,7 @@ const contactTexts: Record<Language, ContactTexts> = {
 
     sendLabel: "Envoyer le message",
     sendingLabel: "Envoi en cours...",
+    privacyConsentLabel: "J'accepte la politique de confidentialité",
   },
 };
 
@@ -259,14 +264,20 @@ export default function Contact() {
 
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
+  const formMethods = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      privacyConsent: false,
+    }
+  });
+
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
-  });
+    control,
+    formState: { errors, isSubmitting }
+  } = formMethods;
 
   const onSubmit = async (data: ContactFormData) => {
     try {
@@ -486,6 +497,36 @@ export default function Contact() {
                           {errors.message.message}
                         </p>
                       )}
+                    </div>
+
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex items-start space-x-3">
+                        <Controller
+                          name="privacyConsent"
+                          control={control}
+                          render={({ field }) => (
+                            <Checkbox
+                              id="privacyConsent"
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              className="mt-1"
+                            />
+                          )}
+                        />
+                        <div className="grid gap-1.5 leading-none">
+                          <Label
+                            htmlFor="privacyConsent"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {t.privacyConsentLabel}
+                          </Label>
+                          {errors.privacyConsent && (
+                            <p className="text-red-500 text-sm">
+                              {errors.privacyConsent.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     <Button

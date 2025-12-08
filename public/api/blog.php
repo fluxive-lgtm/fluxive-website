@@ -46,6 +46,7 @@ if ($method === 'GET') {
             if ($post) {
                 // Parse JSON tags
                 $post['tags'] = json_decode($post['tags']);
+                $post['media'] = json_decode($post['media'] ?? '[]');
                 // Format author object to match frontend expectation
                 $post['author'] = [
                     'name' => $post['authorName'],
@@ -70,6 +71,7 @@ if ($method === 'GET') {
             // Format posts
             foreach ($posts as &$post) {
                 $post['tags'] = json_decode($post['tags']);
+                $post['media'] = json_decode($post['media'] ?? '[]');
                 $post['author'] = [
                     'name' => $post['authorName'],
                     'role' => $post['authorRole'],
@@ -109,7 +111,9 @@ elseif ($method === 'POST') {
         $authorName = $data['author']['name'] ?? 'Admin';
         $authorRole = $data['author']['role'] ?? 'Editor';
         $authorImage = $data['author']['image'] ?? null;
+        $authorImage = $data['author']['image'] ?? null;
         $tags = json_encode($data['tags'] ?? []);
+        $media = json_encode($data['media'] ?? []);
         $featured = !empty($data['featured']) ? 1 : 0;
 
         // Handle multilingual fields: if array/object, json_encode it
@@ -122,13 +126,13 @@ elseif ($method === 'POST') {
             $sql = "UPDATE Post SET 
                     title = ?, excerpt = ?, content = ?, date = ?, readingTime = ?, 
                     category = ?, authorName = ?, authorRole = ?, authorImage = ?, 
-                    image = ?, tags = ?, featured = ?, updatedAt = NOW()
+                    image = ?, tags = ?, featured = ?, media = ?, updatedAt = NOW()
                     WHERE slug = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 $title, $excerpt, $content, $data['date'], $data['readingTime'],
                 $data['category'], $authorName, $authorRole, $authorImage,
-                $data['image'], $tags, $featured,
+                $data['image'], $tags, $featured, $media,
                 $data['slug']
             ]);
         } else {
@@ -136,13 +140,13 @@ elseif ($method === 'POST') {
             $sql = "INSERT INTO Post (
                     id, slug, title, excerpt, content, date, readingTime, 
                     category, authorName, authorRole, authorImage, 
-                    image, tags, featured, createdAt, updatedAt
-                ) VALUES (UUID(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+                    image, tags, featured, media, createdAt, updatedAt
+                ) VALUES (UUID(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 $data['slug'], $title, $excerpt, $content, $data['date'], $data['readingTime'],
                 $data['category'], $authorName, $authorRole, $authorImage,
-                $data['image'], $tags, $featured
+                $data['image'], $tags, $featured, $media
             ]);
         }
 

@@ -48,7 +48,8 @@ function apiPostToBlogPostData(apiPost: any): BlogPostData {
         image: apiPost.image,
         coverImage: apiPost.coverImage,
         tags: apiPost.tags,
-        featured: apiPost.featured
+        featured: apiPost.featured,
+        media: apiPost.media
     };
 }
 

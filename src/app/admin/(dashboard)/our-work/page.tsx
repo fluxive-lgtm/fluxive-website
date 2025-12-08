@@ -140,10 +140,21 @@ export default function OurWorkAdminPage() {
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const files = Array.from(e.target.files);
-            if (files.length > 10) {
+            const imageFiles = files.filter(f => f.type.startsWith('image/'));
+            const videoFiles = files.filter(f => f.type.startsWith('video/'));
+
+            if (imageFiles.length > 10) {
                 toast({
                     title: "Error",
-                    description: "Maximum 10 files allowed",
+                    description: "Maximum 10 images allowed",
+                    variant: "destructive",
+                });
+                return;
+            }
+            if (videoFiles.length > 5) {
+                toast({
+                    title: "Error",
+                    description: "Maximum 5 videos allowed",
                     variant: "destructive",
                 });
                 return;
@@ -315,7 +326,7 @@ export default function OurWorkAdminPage() {
                             </Tabs>
 
                             <div className="space-y-2 pt-4 border-t">
-                                <label className="text-sm font-medium">Project Media (Images & Videos - Max 10)</label>
+                                <label className="text-sm font-medium">Project Media (Images: Max 10, Videos: Max 5)</label>
                                 <div className="border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg p-6 text-center hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer relative">
                                     <input
                                         type="file"

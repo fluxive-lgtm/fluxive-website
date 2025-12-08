@@ -21,6 +21,9 @@ export const contactSchema = z.object({
   budget: z.string().optional(),
   timeline: z.string().optional(),
   message: z.string().min(10, "Message must be at least 10 characters"),
+  privacyConsent: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the privacy policy",
+  }),
 });
 
 export type ContactFormData = z.infer<typeof contactSchema>;

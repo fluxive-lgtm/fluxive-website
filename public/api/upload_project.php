@@ -64,8 +64,28 @@ try {
         $mediaFiles = $_FILES['media'];
         $count = count($mediaFiles['name']);
         
-        if ($count > 10) {
-            throw new Exception('Maximum 10 files allowed.');
+        // Validate counts (separate limits for images and videos)
+        $imageCount = 0;
+        $videoCount = 0;
+        $allowedImageExts = ['jpg', 'jpeg', 'png', 'webp'];
+        $allowedVideoExts = ['mp4', 'webm'];
+
+        for ($i = 0; $i < $count; $i++) {
+            if ($mediaFiles['error'][$i] === UPLOAD_ERR_OK) {
+                $ext = strtolower(pathinfo($mediaFiles['name'][$i], PATHINFO_EXTENSION));
+                if (in_array($ext, $allowedImageExts)) {
+                    $imageCount++;
+                } elseif (in_array($ext, $allowedVideoExts)) {
+                    $videoCount++;
+                }
+            }
+        }
+        
+        if ($imageCount > 10) {
+            throw new Exception("Maximum 10 images allowed. You tried to upload $imageCount.");
+        }
+        if ($videoCount > 5) {
+            throw new Exception("Maximum 5 videos allowed. You tried to upload $videoCount.");
         }
 
         $uploadDir = '../uploads/projects/';

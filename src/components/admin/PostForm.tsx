@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { blogCategories, BlogPost, BlogPostData } from "@/data/blogData"
 import { savePost } from "@/lib/blog"
 import { useLanguage } from "@/context/LanguageContext"
+import { Loader2, X, Upload, Trash2 } from "lucide-react"
 
 interface PostFormData {
     title: string
@@ -37,6 +38,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [imageUrl, setImageUrl] = useState(initialData?.image || "")
     const [coverImageUrl, setCoverImageUrl] = useState(initialData?.coverImage || "")
+    const [media, setMedia] = useState<{ url: string, type: 'image' | 'video' }[]>(initialData?.media || [])
     const [activeTab, setActiveTab] = useState<'en' | 'nl' | 'fr'>('en')
 
     // We need to manage the multilingual state manually or via a more complex form structure
@@ -175,6 +177,60 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         }
     }
 
+    const handleGallerySelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        const files = Array.from(e.target.files);
+
+        // Count existing
+        const currentImages = media.filter(m => m.type === 'image').length;
+        const currentVideos = media.filter(m => m.type === 'video').length;
+
+        // Count new
+        const newImages = files.filter(f => f.type.startsWith('image/')).length;
+        const newVideos = files.filter(f => f.type.startsWith('video/')).length;
+
+        if (currentImages + newImages > 10) {
+            toast({ title: "Error", description: `Limit reached. You can only have 10 images. Current: ${currentImages}, Adding: ${newImages}`, variant: "destructive" });
+            return;
+        }
+        if (currentVideos + newVideos > 5) {
+            toast({ title: "Error", description: `Limit reached. You can only have 5 videos. Current: ${currentVideos}, Adding: ${newVideos}`, variant: "destructive" });
+            return;
+        }
+
+        const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
+
+        // Upload Loop
+        for (const file of files) {
+            const formData = new FormData()
+            formData.append("file", file)
+
+            try {
+                const res = await fetch("/api/upload.php", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${token}` },
+                    body: formData,
+                })
+                if (res.ok) {
+                    const data = await res.json()
+                    const type = file.type.startsWith('video/') ? 'video' : 'image';
+                    setMedia(prev => [...prev, { url: data.url, type }])
+                } else {
+                    toast({ title: `Failed to upload ${file.name}`, variant: "destructive" })
+                }
+            } catch (error) {
+                toast({ title: `Error uploading ${file.name}`, variant: "destructive" })
+            }
+        }
+        toast({ title: "Gallery upload complete" });
+        // Clear input
+        e.target.value = "";
+    }
+
+    const removeMedia = (index: number) => {
+        setMedia(prev => prev.filter((_, i) => i !== index));
+    }
+
     const handleAutoTranslate = () => {
         // Simple mock translation: Copy English content to other languages if they are empty
         // In a real app, this would call a translation API (Google/DeepL/OpenAI)
@@ -213,8 +269,6 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         setIsSubmitting(true)
         try {
             // Construct full BlogPost object with multilingual data
-            // We need to cast it to any because BlogPost expects string, but we are sending objects
-            // The backend is updated to handle this.
             const blogPost: any = {
                 ...data,
                 title: formData.title,
@@ -228,7 +282,8 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                     role: "Administrator",
                     image: "/images/avatars/alice.jpg"
                 },
-                tags: initialData?.tags || []
+                tags: initialData?.tags || [],
+                media: media
             }
 
             await savePost(blogPost)
@@ -385,6 +440,52 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                     onChange={(e) => handleInputChange('content', e.target.value)}
                     placeholder={`Enter content in ${activeTab}`}
                 />
+            </div>
+
+            {/* Post Gallery Section */}
+            <div className="space-y-2 pt-4 border-t">
+                <label className="text-sm font-medium">Post Gallery (Images: Max 10, Videos: Max 5)</label>
+                <div className="border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg p-6 text-center hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer relative">
+                    <input
+                        type="file"
+                        multiple
+                        accept="image/*,video/*"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        onChange={handleGallerySelect}
+                    />
+                    <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                    <p className="text-sm text-gray-500">
+                        Click to upload multiple files
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                        JPG, PNG, WEBP, MP4, WEBM
+                    </p>
+                </div>
+
+                {/* Gallery Preview Grid */}
+                {media.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                        {media.map((item, index) => (
+                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden border group">
+                                {item.type === 'video' ? (
+                                    <video src={item.url} className="w-full h-full object-cover" />
+                                ) : (
+                                    <img src={item.url} alt={`Gallery ${index}`} className="w-full h-full object-cover" />
+                                )}
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => removeMedia(index)}
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div className="flex justify-end gap-4">
