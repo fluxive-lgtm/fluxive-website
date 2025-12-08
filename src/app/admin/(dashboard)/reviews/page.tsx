@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Trash2, Star, Loader2 } from "lucide-react";
+import { Check, Trash2, Star, Loader2, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 
 interface Review {
@@ -49,16 +49,40 @@ export default function ReviewsPage() {
 
     const handleApprove = async (id: number) => {
         setProcessingId(id);
+
+        // Get token from cookie
+        const token = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("auth_token="))
+            ?.split("=")[1];
+
+        if (!token) {
+            alert("Session expired. Please log in again.");
+            window.location.href = "/admin/login";
+            setProcessingId(null);
+            return;
+        }
+
         try {
             const response = await fetch("/api/approve_review.php", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ id }),
             });
 
             if (response.ok) {
                 // Update local state
                 setReviews(reviews.map(r => r.id === id ? { ...r, is_approved: 1 } : r));
+            } else {
+                if (response.status === 401) {
+                    alert("Session expired. Please log in again.");
+                    window.location.href = "/admin/login";
+                } else {
+                    console.error("Failed to approve review: Server returned " + response.status);
+                }
             }
         } catch (error) {
             console.error("Failed to approve review", error);
@@ -67,20 +91,62 @@ export default function ReviewsPage() {
         }
     };
 
+    const handleRepost = async (review: Review) => {
+        // Check for duplicates
+        const isDuplicate = reviews.some(r =>
+            r.is_approved === 1 &&
+            r.id !== review.id &&
+            r.review_text === review.review_text &&
+            r.company_name === review.company_name
+        );
+
+        if (isDuplicate) {
+            alert("This review is already posted on the website.");
+            return;
+        }
+
+        // Proceed to approve
+        await handleApprove(review.id);
+    };
+
     const handleDelete = async (id: number) => {
         if (!confirm("Are you sure you want to delete this review?")) return;
 
         setProcessingId(id);
+
+        // Get token from cookie
+        const token = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("auth_token="))
+            ?.split("=")[1];
+
+        if (!token) {
+            alert("Session expired. Please log in again.");
+            window.location.href = "/admin/login";
+            setProcessingId(null);
+            return;
+        }
+
         try {
             const response = await fetch("/api/delete_review.php", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ id }),
             });
 
             if (response.ok) {
                 // Remove from local state
                 setReviews(reviews.filter(r => r.id !== id));
+            } else {
+                if (response.status === 401) {
+                    alert("Session expired. Please log in again.");
+                    window.location.href = "/admin/login";
+                } else {
+                    console.error("Failed to delete review: Server returned " + response.status);
+                }
             }
         } catch (error) {
             console.error("Failed to delete review", error);
@@ -153,18 +219,35 @@ export default function ReviewsPage() {
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
                                             {!review.is_approved && (
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() => handleApprove(review.id)}
-                                                    disabled={processingId === review.id}
-                                                    className="bg-green-500 hover:bg-green-600 text-white"
-                                                >
-                                                    {processingId === review.id ? (
-                                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                                    ) : (
-                                                        <Check className="w-4 h-4" />
-                                                    )}
-                                                </Button>
+                                                <>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => handleApprove(review.id)}
+                                                        disabled={processingId === review.id}
+                                                        className="bg-green-500 hover:bg-green-600 text-white"
+                                                        title="Approve"
+                                                    >
+                                                        {processingId === review.id ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <Check className="w-4 h-4" />
+                                                        )}
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => handleRepost(review)}
+                                                        disabled={processingId === review.id}
+                                                        className="border-green-500 text-green-500 hover:bg-green-50"
+                                                        title="Repost (Check Duplicates)"
+                                                    >
+                                                        {processingId === review.id ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <RefreshCw className="w-4 h-4" />
+                                                        )}
+                                                    </Button>
+                                                </>
                                             )}
                                             <Button
                                                 size="sm"

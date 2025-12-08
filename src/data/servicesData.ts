@@ -156,9 +156,9 @@ export const servicesData: ServiceData[] = [
             ]
         },
         investment: {
-            en: "For Businesses & Hotels: Projects start from €2,500 depending on property size, number of access points needed, and complexity. For Homes: Home Wi-Fi solutions start from €600 for small homes (1-2 access points) to €1,500+ for larger properties. Each solution is custom-quoted after a free site assessment.",
-            nl: "Voor Bedrijven & Hotels: Projecten starten vanaf €2.500, afhankelijk van de grootte van het pand, het aantal benodigde toegangspunten en de complexiteit. Voor Woningen: Home Wi-Fi oplossingen starten vanaf €600 voor kleine woningen (1-2 toegangspunten) tot €1.500+ voor grotere panden. Elke oplossing wordt op maat geoffreerd na een gratis locatiebezoek.",
-            fr: "Pour Entreprises & Hôtels : Les projets commencent à partir de 2 500 € selon la taille de la propriété, le nombre de points d'accès nécessaires et la complexité. Pour Maisons : Les solutions Wi-Fi résidentielles commencent à partir de 600 € pour les petites maisons (1-2 points d'accès) jusqu'à 1 500 €+ pour les plus grandes propriétés. Chaque solution fait l'objet d'un devis personnalisé après une évaluation gratuite sur site."
+            en: "For Businesses & Hotels: Projects start from €600 depending on property size, number of access points needed, and complexity. For Homes: Home Wi-Fi solutions start from €300 for small homes (1-2 access points) to €1,500+ for larger properties. Each solution is custom-quoted after a free site assessment.",
+            nl: "Voor Bedrijven & Hotels: Projecten starten vanaf €600, afhankelijk van de grootte van het pand, het aantal benodigde toegangspunten en de complexiteit. Voor Woningen: Home Wi-Fi oplossingen starten vanaf €300 voor kleine woningen (1-2 toegangspunten) tot €1.500+ voor grotere panden. Elke oplossing wordt op maat geoffreerd na een gratis locatiebezoek.",
+            fr: "Pour Entreprises & Hôtels : Les projets commencent à partir de 600 € selon la taille de la propriété, le nombre de points d'accès nécessaires et la complexité. Pour Maisons : Les solutions Wi-Fi résidentielles commencent à partir de 300 € pour les petites maisons (1-2 points d'accès) jusqu'à 1 500 €+ pour les plus grandes propriétés. Chaque solution fait l'objet d'un devis personnalisé après une évaluation gratuite sur site."
         },
         cta: {
             en: "Get your free Wi-Fi site survey today (€500 value) - Contact us at info@fluxive.be or +32 472 92 57 41",
@@ -598,15 +598,11 @@ export const servicesData: ServiceData[] = [
                 "Fondation prête pour le SEO pour une croissance organique à long terme"
             ]
         },
-        featuredWork: {
-            en: "Check out hotel-koffieboontje.be - a modern, fast-loading site that increased their direct bookings by 40% and reduced bounce rate by 35%.",
-            nl: "Bekijk hotel-koffieboontje.be - een moderne, snel ladende site die hun directe boekingen met 40% verhoogde en de bounce rate met 35% verlaagde.",
-            fr: "Découvrez hotel-koffieboontje.be - un site moderne et rapide qui a augmenté leurs réservations directes de 40% et réduit le taux de rebond de 35%."
-        },
+
         investment: {
-            en: "Website projects start from €3,000 for small business sites. The final investment depends on the number of pages, custom features, integrations, and content requirements. Optional monthly maintenance packages available.",
-            nl: "Websiteprojecten starten vanaf €3.000 voor kleine bedrijfssites. De uiteindelijke investering hangt af van het aantal pagina's, aangepaste functies, integraties en contentvereisten. Optionele maandelijkse onderhoudspakketten beschikbaar.",
-            fr: "Les projets de site web commencent à partir de 3 000 € pour les sites de petites entreprises. L'investissement final dépend du nombre de pages, des fonctionnalités personnalisées, des intégrations et des exigences de contenu. Forfaits de maintenance mensuels optionnels disponibles."
+            en: "Website projects start from €1,500 for small business sites. The final investment depends on the number of pages, custom features, integrations, and content requirements. Optional monthly maintenance packages available.",
+            nl: "Websiteprojecten starten vanaf €1.500 voor kleine bedrijfssites. De uiteindelijke investering hangt af van het aantal pagina's, aangepaste functies, integraties en contentvereisten. Optionele maandelijkse onderhoudspakketten beschikbaar.",
+            fr: "Les projets de site web commencent à partir de 1 500 € pour les sites de petites entreprises. L'investissement final dépend du nombre de pages, des fonctionnalités personnalisées, des intégrations et des exigences de contenu. Forfaits de maintenance mensuels optionnels disponibles."
         },
         cta: {
             en: "Get a free website audit and conversion analysis - Contact us at info@fluxive.be or +32 472 92 57 41",

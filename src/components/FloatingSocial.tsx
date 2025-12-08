@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Linkedin, Instagram, Facebook } from "lucide-react";
 
 const socialLinks = [
-  { icon: Linkedin, href: "https://www.linkedin.com/company/109784966", label: "LinkedIn", color: "hover:bg-blue-600" },
-  { icon: Facebook, href: "https://www.facebook.com/share/1GfaJ6614w/", label: "Facebook", color: "hover:bg-blue-700" },
+  { icon: Linkedin, href: "https://www.linkedin.com/company/109784966", label: "LinkedIn", color: "hover:bg-[#0077b5] hover:text-white" },
+  { icon: Instagram, href: "https://www.instagram.com/fluxi_ve/", label: "Instagram", color: "hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:text-white border-pink-500/30" },
+  { icon: Facebook, href: "https://www.facebook.com/share/1GfaJ6614w/", label: "Facebook", color: "hover:bg-[#1877F2] hover:text-white" },
 ];
 
 const containerVariants = {

@@ -88,9 +88,8 @@ export default function RootLayout({
               },
               sameAs: [
                 "https://github.com/fluxive",
-                "https://linkedin.com/company/fluxive",
                 "https://twitter.com/fluxive",
-                "https://instagram.com/fluxive",
+                "https://www.instagram.com/fluxi_ve/",
                 "https://facebook.com/fluxive",
               ],
               areaServed: "Worldwide",

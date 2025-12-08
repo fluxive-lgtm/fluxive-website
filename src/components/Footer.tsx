@@ -15,16 +15,19 @@ const socialLinks = [
     icon: Linkedin,
     href: "https://www.linkedin.com/company/109784966",
     label: "LinkedIn",
+    color: "hover:bg-[#0077b5] hover:border-[#0077b5] hover:text-white",
   },
   {
     icon: Instagram,
-    href: "https://instagram.com",
+    href: "https://www.instagram.com/fluxi_ve/",
     label: "Instagram",
+    color: "hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:border-pink-500 hover:text-white",
   },
   {
     icon: Facebook,
     href: "https://www.facebook.com/share/1GfaJ6614w/",
     label: "Facebook",
+    color: "hover:bg-[#1877F2] hover:border-[#1877F2] hover:text-white",
   },
 ];
 
@@ -223,10 +226,10 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full glass-card border-primary-500/20 flex items-center justify-center hover:border-primary-500 hover:scale-110 transition-all"
+                    className={`group w-9 h-9 rounded-full glass-card border-primary-500/20 flex items-center justify-center hover:scale-110 transition-all ${social.color}`}
                     aria-label={social.label}
                   >
-                    <Icon className="w-4 h-4 text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors" />
+                    <Icon className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-white transition-colors" />
                   </a>
                 );
               })}
