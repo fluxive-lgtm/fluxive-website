@@ -21,6 +21,7 @@ interface Project {
     content_nl?: string;
     content_fr?: string;
     image_url: string;
+    media?: { type: 'image' | 'video', path: string }[];
     created_at: string;
 }
 
@@ -392,12 +393,13 @@ export default function OurWorkAdminPage() {
                                 </div>
                             </Tabs>
 
-                            <div className="space-y-2 pt-4 border-t">
+                            <div className="space-y-4 pt-4 border-t">
                                 <label className="text-sm font-medium">Project Media (Images: Max 10, Videos: Max 5)</label>
+
                                 <div className="border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg p-6 text-center hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer relative">
+                                    {/* Removed name="media[]" to prevent auto-capture by FormData, we handle manually */}
                                     <input
                                         type="file"
-                                        name="media[]"
                                         multiple
                                         accept="image/*,video/*"
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -405,33 +407,47 @@ export default function OurWorkAdminPage() {
                                     />
                                     <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
                                     <p className="text-sm text-gray-500">
-                                        Click to upload multiple files
+                                        Click to upload NEW files (replaces selection)
                                     </p>
                                     <p className="text-xs text-gray-400 mt-1">
                                         JPG, PNG, WEBP, MP4, WEBM
                                     </p>
                                 </div>
 
-                                {/* Preview Grid */}
+                                {/* Preview Grid (New Uploads) */}
                                 {previewUrls.length > 0 && (
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                                        {previewUrls.map((url, index) => (
-                                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
-                                                {selectedFiles[index]?.type.startsWith('video') ? (
-                                                    <video src={url} className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
-                                                )}
-                                            </div>
-                                        ))}
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-semibold text-green-600">New files to upload:</p>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            {previewUrls.map((url, index) => (
+                                                <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
+                                                    {selectedFiles[index]?.type.startsWith('video') ? (
+                                                        <video src={url} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 
-                                {editingProject && (
-                                    <div className="mt-4">
-                                        <p className="text-xs text-gray-500 mb-2">Current Main Image:</p>
-                                        <img src={editingProject.image_url} alt="Current" className="h-20 w-auto rounded object-cover" />
-                                        {/* Note: To show all current media, we'd need to fetch it. For now, we just allow adding new media. */}
+                                {/* Existing Media Grid (Only when editing) */}
+                                {editingProject && editingProject.media && editingProject.media.length > 0 && (
+                                    <div className="space-y-2 mt-4">
+                                        <p className="text-xs font-semibold text-gray-500">Existing Media:</p>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            {editingProject.media.map((item, index) => (
+                                                <div key={`existing-${index}`} className="relative aspect-square rounded-lg overflow-hidden border group">
+                                                    {item.type === 'video' ? (
+                                                        <video src={item.path} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <img src={item.path} alt={`Existing ${index}`} className="w-full h-full object-cover" />
+                                                    )}
+                                                    {/* We could add delete functionality here later */}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
                             </div>

@@ -47,6 +47,7 @@ function apiPostToBlogPostData(apiPost: any): BlogPostData {
         author: apiPost.author,
         image: apiPost.image,
         coverImage: apiPost.coverImage,
+        videoEmbed: apiPost.videoEmbed,
         tags: apiPost.tags,
         featured: apiPost.featured,
         media: apiPost.media
@@ -64,8 +65,8 @@ export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = f
     }
 
     try {
-        // Fetch from API
-        const res = await fetch('/api/blog.php');
+        // Fetch from API with no-store to prevent caching
+        const res = await fetch('/api/blog.php', { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch posts');
         const apiPosts = await res.json();
 
@@ -100,7 +101,7 @@ export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = f
 
 export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en'): Promise<BlogPost | null> {
     try {
-        const res = await fetch(`/api/blog.php?slug=${slug}`);
+        const res = await fetch(`/api/blog.php?slug=${slug}`, { cache: 'no-store' });
         if (res.ok) {
             const apiPost = await res.json();
             return flattenPost(apiPostToBlogPostData(apiPost), lang);
@@ -116,7 +117,7 @@ export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en
 
 export async function getFullPostBySlug(slug: string): Promise<BlogPostData | null> {
     try {
-        const res = await fetch(`/api/blog.php?slug=${slug}`);
+        const res = await fetch(`/api/blog.php?slug=${slug}`, { cache: 'no-store' });
         if (res.ok) {
             const apiPost = await res.json();
             return apiPostToBlogPostData(apiPost);
@@ -138,7 +139,8 @@ export async function savePost(post: BlogPost): Promise<void> {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(post)
+        body: JSON.stringify(post),
+        cache: 'no-store'
     });
 
     if (!res.ok) {
@@ -160,7 +162,8 @@ export async function deletePost(slug: string): Promise<void> {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
-        }
+        },
+        cache: 'no-store'
     });
 
     if (!res.ok) {
