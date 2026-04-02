@@ -311,7 +311,7 @@ export default function About() {
 
               {/* Left Column: Visual/Title */}
               <div className="md:col-span-2 bg-gradient-to-br from-primary-600 to-secondary-600 p-10 md:p-14 text-white flex flex-col justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
+
                 <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/20 rounded-full blur-3xl" />
 
                 <h3 className="text-3xl md:text-4xl font-display font-bold mb-6 relative z-10">
