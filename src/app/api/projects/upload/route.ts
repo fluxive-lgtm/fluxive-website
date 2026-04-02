@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
+import type { Project } from '@prisma/client';
+
+type MediaItem = { filePath: string; fileType?: string };
 
 export async function POST(req: NextRequest) {
   if (!(await requireAuth(req))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -15,14 +18,14 @@ export async function POST(req: NextRequest) {
     contentEn, contentNl, contentFr, imageUrl,
   };
 
-  let project;
+  let project: Project;
   if (id) {
     project = await prisma.project.update({ where: { id }, data: projectData });
     if (Array.isArray(media)) {
       await prisma.projectMedia.deleteMany({ where: { projectId: id } });
       if (media.length > 0) {
         await prisma.projectMedia.createMany({
-          data: media.map((m: { filePath: string; fileType?: string }, i: number) => ({
+          data: media.map((m: MediaItem, i: number) => ({
             projectId: id,
             filePath: m.filePath,
             fileType: m.fileType || 'image',
@@ -35,7 +38,7 @@ export async function POST(req: NextRequest) {
     project = await prisma.project.create({ data: projectData });
     if (Array.isArray(media) && media.length > 0) {
       await prisma.projectMedia.createMany({
-        data: media.map((m: { filePath: string; fileType?: string }, i: number) => ({
+        data: media.map((m: MediaItem, i: number) => ({
           projectId: project.id,
           filePath: m.filePath,
           fileType: m.fileType || 'image',
