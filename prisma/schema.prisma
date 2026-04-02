@@ -3,25 +3,145 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-
+  provider = "postgresql"
 }
 
 model Post {
   id          String   @id @default(uuid())
   slug        String   @unique
-  title       String
-  excerpt     String   @db.Text
-  content     String   @db.LongText
-  date        String
-  readingTime String
-  category    String
-  authorName  String
-  authorRole  String
+  title       String?
+  excerpt     String?
+  content     String?
+  date        String?
+  readingTime String?
+  category    String?
+  authorName  String?
+  authorRole  String?
   authorImage String?
-  image       String
-  tags        Json
+  image       String?
+  coverImage  String?
+  videoEmbed  String?
+  tags        String?
   featured    Boolean  @default(false)
+  media       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  companyName String
+  reviewText  String
+  rating      Int
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Project {
+  id            Int            @id @default(autoincrement())
+  title         String
+  titleNl       String?
+  titleFr       String?
+  description   String?
+  descriptionNl String?
+  descriptionFr String?
+  contentEn     String?
+  contentNl     String?
+  contentFr     String?
+  imageUrl      String?
+  createdAt     DateTime       @default(now())
+  media         ProjectMedia[]
+}
+
+model ProjectMedia {
+  id           Int      @id @default(autoincrement())
+  projectId    Int
+  filePath     String
+  fileType     String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model AdminToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model RateLimit {
+  id          Int    @id @default(autoincrement())
+  ipAddress   String
+  action      String
+  requestTime Int
+
+  @@index([ipAddress, action, requestTime])
+}
+
+model HomepageSetting {
+  id          Int      @id @default(autoincrement())
+  adMediaUrl  String?
+  adMediaType String   @default("image")
+  adTitle     String   @default("Featured Update")
+  updatedAt   DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model ContactRequest {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  service   String?
+  message   String?
+  lang      String?
+  status    String   @default("new")
+  ipAddress String?
+  userAgent String?
+  referrer  String?
+  createdAt DateTime @default(now())
+}
+
+model WifiSupportRequest {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String?
+  phone     String?
+  company   String?
+  location  String?
+  device    String?
+  issueType String?
+  urgency   String?
+  message   String?
+  lang      String?
+  status    String   @default("new")
+  ipAddress String?
+  userAgent String?
+  referrer  String?
+  createdAt DateTime @default(now())
+}
+
+model IdeaSubmission {
+  id           Int      @id @default(autoincrement())
+  idea         String
+  businessName String?
+  email        String?
+  status       String   @default("new")
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
 }
