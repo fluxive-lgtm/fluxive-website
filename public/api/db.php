@@ -1,5 +1,6 @@
 <?php
 // public/api/db.php
+require_once 'waf.php'; // Include WAF Middleware
 
 // Database credentials
 $host = 'ID481076_blogpost.db.webhosting.be';

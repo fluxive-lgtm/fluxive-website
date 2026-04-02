@@ -64,7 +64,7 @@ export default function NewsletterSignup() {
             fd.append("email", email);
             fd.append("website_url", honeypot); // Honeypot
 
-            const response = await fetch("/api/newsletter.php", {
+            const response = await fetch("/api/newsletter", {
                 method: "POST",
                 body: fd,
             });
@@ -134,7 +134,7 @@ export default function NewsletterSignup() {
                                 name="website_url"
                                 value={honeypot}
                                 onChange={(e) => setHoneypot(e.target.value)}
-                                style={{ display: 'none' }}
+                                className="hidden"
                                 tabIndex={-1}
                                 autoComplete="off"
                             />

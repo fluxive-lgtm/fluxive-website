@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 import { blogCategories, BlogPost, BlogPostData } from "@/data/blogData"
@@ -153,7 +154,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
         try {
-            const res = await fetch("/api/upload.php", {
+            const res = await fetch("/api/upload", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -209,7 +210,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             formData.append("file", file)
 
             try {
-                const res = await fetch("/api/upload.php", {
+                const res = await fetch("/api/upload", {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${token}` },
                     body: formData,
@@ -306,33 +307,41 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         }
     }
 
+    // Check if a language tab is "complete" (has title and content)
+    const isLangComplete = (lang: 'en' | 'nl' | 'fr') => {
+        return formData.title[lang].trim() !== "" && formData.content[lang].trim() !== "";
+    };
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
 
-            {/* Language Selection Dropdown */}
+            {/* Language Selection Tabs */}
             <div className="space-y-2 mb-6">
                 <div className="flex items-end justify-between">
-                    <div className="space-y-2">
+                    <div className="space-y-2 w-full max-w-md">
                         <Label>Editing Language</Label>
-                        <Select
-                            value={activeTab}
-                            onValueChange={(val: 'en' | 'nl' | 'fr') => setActiveTab(val)}
-                        >
-                            <SelectTrigger className="w-[200px]">
-                                <SelectValue placeholder="Select Language" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="en">English</SelectItem>
-                                <SelectItem value="nl">Dutch</SelectItem>
-                                <SelectItem value="fr">French</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'en' | 'nl' | 'fr')}>
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="en" className="relative">
+                                    English
+                                    <span className={`absolute top-1 right-2 w-2 h-2 rounded-full ${isLangComplete('en') ? 'bg-green-500' : 'bg-red-500'}`} title={isLangComplete('en') ? 'Content Complete' : 'Missing Content'} />
+                                </TabsTrigger>
+                                <TabsTrigger value="nl" className="relative">
+                                    Dutch
+                                    <span className={`absolute top-1 right-2 w-2 h-2 rounded-full ${isLangComplete('nl') ? 'bg-green-500' : 'bg-red-500'}`} title={isLangComplete('nl') ? 'Content Complete' : 'Missing Content'} />
+                                </TabsTrigger>
+                                <TabsTrigger value="fr" className="relative">
+                                    French
+                                    <span className={`absolute top-1 right-2 w-2 h-2 rounded-full ${isLangComplete('fr') ? 'bg-green-500' : 'bg-red-500'}`} title={isLangComplete('fr') ? 'Content Complete' : 'Missing Content'} />
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
                     </div>
                     <Button type="button" variant="secondary" onClick={handleAutoTranslate} title="Auto-fill other languages from English">
                         Auto-Translate (Mock)
                     </Button>
                 </div>
-                <p className="text-sm text-gray-500">Select the language you want to edit content for.</p>
+                <p className="text-sm text-gray-500">Select the language tab to edit. Ensure all tabs have a green dot before publishing.</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -406,7 +415,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                     {imageUrl && (
                         <div className="h-20 w-20 relative rounded overflow-hidden border">
                             {imageUrl.match(/\.(mp4|webm)$/i) ? (
-                                <video src={imageUrl} className="object-cover w-full h-full" />
+                                <video src={imageUrl} preload="metadata" className="object-cover w-full h-full" />
                             ) : (
                                 <img src={imageUrl} alt="Preview" className="object-cover w-full h-full" />
                             )}
@@ -483,7 +492,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
                         {media.map((item, index) => (
                             <div key={index} className="relative aspect-square rounded-lg overflow-hidden border group">
                                 {item.type === 'video' ? (
-                                    <video src={item.url} className="w-full h-full object-cover" />
+                                    <video src={item.url} preload="metadata" className="w-full h-full object-cover" />
                                 ) : (
                                     <img src={item.url} alt={`Gallery ${index}`} className="w-full h-full object-cover" />
                                 )}

@@ -124,6 +124,14 @@ elseif ($method === 'POST') {
         $content = is_array($data['content']) || is_object($data['content']) ? json_encode($data['content']) : $data['content'];
 
         if ($exists) {
+        // Sanitize videoEmbed (Allow only iframe from trusted sources)
+        $videoEmbed = $data['videoEmbed'] ?? null;
+        if ($videoEmbed) {
+            // Simple check: must be an iframe and contain youtube or vimeo
+            if (!preg_match('/^<iframe.*src=["\']https?:\/\/(www\.)?(youtube\.com|vimeo\.com|player\.vimeo\.com).*iframe>$/i', $videoEmbed)) {
+                $videoEmbed = null; // Invalid video embed
+            }
+        }
             // Update
             $sql = "UPDATE Post SET 
                     title = ?, excerpt = ?, content = ?, date = ?, readingTime = ?, 
@@ -138,6 +146,14 @@ elseif ($method === 'POST') {
                 $data['slug']
             ]);
         } else {
+            // Sanitize videoEmbed (Allow only iframe from trusted sources)
+            $videoEmbed = $data['videoEmbed'] ?? null;
+            if ($videoEmbed) {
+                 if (!preg_match('/^<iframe.*src=["\']https?:\/\/(www\.)?(youtube\.com|vimeo\.com|player\.vimeo\.com).*iframe>$/i', $videoEmbed)) {
+                    $videoEmbed = null;
+                }
+            }
+
             // Create
             $sql = "INSERT INTO Post (
                     id, slug, title, excerpt, content, date, readingTime, 

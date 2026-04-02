@@ -34,7 +34,7 @@ export function FloatingReview() {
         }
 
         try {
-            const response = await fetch("/api/submit_review.php", {
+            const response = await fetch("/api/reviews", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -165,8 +165,8 @@ export function FloatingReview() {
                                                     >
                                                         <Star
                                                             className={`w-8 h-8 ${star <= (hoveredRating || rating)
-                                                                    ? "text-yellow-400 fill-current"
-                                                                    : "text-gray-600"
+                                                                ? "text-yellow-400 fill-current"
+                                                                : "text-gray-600"
                                                                 }`}
                                                         />
                                                     </button>

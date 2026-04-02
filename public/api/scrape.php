@@ -50,11 +50,34 @@ if (!filter_var($url, FILTER_VALIDATE_URL)) {
     exit;
 }
 
+// SSRF Protection:
+// 1. Scheme check
+$parsed = parse_url($url);
+if (!isset($parsed['scheme']) || !in_array($parsed['scheme'], ['http', 'https'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Only HTTP/HTTPS allowed']);
+    exit;
+}
+
+// 2. Host resolution check (block private IPs)
+$host = $parsed['host'];
+$ip = gethostbyname($host);
+
+// Private/Reserved ranges
+if (
+    filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false
+) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Access to private network denied']);
+    exit;
+}
+
 // 3. Fetch Content
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+curl_setopt($ch, CURLOPT_MAXREDIRS, 3); // Limit redirects
 curl_setopt($ch, CURLOPT_USERAGENT, 'Fluxive-Scraper/1.0');
 curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 $html = curl_exec($ch);

@@ -49,7 +49,7 @@ export default function OurWorkPage() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await fetch("/api/get_projects.php");
+                const response = await fetch("/api/projects");
                 if (response.ok) {
                     const text = await response.text();
                     try {

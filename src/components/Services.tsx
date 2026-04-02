@@ -17,6 +17,7 @@ import {
   Shield,
   CheckCircle,
   Lock,
+  Brain,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
@@ -334,6 +335,51 @@ const services: Service[] = [
       },
     },
   },
+  {
+    id: "cyber-awareness",
+    icon: Brain,
+    color: "from-purple-500 to-indigo-500",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/30",
+    texts: {
+      en: {
+        title: "Cyber Awareness Program",
+        description:
+          "Live hacking demos for employees to wake them up. Flipper Zero, Camera hacks, and Phishing simulations.",
+        features: [
+          "Live hacking workshops",
+          "Phishing simulations",
+          "Flipper Zero demos",
+          "IoT & Camera security",
+        ],
+        perfectFor: "Perfect for: Communes (Gov) & Small Businesses",
+      },
+      nl: {
+        title: "Cyber Awareness Programma",
+        description:
+          "Live hacking demo's om werknemers wakker te schudden. Flipper Zero, Camera hacks en Phishing simulaties.",
+        features: [
+          "Live hacking workshops",
+          "Phishing simulaties",
+          "Flipper Zero demo's",
+          "IoT & Camera beveiliging",
+        ],
+        perfectFor: "Ideaal voor: Gemeenten & Kleine Bedrijven",
+      },
+      fr: {
+        title: "Programme Sensibilisation Cyber",
+        description:
+          "Démos de hacking en direct pour réveiller vos employés. Flipper Zero, piratage de caméras et simulations de phishing.",
+        features: [
+          "Ateliers hacking en direct",
+          "Simulations de phishing",
+          "Démos Flipper Zero",
+          "Sécurité IoT & Caméras",
+        ],
+        perfectFor: "Parfait pour : Communes & Petites Entreprises",
+      },
+    },
+  },
 ];
 
 const containerVariants = {
@@ -390,58 +436,66 @@ export default function Services() {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {services.map((service) => {
+          {services.map((service, index) => {
             const Icon = service.icon;
             const t = service.texts[language];
+
+            // Center the last item if it's alone on the row
+            const isLast = index === services.length - 1;
+            const isOrphanMd = isLast && services.length % 2 === 1;
+            const isOrphanLg = isLast && services.length % 3 === 1;
 
             return (
               <motion.div
                 key={service.id}
                 variants={itemVariants}
-                className="flex"
+                className={`flex w-full ${isOrphanMd ? "md:col-span-2 md:justify-center lg:col-span-1 lg:justify-start" : ""
+                  } ${isOrphanLg ? "lg:col-start-2" : ""}`}
               >
-                <Link href={`/services/${service.id}`} className="w-full">
-                  <TiltCard>
-                    <Card
-                      className={`glass-card group w-full h-full flex flex-col border ${service.borderColor} backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 transition-all duration-300 hover:shadow-2xl hover:shadow-primary-500/20`}
-                    >
-                      <CardHeader className="p-4 sm:p-5 flex-shrink-0">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <div
-                            className={`bg-gradient-to-br ${service.color} p-2.5 rounded-lg`}
-                          >
-                            <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                          </div>
-                        </div>
-                        <CardTitle className="text-base sm:text-lg font-display mb-2 text-center min-h-[3rem] flex items-center justify-center">
-                          {t.title}
-                        </CardTitle>
-                        <CardDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-center line-clamp-3 min-h-[4rem]">
-                          {t.description}
-                        </CardDescription>
-                        {/* Perfect For Label */}
-                        <div className="mt-2 text-center">
-                          <span className="inline-block px-2 py-1 rounded-md bg-primary-50 dark:bg-primary-900/20 text-[10px] sm:text-xs font-medium text-primary-700 dark:text-primary-300 border border-primary-100 dark:border-primary-800">
-                            {t.perfectFor}
-                          </span>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-4 sm:p-5 pt-0 flex-grow">
-                        <ul className="space-y-1.5 sm:space-y-2">
-                          {t.features.map((feature, i) => (
-                            <li
-                              key={i}
-                              className="flex items-start text-xs sm:text-sm text-gray-700 dark:text-gray-300"
+                <div className={`w-full h-full ${isOrphanMd ? "md:w-[calc(50%-0.75rem)] lg:w-full" : ""}`}>
+                  <Link href={`/services/${service.id}`} className="block w-full h-full">
+                    <TiltCard>
+                      <Card
+                        className={`glass-card group w-full h-full flex flex-col border ${service.borderColor} backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 transition-all duration-300 hover:shadow-2xl hover:shadow-primary-500/20`}
+                      >
+                        <CardHeader className="p-4 sm:p-5 flex-shrink-0">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <div
+                              className={`bg-gradient-to-br ${service.color} p-2.5 rounded-lg`}
                             >
-                              <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 mt-0.5 text-primary-500 flex-shrink-0" />
-                              <span className="line-clamp-2">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  </TiltCard>
-                </Link>
+                              <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                            </div>
+                          </div>
+                          <CardTitle className="text-base sm:text-lg font-display mb-2 text-center min-h-[3rem] flex items-center justify-center">
+                            {t.title}
+                          </CardTitle>
+                          <CardDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-center line-clamp-3 min-h-[4rem]">
+                            {t.description}
+                          </CardDescription>
+                          {/* Perfect For Label */}
+                          <div className="mt-2 text-center">
+                            <span className="inline-block px-2 py-1 rounded-md bg-primary-50 dark:bg-primary-900/20 text-[10px] sm:text-xs font-medium text-primary-700 dark:text-primary-300 border border-primary-100 dark:border-primary-800">
+                              {t.perfectFor}
+                            </span>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="p-4 sm:p-5 pt-0 flex-grow">
+                          <ul className="space-y-1.5 sm:space-y-2">
+                            {t.features.map((feature, i) => (
+                              <li
+                                key={i}
+                                className="flex items-start text-xs sm:text-sm text-gray-700 dark:text-gray-300"
+                              >
+                                <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 mt-0.5 text-primary-500 flex-shrink-0" />
+                                <span className="line-clamp-2">{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+                    </TiltCard>
+                  </Link>
+                </div>
               </motion.div>
             );
           })}

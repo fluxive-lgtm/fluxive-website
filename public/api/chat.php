@@ -30,15 +30,22 @@ $data = json_decode($input, true);
 $n8nUrl = 'https://whise-bibek.app.n8n.cloud/webhook/4fa64e18-ddf7-40c3-8b43-88f7d04749ce';
 
 // You can also try to read from .env if it exists in the root
-$envFile = __DIR__ . '/../../.env';
-if (file_exists($envFile)) {
-    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        list($name, $value) = explode('=', $line, 2);
-        if (trim($name) === 'NEXT_PUBLIC_N8N_WEBHOOK_URL') {
-            $n8nUrl = trim($value);
-            break;
+// Check root directory (public_html) or parent (outside public_html)
+$possiblePaths = [
+    __DIR__ . '/../.env',  // In public_html
+    __DIR__ . '/../../.env' // Outside public_html (safer)
+];
+
+foreach ($possiblePaths as $path) {
+    if (file_exists($path)) {
+        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (strpos(trim($line), '#') === 0) continue;
+            list($name, $value) = explode('=', $line, 2);
+            if (trim($name) === 'NEXT_PUBLIC_N8N_WEBHOOK_URL') {
+                $n8nUrl = trim($value);
+                break 2;
+            }
         }
     }
 }

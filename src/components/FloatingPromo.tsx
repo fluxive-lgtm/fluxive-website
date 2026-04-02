@@ -71,10 +71,10 @@ export function FloatingPromo() {
                 onClick={() => setIsOpen(!isOpen)}
                 className="
           relative group flex flex-col items-center justify-center 
-          bg-gradient-to-b from-primary-500 to-secondary-500 
-          text-white shadow-lg shadow-primary-500/30
-          rounded-r-xl py-5 px-3 cursor-pointer
-          hover:pl-4 transition-all duration-300 w-12 hover:w-14
+          bg-[#5DDB89] hover:bg-[#4bc978]
+          text-white shadow-lg shadow-green-500/20
+          rounded-r-lg py-6 px-2 cursor-pointer
+          hover:pl-3 transition-all duration-300 w-10 hover:w-12
         "
             >
                 {/* Pulse Animation Background */}

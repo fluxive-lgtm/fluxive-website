@@ -85,7 +85,7 @@ export default function ChatWidget() {
       {
         id: "welcome",
         role: "assistant",
-        content: "✨ **Hey there!** I'm FLUXIVE AI.\n\nReady to help with your projects, answer questions, or discuss ideas. What's on your mind?",
+        content: "✨ **Hey there!** I'm VIX.\n\nReady to help with your projects, answer questions, or discuss ideas. What's on your mind?",
         timestamp: new Date(),
       },
     ])
@@ -166,6 +166,7 @@ export default function ChatWidget() {
         timestamp: now.toISOString()
       }
 
+      // Use Next.js API route
       // Use PHP API proxy for static hosting compatibility
       const apiUrl = '/api/chat.php'
 
@@ -407,8 +408,7 @@ export default function ChatWidget() {
               ease: [0.32, 0.72, 0, 1],
               opacity: { duration: 0.3 }
             }}
-            className="fixed top-0 right-0 bottom-0 z-[9999] w-full sm:w-[380px] md:w-[420px] lg:w-[450px] flex flex-col shadow-2xl h-screen max-h-screen sm:rounded-l-3xl overflow-hidden will-change-transform"
-            style={{ height: '100dvh', maxHeight: '100dvh' }}
+            className="fixed top-0 right-0 bottom-0 z-[9999] w-full sm:w-[380px] md:w-[420px] lg:w-[450px] flex flex-col shadow-2xl h-[100dvh] max-h-[100dvh] sm:rounded-l-3xl overflow-hidden will-change-transform"
             onClick={(e) => e.stopPropagation()}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
@@ -447,7 +447,7 @@ export default function ChatWidget() {
                   </motion.div>
                   <div>
                     <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent">
-                      FLUXIVE AI
+                      VIX
                     </h2>
                     <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
                       <motion.div
@@ -725,7 +725,7 @@ export default function ChatWidget() {
                 </div>
                 <p className="text-[9px] sm:text-[10px] text-muted-foreground/70 mt-2 sm:mt-2.5 text-center flex items-center justify-center gap-1 sm:gap-1.5">
                   <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary" />
-                  Powered by <span className="text-primary font-semibold">FLUXIVE AI</span>
+                  Powered by <span className="text-primary font-semibold">FLUXIV</span>
                 </p>
               </div>
             </div>

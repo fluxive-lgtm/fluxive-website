@@ -6,17 +6,25 @@ export type { BlogPost, BlogPostData };
 // Helper to simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Helper to flatten localized content
-function getLocalizedContent(content: LocalizedContent, lang: 'en' | 'nl' | 'fr'): string {
-    return content[lang] || content.en;
+// Helper to get localized content. In strict mode, if content is missing, return empty string instead of falling back.
+function getLocalizedContent(content: LocalizedContent, lang: 'en' | 'nl' | 'fr', strict: boolean = false): string {
+    if (strict) {
+        // If strict is true, only return the exact language content, NO fallbacks
+        // We trim to ensure we don't return " " as valid content
+        return (content[lang] || '').trim();
+    }
+    // Default fallback behavior
+    return content[lang] || content.en || '';
 }
 
-function flattenPost(post: BlogPostData, lang: 'en' | 'nl' | 'fr'): BlogPost {
+function flattenPost(post: BlogPostData, lang: 'en' | 'nl' | 'fr', strict: boolean = false): BlogPost {
+    // Determine if we should treat this post as "empty" in this language
+    // If we're strict and the target language is missing, getLocalizedContent returns ''
     return {
         ...post,
-        title: getLocalizedContent(post.title, lang),
-        excerpt: getLocalizedContent(post.excerpt, lang),
-        content: getLocalizedContent(post.content, lang),
+        title: getLocalizedContent(post.title, lang, strict),
+        excerpt: getLocalizedContent(post.excerpt, lang, strict),
+        content: getLocalizedContent(post.content, lang, strict),
     };
 }
 
@@ -57,24 +65,24 @@ function apiPostToBlogPostData(apiPost: any): BlogPostData {
 export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = false): Promise<BlogPost[]> {
     // During build (server-side), return static data to avoid "Invalid URL" errors
     if (typeof window === 'undefined') {
-        const posts = staticPosts.map(post => flattenPost(post, lang));
+        const posts = staticPosts.map(post => flattenPost(post, lang, strictFilter));
         if (strictFilter) {
-            return posts.filter(p => p.title && p.title.trim() !== '');
+            return posts.filter(p => p.title && p.title.trim() !== '' && p.content && p.content.trim() !== '');
         }
         return posts;
     }
 
     try {
         // Fetch from API with no-store to prevent caching
-        const res = await fetch('/api/blog.php', { cache: 'no-store' });
+        const res = await fetch('/api/blog', { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch posts');
         const apiPosts = await res.json();
 
         // Convert API posts to internal format
-        const dynamicPosts = apiPosts.map((p: any) => flattenPost(apiPostToBlogPostData(p), lang));
+        const dynamicPosts = apiPosts.map((p: any) => flattenPost(apiPostToBlogPostData(p), lang, strictFilter));
 
         if (strictFilter) {
-            return dynamicPosts.filter((p: BlogPost) => p.title && p.title.trim() !== '');
+            return dynamicPosts.filter((p: BlogPost) => p.title && p.title.trim() !== '' && p.content && p.content.trim() !== '');
         }
 
         // Return dynamic posts
@@ -83,17 +91,17 @@ export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = f
         }
 
         // Fallback to static if API is empty
-        const fallbackPosts = staticPosts.map(post => flattenPost(post, lang));
+        const fallbackPosts = staticPosts.map(post => flattenPost(post, lang, strictFilter));
         if (strictFilter) {
-            return fallbackPosts.filter(p => p.title && p.title.trim() !== '');
+            return fallbackPosts.filter(p => p.title && p.title.trim() !== '' && p.content && p.content.trim() !== '');
         }
         return fallbackPosts;
 
     } catch (error) {
-        console.error("API fetch failed, falling back to static data:", error);
-        const fallbackPosts = staticPosts.map(post => flattenPost(post, lang));
+        console.warn("API fetch failed (likely local dev mode parsing raw PHP). Falling back to static data.");
+        const fallbackPosts = staticPosts.map(post => flattenPost(post, lang, strictFilter));
         if (strictFilter) {
-            return fallbackPosts.filter(p => p.title && p.title.trim() !== '');
+            return fallbackPosts.filter(p => p.title && p.title.trim() !== '' && p.content && p.content.trim() !== '');
         }
         return fallbackPosts;
     }
@@ -101,7 +109,7 @@ export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = f
 
 export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en'): Promise<BlogPost | null> {
     try {
-        const res = await fetch(`/api/blog.php?slug=${slug}`, { cache: 'no-store' });
+        const res = await fetch(`/api/blog?slug=${slug}`, { cache: 'no-store' });
         if (res.ok) {
             const apiPost = await res.json();
             return flattenPost(apiPostToBlogPostData(apiPost), lang);
@@ -117,7 +125,7 @@ export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en
 
 export async function getFullPostBySlug(slug: string): Promise<BlogPostData | null> {
     try {
-        const res = await fetch(`/api/blog.php?slug=${slug}`, { cache: 'no-store' });
+        const res = await fetch(`/api/blog?slug=${slug}`, { cache: 'no-store' });
         if (res.ok) {
             const apiPost = await res.json();
             return apiPostToBlogPostData(apiPost);
@@ -133,7 +141,7 @@ export async function getFullPostBySlug(slug: string): Promise<BlogPostData | nu
 export async function savePost(post: BlogPost): Promise<void> {
     const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-    const res = await fetch('/api/blog.php', {
+    const res = await fetch('/api/blog', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -158,7 +166,7 @@ export async function savePost(post: BlogPost): Promise<void> {
 export async function deletePost(slug: string): Promise<void> {
     const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-    const res = await fetch(`/api/blog.php?slug=${slug}`, {
+    const res = await fetch(`/api/blog?slug=${slug}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`

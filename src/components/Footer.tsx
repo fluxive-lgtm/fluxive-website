@@ -76,6 +76,7 @@ const footerTexts: Record<Language, FooterTexts> = {
         { name: "About Us", href: "#about" },
         { name: "Our Team", href: "#about" },
         { name: "Careers", href: "#" },
+        // { name: { nl: "Ons Werk", en: "Our Work", fr: "Notre Travail" }, href: "#our-work" },
         { name: "Blog", href: "/blog" },
       ],
       legal: {

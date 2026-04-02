@@ -17,12 +17,12 @@ export function ParticleBackground() {
 
     // Detect mobile for adaptive configuration
     const isMobile = window.innerWidth < 768;
-    
+
     // Performance monitoring
     let fps = 60;
     let frameCount = 0;
     let fpsCheckTime = performance.now();
-    
+
     // Adaptive configuration based on device
     const BASE_CONFIG = {
       particleCount: isMobile ? 40 : 80,     // Fewer particles for cleaner look
@@ -35,7 +35,7 @@ export function ParticleBackground() {
       connectionDistance: isMobile ? 90 : 110,
       randomNudgeChance: 0.98,               // Less frequent for smoother paths
     };
-    
+
     let CONFIG = { ...BASE_CONFIG };
 
     const particles: Array<{
@@ -84,14 +84,14 @@ export function ParticleBackground() {
     const updatePerformance = () => {
       frameCount++;
       const currentTime = performance.now();
-      
+
       // Check FPS every 60 frames
       if (frameCount >= 60) {
         const elapsed = currentTime - fpsCheckTime;
         fps = Math.round((frameCount * 1000) / elapsed);
         frameCount = 0;
         fpsCheckTime = currentTime;
-        
+
         // Adaptive quality: reduce particles if FPS drops
         if (fps < 30 && CONFIG.particleCount > 30) {
           // Performance is struggling, reduce particle count
@@ -109,9 +109,9 @@ export function ParticleBackground() {
 
     function animate() {
       if (!ctx || !canvas) return;
-      
+
       updatePerformance();
-      
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Check current theme
@@ -226,8 +226,7 @@ export function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ background: "transparent" }}
+      className="fixed inset-0 pointer-events-none z-0 bg-transparent"
     />
   );
 }

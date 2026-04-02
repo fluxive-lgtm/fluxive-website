@@ -32,8 +32,17 @@ try {
     $description_fr = $_POST['description_fr'] ?? '';
     $content_fr = $_POST['content_fr'] ?? '';
 
+    // Fallback: If English title is missing but other language title exists, use that as the main identifier
     if (empty($title)) {
-        throw new Exception('Title is required');
+        if (!empty($title_nl)) {
+            $title = $title_nl;
+        } elseif (!empty($title_fr)) {
+            $title = $title_fr;
+        }
+    }
+
+    if (empty($title)) {
+        throw new Exception('Title is required (please provide a title in at least one language)');
     }
 
     // Handle main image (backward compatibility or thumbnail)
@@ -78,13 +87,20 @@ try {
 
         for ($i = 0; $i < $count; $i++) {
             if ($mediaFiles['error'][$i] === UPLOAD_ERR_OK) {
-                if ($mediaFiles['size'][$i] > 10 * 1024 * 1024) {
-                    throw new Exception("File '{$mediaFiles['name'][$i]}' is too large. Maximum size is 10MB.");
-                }
                 $ext = strtolower(pathinfo($mediaFiles['name'][$i], PATHINFO_EXTENSION));
-                if (in_array($ext, $allowedImageExts)) {
+                $isImage = in_array($ext, $allowedImageExts);
+                $isVideo = in_array($ext, $allowedVideoExts);
+                
+                $maxSize = $isImage ? (10 * 1024 * 1024) : (250 * 1024 * 1024); // 10MB for images, 250MB for videos
+                $maxSizeLabel = $isImage ? '10MB' : '250MB';
+
+                if ($mediaFiles['size'][$i] > $maxSize) {
+                    throw new Exception("File '{$mediaFiles['name'][$i]}' is too large. Maximum size for this type is {$maxSizeLabel}.");
+                }
+                
+                if ($isImage) {
                     $imageCount++;
-                } elseif (in_array($ext, $allowedVideoExts)) {
+                } elseif ($isVideo) {
                     $videoCount++;
                 }
             }
@@ -138,12 +154,12 @@ try {
         $sql .= " WHERE id = ?";
         $params[] = $id;
 
-        $stmt = $pdo->prepare($sql);
+        $stmt = $pdo_ourwork->prepare($sql);
         $stmt->execute($params);
 
         // Insert new media files
         if (!empty($uploadedMedia)) {
-            $mediaStmt = $pdo->prepare("INSERT INTO project_media (project_id, file_path, file_type, display_order) VALUES (?, ?, ?, ?)");
+            $mediaStmt = $pdo_ourwork->prepare("INSERT INTO project_media (project_id, file_path, file_type, display_order) VALUES (?, ?, ?, ?)");
             foreach ($uploadedMedia as $index => $media) {
                 $mediaStmt->execute([$id, $media['path'], $media['type'], $index]);
             }
@@ -163,18 +179,18 @@ try {
         }
 
         if (!$imageUrl) {
-            // throw new Exception('Main image is required for new projects');
-            // Allow creating without main image if we want, or enforce it. 
-            // For now, let's be lenient or use a placeholder if needed, but user requirement implies uploading files.
+            // If no image is available at all (e.g. they only uploaded a video), use a fallback generic placeholder
+            // This prevents the SQLSTATE[23000] Column 'image_url' cannot be null crash.
+            $imageUrl = '/uploads/projects/default-video-placeholder.png'; 
         }
 
-        $stmt = $pdo->prepare("INSERT INTO projects (title, title_nl, title_fr, description, description_nl, description_fr, content_en, content_nl, content_fr, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $pdo_ourwork->prepare("INSERT INTO projects (title, title_nl, title_fr, description, description_nl, description_fr, content_en, content_nl, content_fr, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$title, $title_nl, $title_fr, $description, $description_nl, $description_fr, $content_en, $content_nl, $content_fr, $imageUrl]);
-        $newProjectId = $pdo->lastInsertId();
+        $newProjectId = $pdo_ourwork->lastInsertId();
 
         // Insert media files
         if (!empty($uploadedMedia)) {
-            $mediaStmt = $pdo->prepare("INSERT INTO project_media (project_id, file_path, file_type, display_order) VALUES (?, ?, ?, ?)");
+            $mediaStmt = $pdo_ourwork->prepare("INSERT INTO project_media (project_id, file_path, file_type, display_order) VALUES (?, ?, ?, ?)");
             foreach ($uploadedMedia as $index => $media) {
                 $mediaStmt->execute([$newProjectId, $media['path'], $media['type'], $index]);
             }

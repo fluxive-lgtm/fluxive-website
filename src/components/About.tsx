@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Zap, Target, Award } from "lucide-react";
+import { Users, Zap, Target, Award, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 type Language = "nl" | "en" | "fr";
@@ -171,8 +171,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  show: { opacity: 1, scale: 1 },
+  hidden: { opacity: 0, scale: 0.8, y: 20 },
+  show: { opacity: 1, scale: 1, y: 0 },
 };
 
 export default function About() {
@@ -185,80 +185,108 @@ export default function About() {
     aboutByLang[currentLang];
 
   const [selectedFeature, setSelectedFeature] = useState<null | Feature>(null);
-
   const closeModal = () => setSelectedFeature(null);
 
+  // Split mission body by double newline for paragraphs
+  const missionParagraphs = missionBody.split("\n\n");
+
   return (
-    <section id="about" className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-500 rounded-full blur-[120px]" />
+    <section id="about" className="py-24 relative overflow-hidden bg-gray-50/50 dark:bg-black/20">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+            opacity: [0.1, 0.2, 0.1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-1/4 -left-1/4 w-[800px] h-[800px] bg-primary-500/20 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            rotate: [0, -60, 0],
+            opacity: [0.1, 0.15, 0.1],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute -bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-secondary-500/20 rounded-full blur-[120px]"
+        />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
+          <div className="inline-block mb-3 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold tracking-wide uppercase">
+            {currentLang === 'nl' ? 'Over Ons' : currentLang === 'fr' ? 'À Propos' : 'About Us'}
+          </div>
+          <h2 className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight">
             {heading.split("FLUXIVE").length > 1 ? (
               <>
                 {heading.split("FLUXIVE")[0]}
-                <span className="gradient-text">FLUXIVE</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500 animate-gradient-x">
+                  FLUXIVE
+                </span>
                 {heading.split("FLUXIVE")[1]}
               </>
             ) : (
               heading
             )}
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
             {subheading}
           </p>
         </motion.div>
 
-        {/* Feature Cards */}
+        {/* Feature Cards Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24"
         >
           {features
             .filter((f) => f.id !== "proven")
             .map((feature) => {
               const Icon = feature.icon;
-              const isActive = selectedFeature?.id === feature.id;
-
               return (
                 <motion.div
                   key={feature.id}
                   variants={itemVariants}
-                  whileHover={{ y: -10, scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="cursor-pointer"
+                  whileHover={{ y: -8 }}
+                  className="group relative cursor-pointer"
                   onClick={() => setSelectedFeature(feature)}
                 >
-                  <Card
-                    className={`glass-strong h-full border-primary-500/30 group transition-all duration-300 ${isActive ? "ring-2 ring-primary-500" : ""
-                      }`}
-                  >
-                    <CardHeader className="text-center">
-                      <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
-                        <Icon className="w-10 h-10 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <Card className="relative h-full overflow-hidden border-0 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-300 rounded-3xl ring-1 ring-gray-900/5 dark:ring-white/10 group-hover:ring-primary-500/50">
+                    <CardHeader className="text-center pb-2">
+                      <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 p-[1px] group-hover:scale-110 transition-transform duration-500">
+                        <div className="w-full h-full bg-white dark:bg-gray-900 rounded-2xl flex items-center justify-center relative overflow-hidden">
+                          <div className="absolute inset-0 bg-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <Icon className="w-9 h-9 text-primary-600 dark:text-primary-400 relative z-10" />
+                        </div>
                       </div>
-                      <CardTitle className="text-xl font-display">
+                      <CardTitle className="text-2xl font-display font-bold text-gray-900 dark:text-white mb-2">
                         {feature.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-600 dark:text-gray-400 text-center">
+                    <CardContent className="px-8 pb-8">
+                      <p className="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
                         {feature.description}
                       </p>
+                      <div className="mt-6 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        <span className="text-sm font-semibold text-primary-600 dark:text-primary-400 flex items-center gap-2">
+                          {currentLang === 'nl' ? 'Lees meer' : currentLang === 'fr' ? 'En savoir plus' : 'Learn more'}
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
+                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -266,83 +294,120 @@ export default function About() {
             })}
         </motion.div>
 
-        {/* Mission Card */}
+        {/* Mission Section - 2 Column Layout with Glass Effect */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="mt-20 max-w-4xl mx-auto"
+          className="relative max-w-6xl mx-auto"
         >
-          <Card className="glass-card border border-white/20 dark:border-white/10 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80">
-            <CardContent className="p-8 md:p-12">
-              <h3 className="text-3xl font-display font-bold mb-6 text-center">
-                {missionTitle.split(" ").length > 1 ? (
-                  <>
-                    {missionTitle.split(" ")[0]}{" "}
-                    <span className="gradient-text">
-                      {missionTitle.split(" ").slice(1).join(" ")}
-                    </span>
-                  </>
-                ) : (
-                  <span className="gradient-text">{missionTitle}</span>
-                )}
-              </h3>
-              <p className="text-lg text-gray-700 dark:text-gray-300 text-center leading-relaxed whitespace-pre-line">
-                {missionBody}
-              </p>
-            </CardContent>
-          </Card>
+          {/* Decorative Elements around Mission */}
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent-500/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-primary-500/20 rounded-full blur-3xl animate-pulse" />
+
+          <div className="relative rounded-[2.5rem] overflow-hidden border border-white/20 dark:border-white/10 bg-white/70 dark:bg-gray-900/60 backdrop-blur-2xl shadow-2xl">
+            <div className="grid md:grid-cols-5 gap-0">
+
+              {/* Left Column: Visual/Title */}
+              <div className="md:col-span-2 bg-gradient-to-br from-primary-600 to-secondary-600 p-10 md:p-14 text-white flex flex-col justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
+                <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/20 rounded-full blur-3xl" />
+
+                <h3 className="text-3xl md:text-4xl font-display font-bold mb-6 relative z-10">
+                  {missionTitle}
+                </h3>
+                <div className="w-16 h-2 bg-white/30 rounded-full mb-8 relative z-10" />
+                <div className="space-y-4 relative z-10 opacity-90">
+                  <div className="flex items-center gap-3">
+                    <Target className="w-6 h-6 text-white" />
+                    <span className="font-medium">Goal-Oriented</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Users className="w-6 h-6 text-white" />
+                    <span className="font-medium">Customer-First</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Award className="w-6 h-6 text-white" />
+                    <span className="font-medium">Quality-Driven</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Text Content */}
+              <div className="md:col-span-3 p-10 md:p-14 flex flex-col justify-center">
+                <div className="space-y-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {missionParagraphs.map((paragraph, idx) => (
+                    <p key={idx} className={idx === 0 ? "font-medium text-gray-900 dark:text-white" : ""}>
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
 
       {/* Popout / Modal */}
-      {selectedFeature && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={closeModal}
-        >
+      <AnimatePresence>
+        {selectedFeature && (
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ duration: 0.2 }}
-            className="relative w-full max-w-xl mx-auto glass-card 
-                       bg-white/95 dark:bg-background/95
-                       border border-primary-500/30 rounded-2xl p-6 sm:p-8"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[100] flex items-center justify-center px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
           >
-            <button
-              onClick={closeModal}
-              className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/10 dark:bg-black/20 hover:bg-black/20 dark:hover:bg-black/30 text-gray-700 dark:text-gray-200"
-              aria-label="Close"
-            >
-              ✕
-            </button>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
 
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-gradient-to-br from-primary-500 to-accent-500 p-3 rounded-xl">
-                <selectedFeature.icon className="w-6 h-6 text-white" />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-xl mx-auto z-10
+                         bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl
+                         border border-white/20 dark:border-white/10 rounded-3xl p-8 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={closeModal}
+                className="absolute right-4 top-4 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Close"
+              >
+                <span className="text-lg leading-none">✕</span>
+              </button>
+
+              <div className="flex items-start gap-6 mb-6">
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 shadow-lg shadow-primary-500/30 shrink-0">
+                  <selectedFeature.icon className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl sm:text-3xl font-display font-bold text-gray-900 dark:text-white mb-2">
+                    {selectedFeature.title}
+                  </h3>
+                  <p className="text-primary-600 dark:text-primary-400 font-medium">
+                    {selectedFeature.description}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl sm:text-2xl font-display font-bold text-gray-900 dark:text-gray-100">
-                  {selectedFeature.title}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">
-                  {selectedFeature.description}
+
+              <div className="prose dark:prose-invert">
+                <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {selectedFeature.details}
                 </p>
               </div>
-            </div>
-
-            <p className="text-sm sm:text-base text-gray-800 dark:text-gray-100 leading-relaxed">
-              {selectedFeature.details}
-            </p>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </section>
   );
 }

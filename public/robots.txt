@@ -1,6 +1,10 @@
-# Allow all search engines to crawl the site
+# Allow all search engines and AI crawlers to crawl the site
 User-agent: *
+Allow: /
+Disallow: /admin/
+
+User-agent: Google-Extended
 Allow: /
 
 # Sitemap location
-Sitemap: https://fluxive.com/sitemap.xml
+Sitemap: https://fluxive.be/sitemap.xml

@@ -44,8 +44,8 @@ export default function Testimonials() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        // Fetch from PHP backend with cache busting
-        const response = await fetch(`/api/get_reviews.php?t=${Date.now()}`, {
+        // Fetch from new Next.js API
+        const response = await fetch("/api/reviews", {
           cache: 'no-store',
           headers: {
             'Pragma': 'no-cache',

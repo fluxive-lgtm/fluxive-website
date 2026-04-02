@@ -19,9 +19,9 @@ try {
         throw new Exception('Project ID is required');
     }
 
-    $stmt = $pdo->prepare("SELECT * FROM projects WHERE id = ?");
+    $stmt = $pdo_ourwork->prepare("SELECT * FROM projects WHERE id = ?");
     $stmt->execute([$id]);
-    $project = $stmt->fetch();
+    $project = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$project) {
         http_response_code(404);
@@ -30,9 +30,9 @@ try {
     }
 
     // Fetch media files
-    $mediaStmt = $pdo->prepare("SELECT * FROM project_media WHERE project_id = ? ORDER BY display_order ASC");
+    $mediaStmt = $pdo_ourwork->prepare("SELECT * FROM project_media WHERE project_id = ? ORDER BY display_order ASC");
     $mediaStmt->execute([$id]);
-    $project['media'] = $mediaStmt->fetchAll();
+    $project['media'] = $mediaStmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($project);
 } catch (Exception $e) {

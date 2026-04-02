@@ -32,7 +32,7 @@ export default function FloatingSocial() {
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="fixed right-6 top-1/2 -translate-y-1/2 z-40 space-y-4 hidden md:flex flex-col"
+      className="fixed right-4 xl:right-8 top-32 z-50 space-y-4 hidden md:flex flex-col"
     >
       {socialLinks.map((social, index) => {
         const Icon = social.icon;

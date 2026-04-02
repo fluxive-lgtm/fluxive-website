@@ -13,12 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 try {
-    $stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
+    $stmt = $pdo_ourwork->query("SELECT * FROM projects ORDER BY created_at DESC");
     $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Fetch media for each project
     foreach ($projects as &$project) {
-        $stmtMedia = $pdo->prepare("SELECT file_path as path, file_type as type FROM project_media WHERE project_id = ? ORDER BY display_order ASC");
+        $stmtMedia = $pdo_ourwork->prepare("SELECT file_path as path, file_type as type FROM project_media WHERE project_id = ? ORDER BY display_order ASC");
         $stmtMedia->execute([$project['id']]);
         $project['media'] = $stmtMedia->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -39,7 +39,7 @@ export default function OurWorkAdminPage() {
 
     const fetchProjects = async () => {
         try {
-            const response = await fetch("/api/get_projects.php");
+            const response = await fetch("/api/projects");
             if (response.ok) {
                 const data = await response.json();
                 setProjects(data);
@@ -73,7 +73,7 @@ export default function OurWorkAdminPage() {
 
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/upload_project.php", {
+            const response = await fetch("/api/projects/upload", {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -114,8 +114,8 @@ export default function OurWorkAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/delete_project.php", {
-                method: "POST",
+            const response = await fetch("/api/projects/upload", {
+                method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
@@ -134,6 +134,46 @@ export default function OurWorkAdminPage() {
             toast({
                 title: "Error",
                 description: "Failed to delete project",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleDeleteMedia = async (projectId: number, mediaPath: string) => {
+        if (!confirm("Are you sure you want to delete this specific media file permanently?")) return;
+
+        try {
+            const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
+
+            const response = await fetch("/api/projects/media", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ project_id: projectId, media_path: mediaPath }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to delete media");
+            }
+
+            toast({
+                title: "Media Deleted",
+                description: "The media file has been removed from this project.",
+            });
+
+            // Update local state so UI reflects immediately
+            setEditingProject(prev => {
+                if (!prev || !prev.media) return prev;
+                return { ...prev, media: prev.media.filter(m => m.path !== mediaPath) };
+            });
+            fetchProjects();
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: error instanceof Error ? error.message : "Network error occurred.",
                 variant: "destructive",
             });
         }
@@ -191,7 +231,7 @@ export default function OurWorkAdminPage() {
         const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
         try {
-            const response = await fetch("/api/upload_content_image.php", {
+            const response = await fetch("/api/upload", {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -422,7 +462,7 @@ export default function OurWorkAdminPage() {
                                             {previewUrls.map((url, index) => (
                                                 <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
                                                     {selectedFiles[index]?.type.startsWith('video') ? (
-                                                        <video src={url} className="w-full h-full object-cover" />
+                                                        <video src={url} preload="metadata" className="w-full h-full object-cover" />
                                                     ) : (
                                                         <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
                                                     )}
@@ -440,11 +480,17 @@ export default function OurWorkAdminPage() {
                                             {editingProject.media.map((item, index) => (
                                                 <div key={`existing-${index}`} className="relative aspect-square rounded-lg overflow-hidden border group">
                                                     {item.type === 'video' ? (
-                                                        <video src={item.path} className="w-full h-full object-cover" />
+                                                        <video src={item.path} preload="metadata" className="w-full h-full object-cover" />
                                                     ) : (
                                                         <img src={item.path} alt={`Existing ${index}`} className="w-full h-full object-cover" />
                                                     )}
-                                                    {/* We could add delete functionality here later */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeleteMedia(editingProject.id, item.path)}
+                                                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md ring-1 ring-white/20"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
                                                 </div>
                                             ))}
                                         </div>

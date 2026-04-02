@@ -28,7 +28,7 @@ const contactInfo: ContactInfoItem[] = [
   {
     id: "email",
     icon: Mail,
-    content: "info@fluxive.be",
+    content: "info\u0026#64;fluxive\u0026#46;be",
     link: "mailto:info@fluxive.be",
   },
   {
@@ -292,7 +292,7 @@ export default function Contact() {
       // Honeypot (must be empty)
       formData.append("website", "");
 
-      const response = await fetch("/api/contact.php", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         body: formData,
       });
@@ -580,7 +580,7 @@ export default function Contact() {
                           href={info.link}
                           className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          {info.content}
+                          <span dangerouslySetInnerHTML={{ __html: info.content }} />
                         </a>
                       </div>
                     </CardContent>

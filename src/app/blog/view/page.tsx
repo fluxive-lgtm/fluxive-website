@@ -158,7 +158,7 @@ function BlogPostContent() {
                                 )}
                                 {post.image && post.image.match(/\.(mp4|webm)$/i) && (
                                     <div className="mb-8 rounded-2xl overflow-hidden shadow-lg">
-                                        <video controls className="w-full">
+                                        <video controls preload="metadata" className="w-full">
                                             <source src={post.image} type="video/mp4" />
                                             Your browser does not support the video tag.
                                         </video>

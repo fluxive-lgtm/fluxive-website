@@ -1,4 +1,4 @@
-import { Server, TrendingUp, Bot, Code, Shield, Lock } from "lucide-react";
+import { Server, TrendingUp, Bot, Code, Shield, Lock, Brain } from "lucide-react";
 
 export type LocalizedString = {
     en: string;
@@ -897,6 +897,133 @@ export const servicesData: ServiceData[] = [
             en: "Secure your business today - Contact us at info@fluxive.be or +32 472 92 57 41",
             nl: "Beveilig uw bedrijf vandaag nog - Neem contact op via info@fluxive.be of +32 472 92 57 41",
             fr: "Sécurisez votre entreprise dès aujourd'hui - Contactez-nous à info@fluxive.be ou au +32 472 92 57 41"
+        }
+    },
+    {
+        id: "cyber-awareness",
+        title: {
+            en: "Cyber Awareness Program & Demos",
+            nl: "Cyber Awareness Programma & Demo's",
+            fr: "Programme de Sensibilisation Cyber & Démos"
+        },
+        icon: Brain,
+        color: "from-purple-500 to-indigo-500",
+        bgColor: "bg-purple-500/10",
+        borderColor: "border-purple-500/30",
+        heroHeading: {
+            en: "Real-World Hacking Demos That Wake Up Your Employees",
+            nl: "Real-World Hacking Demo's Die Uw Werknemers Wakker Schudden",
+            fr: "Démos de Hacking Réel Qui Réveillent Vos Employés"
+        },
+        subheading: {
+            en: "PowerPoint presentations don't change behavior. Seeing a hacker clone their badge, hack into a camera, or steal their password in real-time does. Interactive awareness for companies and communes.",
+            nl: "PowerPoint-presentaties veranderen geen gedrag. Zien hoe een hacker hun badge klonkt, inbreekt op een camera of hun wachtwoord steelt in real-time doet dat wel. Interactieve bewustwording voor bedrijven en gemeenten.",
+            fr: "Les présentations PowerPoint ne changent pas le comportement. Voir un hacker cloner leur badge, pirater une caméra ou voler leur mot de passe en temps réel, si. Sensibilisation interactive pour entreprises et communes."
+        },
+        fullDescription: {
+            en: "Your employees are your first line of defense—and your biggest vulnerability. Traditional dry training sessions go in one ear and out the other. At Fluxive, we believe in 'Show, Don't Just Tell'.\n\nWe provide live, interactive hacking demonstrations that show your staff exactly how easy it is for criminals to bypass security controls if they aren't vigilant. From Flipper Zero tricks to live phishing and camera hacking, we make cybersecurity real, tangible, and unforgettable for small businesses and Belgian communes.",
+            nl: "Uw werknemers zijn uw eerste verdedigingslinie—en uw grootste kwetsbaarheid. Traditionele droge trainingssessies gaan het ene oor in en het andere uit. Bij Fluxive geloven we in 'Toon, Vertel Niet Alleen'.\n\nWe bieden live, interactieve hacking-demonstraties die uw personeel precies laten zien hoe gemakkelijk het is voor criminelen om beveiligingscontroles te omzeilen als ze niet waakzaam zijn. Van Flipper Zero-trucs tot live phishing en camera-hacking, we maken cybersecurity echt, tastbaar en onvergetelijk voor kleine bedrijven en Belgische gemeenten.",
+            fr: "Vos employés sont votre première ligne de défense—et votre plus grande vulnérabilité. Les sessions de formation traditionnelles entrent par une oreille et sortent par l'autre. Chez Fluxive, nous croyons en 'Montrer, Pas Juste Raconter'.\n\nNous proposons des démonstrations de piratage interactives en direct qui montrent exactement à votre personnel à quel point il est facile pour les criminels de contourner les contrôles de sécurité s'ils ne sont pas vigilants. Des astuces Flipper Zero au phishing en direct et au piratage de caméras, nous rendons la cybersécurité réelle, tangible et inoubliable pour les petites entreprises et les communes belges."
+        },
+        whatWeDo: {
+            en: [
+                "Live Flipper Zero Demos - Cloning access badges and controlling displays right in front of them",
+                "Camera Hacking - Showing how insecure IoT devices can spy on the office",
+                "Phishing Simulations - Sending fake emails and showing who clicked (and why)",
+                "Network & Wi-Fi Hacking - Demonstrating how easy it is to intercept data on open networks",
+                "BadUSB Attacks - What happens when you plug in a strange USB drive found in the parking lot",
+                "Tailored for Communes & SMEs - Content relevant to local government and small business threats"
+            ],
+            nl: [
+                "Live Flipper Zero Demo's - Toegangsbadges klonen en schermen overnemen recht voor hun neus",
+                "Camera Hacking - Laten zien hoe onveilige IoT-apparaten de kantoorruimte kunnen bespioneren",
+                "Phishing Simulaties - Valse e-mails versturen en laten zien wie er klikte (en waarom)",
+                "Netwerk- & Wi-Fi Hacking - Demonstreren hoe gemakkelijk het is om gegevens te onderscheppen op open netwerken",
+                "BadUSB Aanvallen - Wat er gebeurt als je een vreemde USB-stick inplugt die je op de parkeerplaats vond",
+                "Op maat voor Gemeenten & KMO's - Content relevant voor lokale overheden en kleine bedrijven"
+            ],
+            fr: [
+                "Démos Live Flipper Zero - Clonage de badges d'accès et contrôle d'écrans juste sous leurs yeux",
+                "Piratage de Caméras - Montrer comment des appareils IoT non sécurisés peuvent espionner les bureaux",
+                "Simulations de Phishing - Envoi de faux e-mails et démonstration de qui a cliqué (et pourquoi)",
+                "Piratage Réseau & Wi-Fi - Démontrer la facilité d'interception des données sur les réseaux ouverts",
+                "Attaques BadUSB - Ce qui se passe quand vous branchez une clé USB étrange trouvée sur le parking",
+                "Adapté aux Communes & PME - Contenu pertinent pour les menaces des autorités locales et petites entreprises"
+            ]
+        },
+        perfectFor: {
+            en: [
+                "Belgian Communes & Local Governments",
+                "Small Businesses needing real engagement",
+                "Companies with non-technical staff",
+                "Organizations who failed a phishing audit",
+                "Teams bored of standard security lectures"
+            ],
+            nl: [
+                "Belgische Gemeenten & Lokale Overheden",
+                "Kleine bedrijven die echte betrokkenheid nodig hebben",
+                "Bedrijven met niet-technisch personeel",
+                "Organisaties die faalden voor een phishing-audit",
+                "Teams die standaard beveiligingslezingen beu zijn"
+            ],
+            fr: [
+                "Communes Belges & Gouvernements Locaux",
+                "Petites entreprises ayant besoin d'un véritable engagement",
+                "Entreprises avec du personnel non technique",
+                "Organisations ayant échoué à un audit de phishing",
+                "Équipes lassées des conférences de sécurité standard"
+            ]
+        },
+        ourProcess: [
+            {
+                title: { en: "Threat assessment", nl: "Dreigingsbeoordeling", fr: "Évaluation des menaces" },
+                description: { en: "We analyze your specific industry risks", nl: "We analyseren uw specifieke industrisico's", fr: "Nous analysons vos risques industriels spécifiques" }
+            },
+            {
+                title: { en: "Live workshop", nl: "Live workshop", fr: "Atelier en direct" },
+                description: { en: "Interactive session with real hacking demos", nl: "Interactieve sessie met echte hacking demo's", fr: "Session interactive avec démos de hacking réelles" }
+            },
+            {
+                title: { en: "Debrief & training", nl: "Debriefing & training", fr: "Débriefing & formation" },
+                description: { en: "We explain how to prevent the hacks they just saw", nl: "We leggen uit hoe de hacks die ze net zagen te voorkomen", fr: "Nous expliquons comment prévenir les piratages qu'ils viennent de voir" }
+            },
+            {
+                title: { en: "Q&A session", nl: "Vraag & Antwoord", fr: "Questions & Réponses" },
+                description: { en: "Open floor for employees to ask anything", nl: "Gelegenheid voor werknemers om alles te vragen", fr: "Parole libre pour que les employés posent toutes leurs questions" }
+            }
+        ],
+        results: {
+            en: [
+                "Employees who actually remember what they learned",
+                "Immediate change in security behavior (locking screens, checking emails)",
+                "Higher reporting rate of suspicious activities",
+                "Engaging team building event centered on safety",
+                "Demystification of 'movie hacker' myths vs real threats"
+            ],
+            nl: [
+                "Werknemers die daadwerkelijk onthouden wat ze hebben geleerd",
+                "Directe verandering in beveiligingsgedrag (schermen vergrendelen, e-mails checken)",
+                "Hogere meldingsgraad van verdachte activiteiten",
+                "Boeiend teambuilding-evenement gericht op veiligheid",
+                "Demystificatie van 'filmhacker'-mythes vs echte dreigingen"
+            ],
+            fr: [
+                "Des employés qui se souviennent réellement de ce qu'ils ont appris",
+                "Changement immédiat de comportement de sécurité (verrouillage d'écran, vérification des e-mails)",
+                "Taux de signalement plus élevé des activités suspectes",
+                "Événement de team building engageant centré sur la sécurité",
+                "Démystification des mythes de 'hacker de cinéma' vs menaces réelles"
+            ]
+        },
+        investment: {
+            en: "Workshops start from €800 for a 2-hour session. Includes live demos, presentation materials, and Q&A. Pricing depends on group size and travel distance.",
+            nl: "Workshops starten vanaf €800 voor een sessie van 2 uur. Inclusief live demo's, presentatiemateriaal en Q&A. Prijzen afhankelijk van groepsgrootte en reisafstand.",
+            fr: "Les ateliers commencent à partir de 800 € pour une session de 2 heures. Comprend des démos en direct, du matériel de présentation et des questions-réponses. Prix selon la taille du groupe et la distance de déplacement."
+        },
+        cta: {
+            en: "Book a demo session that your team will talk about for weeks - Contact us at info@fluxive.be or +32 472 92 57 41",
+            nl: "Boek een demosessie waar uw team nog weken over zal praten - Neem contact op via info@fluxive.be of +32 472 92 57 41",
+            fr: "Réservez une session de démo dont votre équipe parlera pendant des semaines - Contactez-nous à info@fluxive.be ou au +32 472 92 57 41"
         }
     }
 ];

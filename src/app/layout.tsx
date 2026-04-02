@@ -22,11 +22,11 @@ const orbitron = Orbitron({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://fluxive.com"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://fluxive.be"
   ),
-  title: "FLUXIVE - Premium IT Services & Solutions",
+  title: "FLUXIVE - IT Services, Cybersecurity & Wi-Fi in Belgium",
   description:
-    "Transform your business with premium IT services, marketing solutions, AI automation, web development, penetration testing, and cybersecurity.",
+    "Transform your business with premium IT services, marketing solutions, AI automation, web development, penetration testing, and cybersecurity in Belgium.",
   keywords: [
     "IT Services",
     "Marketing Solutions",
@@ -39,16 +39,19 @@ export const metadata: Metadata = {
     icon: "/favicon.svg",
     apple: "/apple-touch-icon.png",
   },
+  alternates: {
+    canonical: "./",
+  },
   openGraph: {
-    title: "FLUXIVE - Premium IT Services & Solutions",
+    title: "FLUXIVE - IT Services, Cybersecurity & Wi-Fi in Belgium",
     description: "Transform Your Business with Premium IT Solutions",
     type: "website",
-    url: "https://fluxive.com",
+    url: "https://fluxive.be",
     images: ["/fluxive-logo.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "FLUXIVE - Premium IT Services & Solutions",
+    title: "FLUXIVE - IT Services, Cybersecurity & Wi-Fi in Belgium",
     description: "Transform Your Business with Premium IT Solutions",
     images: ["/fluxive-logo.png"],
   },
@@ -61,7 +64,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="nl" // default language = Dutch
+      lang="nl" // Default language: Dutch (NL)
       className={`${inter.variable} ${orbitron.variable}`}
       suppressHydrationWarning
     >
@@ -71,35 +74,82 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "FLUXIVE",
-              url: "https://fluxive.com",
-              logo: "https://fluxive.com/fluxive-logo.png",
-              description:
-                "Premium IT Services, Marketing Solutions, AI Automation, Web Development, Penetration Testing, and Cybersecurity",
-              email: "info@fluxive.be",
-              telephone: "+32472925741",
-              contactPoint: {
-                "@type": "ContactPoint",
-                telephone: "+32472925741",
-                contactType: "customer service",
-                email: "info@fluxive.be",
-                availableLanguage: ["English", "Dutch", "French"],
-              },
-              sameAs: [
-                "https://github.com/fluxive",
-                "https://twitter.com/fluxive",
-                "https://www.instagram.com/fluxi_ve/",
-                "https://facebook.com/fluxive",
-              ],
-              areaServed: "Worldwide",
-              serviceType: [
-                "IT Services",
-                "Marketing Solutions",
-                "AI Automation",
-                "Web Development",
-                "Penetration Testing",
-                "Cybersecurity",
+              "@graph": [
+                {
+                  "@type": ["ITService", "Organization", "LocalBusiness"],
+                  name: "FLUXIVE",
+                  url: "https://fluxive.be",
+                  logo: "https://fluxive.be/fluxive-logo.png",
+                  image: "https://fluxive.be/fluxive-logo.png",
+                  description:
+                    "Premium IT Services, Marketing Solutions, AI Automation, Web Development, Penetration Testing, and Cybersecurity",
+                  email: "info@fluxive.be",
+                  telephone: "+32472925741",
+                  priceRange: "$$",
+                  address: {
+                    "@type": "PostalAddress",
+                    addressCountry: "BE",
+                    addressLocality: "Ninove"
+                  },
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    telephone: "+32472925741",
+                    contactType: "customer service",
+                    email: "info@fluxive.be",
+                    availableLanguage: ["English", "Dutch", "French"],
+                  },
+                  sameAs: [
+                    "https://github.com/fluxive",
+                    "https://twitter.com/fluxive",
+                    "https://www.instagram.com/fluxi_ve/",
+                    "https://facebook.com/fluxive",
+                  ],
+                  areaServed: "Worldwide",
+                  founder: {
+                    "@type": "Person",
+                    name: "Jaiamet",
+                    jobTitle: "Founder & IT Consultant"
+                  },
+                  serviceType: [
+                    "IT Services",
+                    "Marketing Solutions",
+                    "AI Automation",
+                    "Web Development",
+                    "Penetration Testing",
+                    "Cybersecurity",
+                    "Hotel Wi-Fi Solutions",
+                    "Network Setup",
+                  ],
+                },
+                {
+                  "@type": "FAQPage",
+                  mainEntity: [
+                    {
+                      "@type": "Question",
+                      name: "What services does Fluxive offer?",
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Fluxive provides a full mix of IT, cybersecurity and digital services including secure network and Wi-Fi design, firewall and router configuration, penetration testing, website and landing page development, SEO optimisation, online advertising and AI automation.",
+                      },
+                    },
+                    {
+                      "@type": "Question",
+                      name: "Do you work with homeowners or only businesses?",
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "Both! We help hotels, restaurants, and offices with professional IT solutions, and we also assist homeowners with Wi-Fi problems, weak signals, and home network installation.",
+                      },
+                    },
+                    {
+                      "@type": "Question",
+                      name: "How long does a typical project take?",
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: "A simple Wi-Fi optimisation or router setup can be completed in one day. A full website with content and tracking usually takes between 2 and 6 weeks. Larger projects are split into phases.",
+                      },
+                    },
+                  ],
+                },
               ],
             }),
           }}

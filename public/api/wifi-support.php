@@ -47,7 +47,16 @@ try {
 
     // Read fields (trim spaces)
     $name      = trim($_POST['name']);
-    $email     = trim($_POST['email']);
+    $emailRaw  = trim($_POST['email']);
+    
+    // Header Injection Prevention
+    if (!filter_var($emailRaw, FILTER_VALIDATE_EMAIL)) {
+         http_response_code(400);
+         echo json_encode(['ok' => false, 'error' => 'Invalid email address']);
+         exit;
+    }
+    // Remove newlines to be safe against header injection if mail() is used insecurely
+    $email = str_replace(array("\r", "\n", "%0a", "%0d"), '', $emailRaw);
     $phone     = isset($_POST['phone']) ? trim($_POST['phone']) : null;
     $company   = isset($_POST['company']) ? trim($_POST['company']) : null;
     $location  = isset($_POST['location']) ? trim($_POST['location']) : null;

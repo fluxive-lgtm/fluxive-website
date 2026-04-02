@@ -1,6 +1,7 @@
 <?php
 // public/api/login.php
 
+require_once 'waf.php'; // Include WAF Middleware
 require_once 'db_connect.php';
 
 header('Content-Type: application/json');

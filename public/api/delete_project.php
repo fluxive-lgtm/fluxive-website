@@ -29,7 +29,7 @@ try {
     }
 
     // Get image URL to delete file
-    $stmt = $pdo->prepare("SELECT image_url FROM projects WHERE id = ?");
+    $stmt = $pdo_ourwork->prepare("SELECT image_url FROM projects WHERE id = ?");
     $stmt->execute([$id]);
     $project = $stmt->fetch();
 
@@ -40,7 +40,7 @@ try {
         }
     }
 
-    $stmt = $pdo->prepare("DELETE FROM projects WHERE id = ?");
+    $stmt = $pdo_ourwork->prepare("DELETE FROM projects WHERE id = ?");
     $stmt->execute([$id]);
 
     echo json_encode(['success' => true]);

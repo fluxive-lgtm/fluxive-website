@@ -1,20 +1,21 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Services from "@/components/Services";
-import About from "@/components/About";
-import FAQ from "@/components/FAQ";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
-import FloatingSocial from "@/components/FloatingSocial";
-import ScrollToTop from "@/components/ScrollToTop";
-import AnimatedBackground from "@/components/AnimatedBackground";
-import CommonProblems from "@/components/CommonProblems";
-import Testimonials from "@/components/Testimonials";
-import OurWork from "@/components/OurWork";
+import dynamic from 'next/dynamic';
 
-import { FloatingWifiSupport } from "@/components/FloatingWifiSupport";  // ← NEW IMPORT
-import { FloatingPromo } from "@/components/FloatingPromo";
+const Services = dynamic(() => import("@/components/Services"));
+const About = dynamic(() => import("@/components/About"));
 
+const CommonProblems = dynamic(() => import("@/components/CommonProblems"));
+const Testimonials = dynamic(() => import("@/components/Testimonials"));
+const OurWork = dynamic(() => import("@/components/OurWork"));
+const FAQ = dynamic(() => import("@/components/FAQ"));
+const Contact = dynamic(() => import("@/components/Contact"));
+const FloatingWifiSupport = dynamic(() => import("@/components/FloatingWifiSupport").then(mod => mod.FloatingWifiSupport));
+const FloatingPromo = dynamic(() => import("@/components/FloatingPromo").then(mod => mod.FloatingPromo));
+const AnimatedBackground = dynamic(() => import("@/components/AnimatedBackground"));
+const ScrollToTop = dynamic(() => import("@/components/ScrollToTop"));
+const Footer = dynamic(() => import("@/components/Footer"));
+const FloatingSocial = dynamic(() => import("@/components/FloatingSocial"));
 
 export default function Home() {
   return (
