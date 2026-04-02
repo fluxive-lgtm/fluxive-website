@@ -43,7 +43,7 @@ export default function OurWork() {
         const fetchProjects = async () => {
             try {
                 // Use PHP API endpoint
-                const response = await fetch("/api/projects");
+                const response = await fetch("/api/get_projects.php");
                 const contentType = response.headers.get("content-type");
 
                 if (response.ok && contentType && contentType.includes("application/json")) {

@@ -39,7 +39,7 @@ export default function OurWorkAdminPage() {
 
     const fetchProjects = async () => {
         try {
-            const response = await fetch("/api/projects");
+            const response = await fetch("/api/get_projects.php");
             if (response.ok) {
                 const data = await response.json();
                 setProjects(data);
@@ -73,7 +73,7 @@ export default function OurWorkAdminPage() {
 
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/projects/upload", {
+            const response = await fetch("/api/upload_project.php", {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -114,8 +114,8 @@ export default function OurWorkAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/projects/upload", {
-                method: "DELETE",
+            const response = await fetch("/api/delete_project.php", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
@@ -145,7 +145,7 @@ export default function OurWorkAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/projects/media", {
+            const response = await fetch("/api/delete_project_media.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -231,7 +231,7 @@ export default function OurWorkAdminPage() {
         const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
         try {
-            const response = await fetch("/api/upload", {
+            const response = await fetch("/api/upload_content_image.php", {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`

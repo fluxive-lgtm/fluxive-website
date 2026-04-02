@@ -74,7 +74,7 @@ export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = f
 
     try {
         // Fetch from API with no-store to prevent caching
-        const res = await fetch('/api/blog', { cache: 'no-store' });
+        const res = await fetch('/api/blog.php', { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch posts');
         const apiPosts = await res.json();
 
@@ -109,7 +109,7 @@ export async function getPosts(lang: 'en' | 'nl' | 'fr' = 'en', strictFilter = f
 
 export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en'): Promise<BlogPost | null> {
     try {
-        const res = await fetch(`/api/blog?slug=${slug}`, { cache: 'no-store' });
+        const res = await fetch(`/api/blog.php?slug=${slug}`, { cache: 'no-store' });
         if (res.ok) {
             const apiPost = await res.json();
             return flattenPost(apiPostToBlogPostData(apiPost), lang);
@@ -125,7 +125,7 @@ export async function getPostBySlug(slug: string, lang: 'en' | 'nl' | 'fr' = 'en
 
 export async function getFullPostBySlug(slug: string): Promise<BlogPostData | null> {
     try {
-        const res = await fetch(`/api/blog?slug=${slug}`, { cache: 'no-store' });
+        const res = await fetch(`/api/blog.php?slug=${slug}`, { cache: 'no-store' });
         if (res.ok) {
             const apiPost = await res.json();
             return apiPostToBlogPostData(apiPost);
@@ -141,7 +141,7 @@ export async function getFullPostBySlug(slug: string): Promise<BlogPostData | nu
 export async function savePost(post: BlogPost): Promise<void> {
     const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-    const res = await fetch('/api/blog', {
+    const res = await fetch('/api/blog.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export async function savePost(post: BlogPost): Promise<void> {
 export async function deletePost(slug: string): Promise<void> {
     const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-    const res = await fetch(`/api/blog?slug=${slug}`, {
+    const res = await fetch(`/api/blog.php?slug=${slug}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`

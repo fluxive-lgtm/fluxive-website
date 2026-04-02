@@ -45,7 +45,7 @@ export default function Testimonials() {
     const fetchReviews = async () => {
       try {
         // Fetch from new Next.js API
-        const response = await fetch("/api/reviews", {
+        const response = await fetch("/api/get_reviews.php", {
           cache: 'no-store',
           headers: {
             'Pragma': 'no-cache',

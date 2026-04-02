@@ -112,7 +112,7 @@ export default function Hero() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/ideas", {
+      const response = await fetch("/api/submit_idea.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idea, businessName, email }),

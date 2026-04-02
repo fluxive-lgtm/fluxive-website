@@ -64,7 +64,7 @@ export default function NewsletterSignup() {
             fd.append("email", email);
             fd.append("website_url", honeypot); // Honeypot
 
-            const response = await fetch("/api/newsletter", {
+            const response = await fetch("/api/newsletter.php", {
                 method: "POST",
                 body: fd,
             });

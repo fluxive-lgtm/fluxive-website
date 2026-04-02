@@ -25,7 +25,7 @@ export default function HomepageAdAdminPage() {
 
     const fetchAd = async () => {
         try {
-            const response = await fetch("/api/homepage-ad");
+            const response = await fetch("/api/get_homepage_ad.php");
             if (response.ok) {
                 const data = await response.json();
                 setSettings(data);
@@ -85,7 +85,7 @@ export default function HomepageAdAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/homepage-ad", {
+            const response = await fetch("/api/upload_homepage_ad.php", {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -123,8 +123,8 @@ export default function HomepageAdAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/homepage-ad", {
-                method: "PATCH",
+            const response = await fetch("/api/update_homepage_ad_title.php", {
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -160,8 +160,8 @@ export default function HomepageAdAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/homepage-ad", {
-                method: "DELETE",
+            const response = await fetch("/api/delete_homepage_ad.php", {
+                method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }

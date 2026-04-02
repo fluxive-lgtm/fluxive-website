@@ -26,7 +26,7 @@ export default function IdeasAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/ideas", {
+            const response = await fetch("/api/get_ideas.php", {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -61,8 +61,8 @@ export default function IdeasAdminPage() {
         try {
             const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
-            const response = await fetch("/api/ideas", {
-                method: "DELETE",
+            const response = await fetch("/api/delete_idea.php", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`

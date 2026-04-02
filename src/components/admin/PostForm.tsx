@@ -154,7 +154,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
         const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1];
 
         try {
-            const res = await fetch("/api/upload", {
+            const res = await fetch("/api/upload.php", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -210,7 +210,7 @@ export function PostForm({ initialData, isEditing = false }: PostFormProps) {
             formData.append("file", file)
 
             try {
-                const res = await fetch("/api/upload", {
+                const res = await fetch("/api/upload.php", {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${token}` },
                     body: formData,

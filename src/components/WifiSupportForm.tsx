@@ -182,7 +182,7 @@ export function WifiSupportForm() {
       fd.append("lang", lang);
       fd.append("website", form.website); // 👈 honeypot
 
-      const res = await fetch("/api/wifi-support", {
+      const res = await fetch("/api/wifi-support.php", {
         method: "POST",
         body: fd,
       });

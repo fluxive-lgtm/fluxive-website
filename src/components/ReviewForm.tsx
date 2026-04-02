@@ -109,7 +109,7 @@ export default function ReviewForm({ isEmbedded = false }: ReviewFormProps) {
 
     try {
       // Use PHP API route
-      const response = await fetch("/api/reviews", {
+      const response = await fetch("/api/submit_review.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

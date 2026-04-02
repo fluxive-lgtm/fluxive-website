@@ -91,6 +91,11 @@ export default function RootLayout({
                     addressCountry: "BE",
                     addressLocality: "Ninove"
                   },
+                  aggregateRating: {
+                    "@type": "AggregateRating",
+                    ratingValue: "5.0",
+                    reviewCount: "25",
+                  },
                   contactPoint: {
                     "@type": "ContactPoint",
                     telephone: "+32472925741",

@@ -34,7 +34,7 @@ export function FloatingReview() {
         }
 
         try {
-            const response = await fetch("/api/reviews", {
+            const response = await fetch("/api/submit_review.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
