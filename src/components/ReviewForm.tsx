@@ -73,8 +73,12 @@ const translations = {
   }
 };
 
-export default function ReviewForm() {
-  const [isOpen, setIsOpen] = useState(false);
+interface ReviewFormProps {
+  isEmbedded?: boolean;
+}
+
+export default function ReviewForm({ isEmbedded = false }: ReviewFormProps) {
+  const [isOpen, setIsOpen] = useState(isEmbedded);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -118,11 +122,13 @@ export default function ReviewForm() {
       }
 
       setIsSuccess(true);
-      setTimeout(() => {
-        setIsOpen(false);
-        setIsSuccess(false);
-        setRating(0);
-      }, 3000);
+      if (!isEmbedded) {
+        setTimeout(() => {
+          setIsOpen(false);
+          setIsSuccess(false);
+          setRating(0);
+        }, 3000);
+      }
     } catch (err) {
       setError(t.error[currentLang]);
     } finally {
@@ -131,9 +137,9 @@ export default function ReviewForm() {
   };
 
   return (
-    <div className="flex justify-center mt-12">
+    <div className={isEmbedded ? "w-full max-w-lg mx-auto" : "flex justify-center mt-12"}>
       <AnimatePresence>
-        {!isOpen ? (
+        {!isOpen && !isEmbedded ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -150,29 +156,33 @@ export default function ReviewForm() {
           </motion.div>
         ) : (
           <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-            />
+            {/* Backdrop - Only for modal mode */}
+            {!isEmbedded && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+              />
+            )}
 
             {/* Form Container */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+              initial={isEmbedded ? { opacity: 0, y: 20 } : { opacity: 0, scale: 0.9, y: 20 }}
+              animate={isEmbedded ? { opacity: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+              exit={isEmbedded ? { opacity: 0, y: -20 } : { opacity: 0, scale: 0.9, y: 20 }}
+              className={isEmbedded ? "relative w-full" : "fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"}
             >
-              <div className="w-full max-w-md glass-card p-8 rounded-2xl relative pointer-events-auto bg-black/80 border border-white/10">
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
+              <div className={`w-full ${isEmbedded ? "" : "max-w-md pointer-events-auto"} glass-card p-8 rounded-2xl relative bg-black/80 border border-white/10`}>
+                {!isEmbedded && (
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                )}
 
                 {isSuccess ? (
                   <div className="text-center py-8">
