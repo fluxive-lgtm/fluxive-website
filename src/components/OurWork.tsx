@@ -43,7 +43,7 @@ export default function OurWork() {
         const fetchProjects = async () => {
             try {
                 // Use PHP API endpoint
-                const response = await fetch("/api/get_projects.php");
+                const response = await fetch("/api/projects");
                 const contentType = response.headers.get("content-type");
 
                 if (response.ok && contentType && contentType.includes("application/json")) {
@@ -142,13 +142,13 @@ export default function OurWork() {
                                         <div className="aspect-video relative overflow-hidden bg-white dark:bg-gray-950 flex items-center justify-center p-4">
                                             {project.media && project.media.length > 0 && project.media[0].type === 'video' ? (
                                                 <video
-                                                    src={(project.media[0].path && !project.media[0].path.startsWith('http')) ? `https://fluxive.com${project.media[0].path}` : project.media[0].path}
+                                                    src={project.media[0].path}
                                                     autoPlay loop muted playsInline preload="metadata"
                                                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                                 />
                                             ) : (
                                                 <img
-                                                    src={project.image_url && project.image_url.startsWith('http') ? project.image_url : (project.image_url ? `https://fluxive.com${project.image_url}` : 'https://placehold.co/600x400/eeeeee/999999?text=Fluxive+Project')}
+                                                    src={project.image_url || 'https://placehold.co/600x400/eeeeee/999999?text=Fluxive+Project'}
                                                     alt={displayTitle || 'Project Thumbnail'}
                                                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                                     onError={(e) => {

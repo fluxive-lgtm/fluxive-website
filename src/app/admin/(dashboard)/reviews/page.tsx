@@ -31,7 +31,7 @@ export default function ReviewsPage() {
     const fetchReviews = async () => {
         try {
             // Fetch all reviews (approved_only=false)
-            const response = await fetch("/api/get_reviews.php?approved_only=false");
+            const response = await fetch("/api/reviews?approved_only=false");
             if (response.ok) {
                 const data = await response.json();
                 setReviews(data);
@@ -64,8 +64,8 @@ export default function ReviewsPage() {
         }
 
         try {
-            const response = await fetch("/api/approve_review.php", {
-                method: "POST",
+            const response = await fetch("/api/reviews", {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
@@ -128,8 +128,8 @@ export default function ReviewsPage() {
         }
 
         try {
-            const response = await fetch("/api/delete_review.php", {
-                method: "POST",
+            const response = await fetch("/api/reviews", {
+                method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`

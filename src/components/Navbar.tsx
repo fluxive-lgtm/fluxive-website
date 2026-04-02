@@ -184,7 +184,7 @@ export default function Navbar() {
               onClick={() => scrollToSection("#contact")}
               className="relative group bg-gradient-to-r from-primary-600 via-primary-500 to-accent-500 hover:from-primary-500 hover:to-accent-400 text-white shadow-xl shadow-primary-500/30 rounded-full px-6 py-3 overflow-hidden transition-all duration-300 hover:scale-105"
             >
-              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
+              <div className="absolute inset-0 opacity-10 mix-blend-overlay" />
               <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-shimmer" />
 
               <span className="relative z-10 text-sm font-bold tracking-wide flex items-center gap-2">
