@@ -1,13 +1,18 @@
 // scripts/seed.mjs
-// Run: node scripts/seed.mjs
-// Seeds the default admin account after `prisma migrate deploy`
+// Run: DATABASE_URL="..." node scripts/seed.mjs
 
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pkg from 'pg';
 import bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient();
+const { Pool } = pkg;
 
-// Seed default admin (password: FluxiveAdmin2026!)
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
+
+// Seed default admin
 const adminCount = await prisma.admin.count();
 if (adminCount === 0) {
   const hash = await bcrypt.hash('FluxiveAdmin2026!', 10);
@@ -22,7 +27,10 @@ const settingsCount = await prisma.homepageSetting.count();
 if (settingsCount === 0) {
   await prisma.homepageSetting.create({ data: { adMediaType: 'image', adTitle: 'Featured Update' } });
   console.log('✅ Seeded homepage settings');
+} else {
+  console.log('ℹ️  Homepage settings already exist, skipping');
 }
 
 await prisma.$disconnect();
+await pool.end();
 console.log('🎉 Seed complete');
