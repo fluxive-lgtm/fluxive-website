@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
-import type { Project } from '@prisma/client';
 
 type MediaItem = { filePath: string; fileType?: string };
 
@@ -18,28 +17,18 @@ export async function POST(req: NextRequest) {
     contentEn, contentNl, contentFr, imageUrl,
   };
 
-  let project: Project;
-  if (id) {
-    project = await prisma.project.update({ where: { id }, data: projectData });
-    if (Array.isArray(media)) {
-      await prisma.projectMedia.deleteMany({ where: { projectId: id } });
-      if (media.length > 0) {
-        await prisma.projectMedia.createMany({
-          data: media.map((m: MediaItem, i: number) => ({
-            projectId: id,
-            filePath: m.filePath,
-            fileType: m.fileType || 'image',
-            displayOrder: i,
-          })),
-        });
-      }
-    }
-  } else {
-    project = await prisma.project.create({ data: projectData });
-    if (Array.isArray(media) && media.length > 0) {
+  const upserted = id
+    ? await prisma.project.update({ where: { id }, data: projectData })
+    : await prisma.project.create({ data: projectData });
+
+  const projectId: number = upserted.id;
+
+  if (Array.isArray(media)) {
+    await prisma.projectMedia.deleteMany({ where: { projectId } });
+    if (media.length > 0) {
       await prisma.projectMedia.createMany({
         data: media.map((m: MediaItem, i: number) => ({
-          projectId: project.id,
+          projectId,
           filePath: m.filePath,
           fileType: m.fileType || 'image',
           displayOrder: i,
@@ -49,7 +38,7 @@ export async function POST(req: NextRequest) {
   }
 
   const result = await prisma.project.findUnique({
-    where: { id: project.id },
+    where: { id: projectId },
     include: { media: { orderBy: { displayOrder: 'asc' } } },
   });
   return NextResponse.json(result);
