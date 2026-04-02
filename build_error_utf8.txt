@@ -1,0 +1,280 @@
+﻿
+> webapp@1.0.0 build
+> next build
+
+node.exe : [baseline-brow
+ser-mapping] The data in 
+this module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo       
+       : NotSpe    
+cified: ([baseli    
+ne-brows...ping@    
+latest -D`:Strin    g) 
+[], RemoteExc    eption
+    + FullyQualified    
+ErrorId : Native    
+CommandError
+ 
+ ΓÜá Specified 
+"rewrites" will not 
+automatically work with 
+"output: export". See 
+more info here: https://n
+extjs.org/docs/messages/e
+xport-no-custom-routes
+   Γû▓ Next.js 16.0.3 (Turbopack)
+   - Environments: .env
+
+ ΓÜá The "middleware" 
+file convention is 
+deprecated. Please use 
+"proxy" instead. Learn 
+more: https://nextjs.org/
+docs/messages/middleware-
+to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+ ΓÜá Specified 
+"rewrites" will not 
+automatically work with 
+"output: export". See 
+more info here: https://n
+extjs.org/docs/messages/e
+xport-no-custom-routes
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+ Γ£ô Compiled successfully in 9.1s
+   Running TypeScript ...
+   Collecting page data using 19 workers ...
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+[baseline-browser-mapping
+] The data in this 
+module is over two 
+months old.  To ensure 
+accurate Baseline data, 
+please update: `npm i bas
+eline-browser-mapping@lat
+est -D`
+Error: export const 
+dynamic = 
+"force-static"/export 
+const revalidate not 
+configured on route 
+"/sitemap.xml" with 
+"output: export". See 
+more info here: https://n
+extjs.org/docs/advanced-f
+eatures/static-html-expor
+t
+    at module evaluation 
+(C:\Users\jaiam\Desktop\F
+LUXIVE\fluxive-website\.n
+ext\server\chunks\[root-o
+f-the-server]__a5eabd3d._
+.js:1:1876)
+    at instantiateModule 
+(C:\Users\jaiam\Desktop\F
+LUXIVE\fluxive-website\.n
+ext\server\chunks\[turbop
+ack]_runtime.js:715:9)
+    at 
+instantiateRuntimeModule 
+(C:\Users\jaiam\Desktop\F
+LUXIVE\fluxive-website\.n
+ext\server\chunks\[turbop
+ack]_runtime.js:743:12)
+    at getOrInstantiateRu
+ntimeModule (C:\Users\jai
+am\Desktop\FLUXIVE\fluxiv
+e-website\.next\server\ch
+unks\[turbopack]_runtime.
+js:756:12)
+    at Object.m (C:\Users
+\jaiam\Desktop\FLUXIVE\fl
+uxive-website\.next\serve
+r\chunks\[turbopack]_runt
+ime.js:765:18)
+    at 
+Object.<anonymous> (C:\Us
+ers\jaiam\Desktop\FLUXIVE
+\fluxive-website\.next\se
+rver\app\sitemap.xml\rout
+e.js:5:3)
+
+> Build error occurred
+Error: Failed to collect 
+page data for 
+/sitemap.xml
+    at ignore-listed 
+frames {
+  type: 'Error'
+}

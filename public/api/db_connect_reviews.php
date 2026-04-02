@@ -1,14 +1,16 @@
 <?php
 // public/api/db_connect_reviews.php
+require_once 'waf.php'; // Include WAF Middleware
 
 // Database credentials for Reviews
-$host = 'ID481076_review.db.webhosting.be';
-$dbname = 'ID481076_review';
-$username = 'ID481076_review';
-$password = '7KOb3Qg77g3878TL8QKj';
+$host = 'interchange.proxy.rlwy.net';
+$port = '50020';
+$dbname = 'fluxive_db';
+$username = 'fluxive_user';
+$password = 'Fluxive@2026!';
 
 try {
-    $pdoReviews = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdoReviews = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdoReviews->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdoReviews->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 

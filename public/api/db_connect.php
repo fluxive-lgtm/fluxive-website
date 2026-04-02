@@ -1,14 +1,16 @@
 <?php
 // public/api/db_connect.php
+require_once 'waf.php'; // Include WAF Middleware
 
 // Database credentials
-$host = 'ID481076_blogpost.db.webhosting.be';
-$dbname = 'ID481076_blogpost';
-$username = 'ID481076_blogpost';
-$password = 'rBF1fcJc1dXwVxtjzV3D';
+$host = 'interchange.proxy.rlwy.net';
+$port = '50020';
+$dbname = 'fluxive_db';
+$username = 'fluxive_user';
+$password = 'Fluxive@2026!';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -42,6 +44,30 @@ try {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ");
+
+    // Create homepage settings table for Dynamic Ads
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS homepage_settings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            ad_media_url VARCHAR(255) DEFAULT NULL,
+            ad_media_type VARCHAR(50) DEFAULT 'image',
+            ad_title VARCHAR(255) DEFAULT 'Featured Update',
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+    ");
+
+    // Auto-migrate to add ad_title if upgrading an older version of the table
+    try {
+        $pdo->exec("ALTER TABLE homepage_settings ADD COLUMN ad_title VARCHAR(255) DEFAULT 'Featured Update'");
+    } catch (PDOException $e) {
+        // Ignored, column likely already exists
+    }
+
+    // Seed default homepage settings if not exists
+    $stmtSettings = $pdo->query("SELECT COUNT(*) FROM homepage_settings");
+    if ($stmtSettings->fetchColumn() == 0) {
+        $pdo->exec("INSERT INTO homepage_settings (ad_media_url, ad_media_type) VALUES (NULL, 'image')");
+    }
 
     // Seed default admin if not exists
     $stmt = $pdo->query("SELECT COUNT(*) FROM admins");
