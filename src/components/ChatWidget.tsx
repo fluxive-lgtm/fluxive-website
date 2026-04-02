@@ -166,9 +166,7 @@ export default function ChatWidget() {
         timestamp: now.toISOString()
       }
 
-      // Use Next.js API route
-      // Use PHP API proxy for static hosting compatibility
-      const apiUrl = '/api/chat.php'
+      const apiUrl = '/api/chat'
 
       const response = await fetch(apiUrl, {
         method: "POST",
